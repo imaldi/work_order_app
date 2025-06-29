@@ -76,7 +76,14 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
   Future<Either<String, Unit>> deleteWorkOrder(int id) async {
     try {
       final db = await databaseHelper.database;
-      await db.delete('work_orders', where: 'id = ?', whereArgs: [id]);
+      final result = await db.delete(
+        'work_orders',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      if (result == 0) {
+        return left('Work order not found');
+      }
       return right(unit);
     } catch (e) {
       return left('Failed to delete work order: $e');
