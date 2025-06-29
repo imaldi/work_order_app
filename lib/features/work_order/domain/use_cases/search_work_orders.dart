@@ -2,14 +2,22 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/params/params.dart';
+import '../../../../core/usecase/usecase.dart';
 import '../entities/work_order_entity.dart';
 import '../repositories/work_order_repository.dart';
 
 @lazySingleton
-class SearchWorkOrders {
+class SearchWorkOrders implements UseCase<List<WorkOrderEntity>, SearchWorkOrdersParams> {
   final WorkOrderRepository repository;
   SearchWorkOrders(this.repository);
-  Future<Either<Failure, List<WorkOrderEntity>>> call(String query) async {
-    return await repository.searchWorkOrders(query);
+
+  @override
+  Future<Either<Failure, List<WorkOrderEntity>>> call(SearchWorkOrdersParams params) async {
+    final validation = params.validate();
+    return validation.fold(
+          (failure) => Left(failure),
+          (validQuery) async => await repository.searchWorkOrders(validQuery),
+    );
   }
 }

@@ -1,15 +1,18 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
+import '../../../../core/params/params.dart';
+import '../../../../core/usecase/usecase.dart';
 import '../repositories/work_order_repository.dart';
 
 @lazySingleton
-class DeleteWorkOrder {
+class DeleteWorkOrder implements UseCase<Unit, DeleteWorkOrdersParams> {
   final WorkOrderRepository repository;
 
   DeleteWorkOrder(this.repository);
 
-  Future<Either<Failure, Unit>> call(int id) async {
-    return await repository.deleteWorkOrder(id);
+  @override
+  Future<Either<Failure, Unit>> call(DeleteWorkOrdersParams params) async {
+    return await repository.deleteWorkOrder(params.id);
   }
 }

@@ -57,7 +57,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onAddWorkOrder(AddWorkOrderEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await addWorkOrder(event.workOrder);
+    final result = await addWorkOrder(event.params);
     result.fold(
           (error) => emit(WorkOrderState.error(error)),
           (_) async {
@@ -72,7 +72,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onUpdateWorkOrder(UpdateWorkOrderEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await updateWorkOrder(event.workOrder);
+    final result = await updateWorkOrder(event.params);
     result.fold(
         (error) => emit(WorkOrderState.error(error)),
         (_) async {
@@ -87,7 +87,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onDeleteWorkOrder(DeleteWorkOrderEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await deleteWorkOrder(event.id);
+    final result = await deleteWorkOrder(event.params);
     result.fold(
             (error) => emit(WorkOrderState.error(error)),
             (_) async {
@@ -102,7 +102,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onSearchWorkOrders(SearchWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await searchWorkOrders(event.query);
+    final result = await searchWorkOrders(event.params);
     result.fold(
           (error) => emit(WorkOrderState.error(error)),
           (workOrders) => emit(WorkOrderState.loaded(workOrders)),
