@@ -6,25 +6,50 @@ import 'package:mockito/mockito.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/add_work_order.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart';
+import 'package:work_order_app/features/work_order/domain/use_cases/filter_work_orders.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work_orders.dart';
+import 'package:work_order_app/features/work_order/domain/use_cases/search_work_orders.dart';
+import 'package:work_order_app/features/work_order/domain/use_cases/sort_work_orders.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/update_work_order.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
 import 'work_order_bloc_test.mocks.dart';
 
-@GenerateMocks([AddWorkOrder, GetAllWorkOrders, UpdateWorkOrder, DeleteWorkOrder])
+@GenerateMocks([
+  AddWorkOrder,
+  GetAllWorkOrders,
+  UpdateWorkOrder,
+  DeleteWorkOrder,
+  SearchWorkOrders,
+  SortWorkOrders,
+  FilterWorkOrders,
+])
 void main() {
   late WorkOrderBloc bloc;
   late MockAddWorkOrder mockAddWorkOrder;
   late MockGetAllWorkOrders mockGetAllWorkOrders;
   late MockUpdateWorkOrder mockUpdateWorkOrder;
   late MockDeleteWorkOrder mockDeleteWorkOrder;
+  late MockSearchWorkOrders mockSearchWorkOrders;
+  late MockSortWorkOrders mockSortWorkOrders;
+  late MockFilterWorkOrders mockFilterWorkOrders;
 
   setUp(() {
     mockAddWorkOrder = MockAddWorkOrder();
     mockGetAllWorkOrders = MockGetAllWorkOrders();
     mockUpdateWorkOrder = MockUpdateWorkOrder();
     mockDeleteWorkOrder = MockDeleteWorkOrder();
-    bloc = WorkOrderBloc(mockAddWorkOrder, mockGetAllWorkOrders, mockUpdateWorkOrder, mockDeleteWorkOrder);
+    mockSearchWorkOrders = MockSearchWorkOrders();
+    mockSortWorkOrders = MockSortWorkOrders();
+    mockFilterWorkOrders = MockFilterWorkOrders();
+    bloc = WorkOrderBloc(
+        mockAddWorkOrder,
+        mockGetAllWorkOrders,
+        mockUpdateWorkOrder,
+        mockDeleteWorkOrder,
+        mockSearchWorkOrders,
+        mockSortWorkOrders,
+        mockFilterWorkOrders,
+    );
   });
 
   blocTest<WorkOrderBloc, WorkOrderState>(

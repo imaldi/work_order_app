@@ -6,13 +6,14 @@ import 'package:path/path.dart';
 @singleton
 class DatabaseHelper {
   static Database? _database;
+  final String? testDbPath;
 
   @factoryMethod
-  DatabaseHelper();
+  DatabaseHelper({this.testDbPath});
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB('work_order.db');
+    _database = await _initDB(this.testDbPath ?? 'work_order.db');
     return _database!;
   }
 

@@ -2,7 +2,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../repositories/work_order_repository.dart';
 
-@injectable
+@lazySingleton
 class DeleteWorkOrder {
   final WorkOrderRepository repository;
 

@@ -7,4 +7,7 @@ abstract class WorkOrderEvent with _$WorkOrderEvent {
   const factory WorkOrderEvent.addWorkOrder(WorkOrderEntity workOrder) = AddWorkOrderEvent;
   const factory WorkOrderEvent.updateWorkOrder(WorkOrderEntity workOrder) = UpdateWorkOrderEvent;
   const factory WorkOrderEvent.deleteWorkOrder(int id) = DeleteWorkOrderEvent;
+  const factory WorkOrderEvent.searchWorkOrdersEvent(String query) = SearchWorkOrdersEvent;
+  const factory WorkOrderEvent.filterWorkOrdersEvent(FilterParams params) = FilterWorkOrdersEvent;
+  const factory WorkOrderEvent.sortWorkOrdersEvent(String sortBy, bool ascending) = SortWorkOrdersEvent;
 }

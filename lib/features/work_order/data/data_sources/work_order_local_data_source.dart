@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../../../core/params/params.dart';
 import '../models/work_order_model.dart';
 import '../models/technician_model.dart';
 import '../../../../core/helpers/database_helper.dart';
@@ -12,6 +13,9 @@ abstract class WorkOrderLocalDataSource {
   Future<Either<String, List<WorkOrderModel>>> getAllWorkOrders();
   Future<Either<String, Unit>> addTechnician(TechnicianModel technician);
   Future<Either<String, List<TechnicianModel>>> getAllTechnicians();
+  Future<Either<String, List<WorkOrderModel>>> searchWorkOrders(String query);
+  Future<Either<String, List<WorkOrderModel>>> filterWorkOrders(FilterParams params);
+  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(String sortBy, bool ascending);
 }
 
 @LazySingleton(as: WorkOrderLocalDataSource)
@@ -115,6 +119,62 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       return right(technicians);
     } catch (e) {
       return left('Failed to get technicians: $e');
+    }
+  }
+
+  @override
+  Future<Either<String, List<WorkOrderModel>>> searchWorkOrders(String query) async {
+    try {
+      final db = await databaseHelper.database;
+      final maps = await db.query(
+        'work_orders',
+        where: 'title LIKE ? OR description LIKE ?',
+        whereArgs: ['%$query%', '%$query%'],
+      );
+      return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
+    } catch (e) {
+      return left('Failed to search work orders: $e');
+    }
+  }
+
+  @override
+  Future<Either<String, List<WorkOrderModel>>> filterWorkOrders(FilterParams params) async {
+    try {
+      final db = await databaseHelper.database;
+      final conditions = <String>[];
+      final args = <dynamic>[];
+      if (params.status != null) {
+        conditions.add('status = ?');
+        args.add(params.status);
+      }
+      if (params.priority != null) {
+        conditions.add('priority = ?');
+        args.add(params.priority);
+      }
+      if (params.technicianId != null) {
+        conditions.add('technicianId = ?');
+        args.add(params.technicianId);
+      }
+      final where = conditions.isEmpty ? null : conditions.join(' AND ');
+      final maps = await db.query(
+        'work_orders',
+        where: where,
+        whereArgs: args.isEmpty ? null : args,
+      );
+      return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
+    } catch (e) {
+      return left('Failed to filter work orders: $e');
+    }
+  }
+
+  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(String sortBy, bool ascending) async {
+    try {
+      final db = await databaseHelper.database;
+      final orderBy = '$sortBy ${ascending ? 'ASC' : 'DESC'}';
+      final maps = await db.query('work_orders', orderBy: orderBy);
+      return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
+    } catch (e) {
+      return left('Failed to sort work orders: $e');
     }
   }
 }

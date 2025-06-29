@@ -1,5 +1,6 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
+import 'package:work_order_app/core/params/params.dart';
 import '../../domain/entities/work_order_entity.dart';
 import '../../domain/entities/technician_entity.dart';
 import '../../domain/repositories/work_order_repository.dart';
@@ -42,6 +43,24 @@ class WorkOrderRepositoryImpl implements WorkOrderRepository {
   @override
   Future<Either<String, List<TechnicianEntity>>> getAllTechnicians() async {
     final either = await localDataSource.getAllTechnicians();
+    return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<String, List<WorkOrderEntity>>> filterWorkOrders(FilterParams params) async {
+    final either = await localDataSource.filterWorkOrders(params);
+    return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<String, List<WorkOrderEntity>>> searchWorkOrders(String query) async {
+    final either = await localDataSource.searchWorkOrders(query);
+    return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
+  }
+
+  @override
+  Future<Either<String, List<WorkOrderEntity>>> sortWorkOrders(String sortBy, bool ascending) async {
+    final either = await localDataSource.sortWorkOrders(sortBy, ascending);
     return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
   }
 }

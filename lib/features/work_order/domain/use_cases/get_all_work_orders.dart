@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../entities/work_order_entity.dart';
 import '../repositories/work_order_repository.dart';
 
-@injectable
+@lazySingleton
 class GetAllWorkOrders {
   final WorkOrderRepository repository;
 

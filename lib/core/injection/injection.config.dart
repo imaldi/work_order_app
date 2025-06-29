@@ -22,8 +22,14 @@ import 'package:work_order_app/features/work_order/domain/use_cases/add_work_ord
     as _i658;
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart'
     as _i1034;
+import 'package:work_order_app/features/work_order/domain/use_cases/filter_work_orders.dart'
+    as _i752;
 import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work_orders.dart'
     as _i623;
+import 'package:work_order_app/features/work_order/domain/use_cases/search_work_orders.dart'
+    as _i300;
+import 'package:work_order_app/features/work_order/domain/use_cases/sort_work_orders.dart'
+    as _i853;
 import 'package:work_order_app/features/work_order/domain/use_cases/update_work_order.dart'
     as _i167;
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart'
@@ -36,24 +42,35 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    gh.singleton<_i21.DatabaseHelper>(() => _i21.DatabaseHelper());
+    gh.singleton<_i21.DatabaseHelper>(
+      () => _i21.DatabaseHelper(testDbPath: gh<String>()),
+    );
     gh.lazySingleton<_i688.WorkOrderLocalDataSource>(
       () => _i688.WorkOrderLocalDataSourceImpl(gh<_i21.DatabaseHelper>()),
     );
     gh.lazySingleton<_i590.WorkOrderRepository>(
       () => _i367.WorkOrderRepositoryImpl(gh<_i688.WorkOrderLocalDataSource>()),
     );
-    gh.factory<_i658.AddWorkOrder>(
+    gh.lazySingleton<_i658.AddWorkOrder>(
       () => _i658.AddWorkOrder(gh<_i590.WorkOrderRepository>()),
     );
-    gh.factory<_i623.GetAllWorkOrders>(
+    gh.lazySingleton<_i623.GetAllWorkOrders>(
       () => _i623.GetAllWorkOrders(gh<_i590.WorkOrderRepository>()),
     );
-    gh.factory<_i1034.DeleteWorkOrder>(
+    gh.lazySingleton<_i1034.DeleteWorkOrder>(
       () => _i1034.DeleteWorkOrder(gh<_i590.WorkOrderRepository>()),
     );
-    gh.factory<_i167.UpdateWorkOrder>(
+    gh.lazySingleton<_i167.UpdateWorkOrder>(
       () => _i167.UpdateWorkOrder(gh<_i590.WorkOrderRepository>()),
+    );
+    gh.lazySingleton<_i300.SearchWorkOrders>(
+      () => _i300.SearchWorkOrders(gh<_i590.WorkOrderRepository>()),
+    );
+    gh.lazySingleton<_i853.SortWorkOrders>(
+      () => _i853.SortWorkOrders(gh<_i590.WorkOrderRepository>()),
+    );
+    gh.lazySingleton<_i752.FilterWorkOrders>(
+      () => _i752.FilterWorkOrders(gh<_i590.WorkOrderRepository>()),
     );
     gh.factory<_i535.WorkOrderBloc>(
       () => _i535.WorkOrderBloc(
@@ -61,6 +78,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i623.GetAllWorkOrders>(),
         gh<_i167.UpdateWorkOrder>(),
         gh<_i1034.DeleteWorkOrder>(),
+        gh<_i300.SearchWorkOrders>(),
+        gh<_i853.SortWorkOrders>(),
+        gh<_i752.FilterWorkOrders>(),
       ),
     );
     return this;
