@@ -20,8 +20,12 @@ import 'package:work_order_app/features/work_order/domain/repositories/work_orde
     as _i590;
 import 'package:work_order_app/features/work_order/domain/use_cases/add_work_order.dart'
     as _i658;
+import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart'
+    as _i1034;
 import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work_orders.dart'
     as _i623;
+import 'package:work_order_app/features/work_order/domain/use_cases/update_work_order.dart'
+    as _i167;
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart'
     as _i535;
 
@@ -45,10 +49,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i623.GetAllWorkOrders>(
       () => _i623.GetAllWorkOrders(gh<_i590.WorkOrderRepository>()),
     );
+    gh.factory<_i1034.DeleteWorkOrder>(
+      () => _i1034.DeleteWorkOrder(gh<_i590.WorkOrderRepository>()),
+    );
+    gh.factory<_i167.UpdateWorkOrder>(
+      () => _i167.UpdateWorkOrder(gh<_i590.WorkOrderRepository>()),
+    );
     gh.factory<_i535.WorkOrderBloc>(
       () => _i535.WorkOrderBloc(
         gh<_i658.AddWorkOrder>(),
         gh<_i623.GetAllWorkOrders>(),
+        gh<_i167.UpdateWorkOrder>(),
+        gh<_i1034.DeleteWorkOrder>(),
       ),
     );
     return this;
