@@ -1,11 +1,13 @@
+import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
+@singleton
 class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._init();
   static Database? _database;
 
-  DatabaseHelper._init();
+  @factoryMethod
+  DatabaseHelper();
 
   Future<Database> get database async {
     if (_database != null) return _database!;

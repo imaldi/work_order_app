@@ -1,4 +1,5 @@
 import 'package:fpdart/fpdart.dart';
+import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/work_order_model.dart';
 import '../models/technician_model.dart';
@@ -13,6 +14,7 @@ abstract class WorkOrderLocalDataSource {
   Future<Either<String, List<TechnicianModel>>> getAllTechnicians();
 }
 
+@LazySingleton(as: WorkOrderLocalDataSource)
 class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
   final DatabaseHelper databaseHelper;
 
