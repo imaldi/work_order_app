@@ -31,14 +31,14 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
   final FilterWorkOrders filterWorkOrders;
 
   WorkOrderBloc(
-      this.addWorkOrder,
-      this.getAllWorkOrders,
-      this.updateWorkOrder,
-      this.deleteWorkOrder,
-      this.searchWorkOrders,
-      this.sortWorkOrders,
-      this.filterWorkOrders,
-      ) : super(const WorkOrderState.initial()) {
+    this.addWorkOrder,
+    this.getAllWorkOrders,
+    this.updateWorkOrder,
+    this.deleteWorkOrder,
+    this.searchWorkOrders,
+    this.sortWorkOrders,
+    this.filterWorkOrders,
+  ) : super(const WorkOrderState.initial()) {
     on<LoadWorkOrdersEvent>(_onLoadWorkOrders);
     on<AddWorkOrderEvent>(_onAddWorkOrder);
     on<UpdateWorkOrderEvent>(_onUpdateWorkOrder);
@@ -50,10 +50,12 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onLoadWorkOrders(LoadWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await getAllWorkOrders(NoParams()); // Kalau mau begini, di test nya harus sediakan stub nya
+    final result = await getAllWorkOrders(
+      NoParams(),
+    ); // Kalau mau begini, di test nya harus sediakan stub nya
     result.fold(
-          (error) => emit(WorkOrderState.error(error)),
-          (workOrders) => emit(WorkOrderState.loaded(workOrders)),
+      (error) => emit(WorkOrderState.error(error)),
+      (workOrders) => emit(WorkOrderState.loaded(workOrders)),
     );
   }
 
@@ -61,8 +63,8 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     emit(const WorkOrderState.loading());
     final result = await addWorkOrder(event.params);
     result.fold(
-          (error) => emit(WorkOrderState.error(error)),
-          (_) => add(const LoadWorkOrdersEvent()),
+      (error) => emit(WorkOrderState.error(error)),
+      (_) => add(const LoadWorkOrdersEvent()),
     );
   }
 
@@ -70,14 +72,8 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     emit(const WorkOrderState.loading());
     final result = await updateWorkOrder(event.params);
     result.fold(
-        (error) => emit(WorkOrderState.error(error)),
-        (_) async {
-          final workOrders = await getAllWorkOrders(NoParams());
-          workOrders.fold(
-              (error) => emit(WorkOrderState.error(error)),
-              (workOrders) => emit(WorkOrderState.loaded(workOrders))
-          );
-        }
+      (error) => emit(WorkOrderState.error(error)),
+      (_) => add(const LoadWorkOrdersEvent()),
     );
   }
 
@@ -85,23 +81,20 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     emit(const WorkOrderState.loading());
     final result = await deleteWorkOrder(event.params);
     result.fold(
-            (error) => emit(WorkOrderState.error(error)),
-            (_) async {
-          final workOrders = await getAllWorkOrders(NoParams());
-          workOrders.fold(
-                  (error) => emit(WorkOrderState.error(error)),
-                  (workOrders) => emit(WorkOrderState.loaded(workOrders))
-          );
-        }
+      (error) => emit(WorkOrderState.error(error)),
+      (_) => add(const LoadWorkOrdersEvent()),
     );
   }
 
-  Future<void> _onSearchWorkOrders(SearchWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
+  Future<void> _onSearchWorkOrders(
+    SearchWorkOrdersEvent event,
+    Emitter<WorkOrderState> emit,
+  ) async {
     emit(const WorkOrderState.loading());
     final result = await searchWorkOrders(event.params);
     result.fold(
-          (error) => emit(WorkOrderState.error(error)),
-          (workOrders) => emit(WorkOrderState.loaded(workOrders)),
+      (error) => emit(WorkOrderState.error(error)),
+      (workOrders) => emit(WorkOrderState.loaded(workOrders)),
     );
   }
 
@@ -109,17 +102,20 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     emit(const WorkOrderState.loading());
     final result = await sortWorkOrders(event.params);
     result.fold(
-          (error) => emit(WorkOrderState.error(error)),
-          (workOrders) => emit(WorkOrderState.loaded(workOrders)),
+      (error) => emit(WorkOrderState.error(error)),
+      (workOrders) => emit(WorkOrderState.loaded(workOrders)),
     );
   }
 
-  Future<void> _onFilterWorkOrders(FilterWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
+  Future<void> _onFilterWorkOrders(
+    FilterWorkOrdersEvent event,
+    Emitter<WorkOrderState> emit,
+  ) async {
     emit(const WorkOrderState.loading());
     final result = await filterWorkOrders(event.params);
     result.fold(
-          (error) => emit(WorkOrderState.error(error)),
-          (workOrders) => emit(WorkOrderState.loaded(workOrders)),
+      (error) => emit(WorkOrderState.error(error)),
+      (workOrders) => emit(WorkOrderState.loaded(workOrders)),
     );
   }
 }
