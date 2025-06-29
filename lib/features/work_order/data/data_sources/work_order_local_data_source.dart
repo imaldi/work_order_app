@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
+import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../../../core/params/params.dart';
 import '../models/work_order_model.dart';
 import '../models/technician_model.dart';
@@ -15,7 +16,7 @@ abstract class WorkOrderLocalDataSource {
   Future<Either<String, List<TechnicianModel>>> getAllTechnicians();
   Future<Either<String, List<WorkOrderModel>>> searchWorkOrders(String query);
   Future<Either<String, List<WorkOrderModel>>> filterWorkOrders(FilterParams params);
-  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(String sortBy, bool ascending);
+  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
 }
 
 @LazySingleton(as: WorkOrderLocalDataSource)
@@ -174,10 +175,11 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
     }
   }
 
-  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(String sortBy, bool ascending) async {
+  @override
+  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
     try {
       final db = await databaseHelper.database;
-      final orderBy = '$sortBy ${ascending ? 'ASC' : 'DESC'}';
+      final orderBy = '${sortBy.value} ${ascending ? 'ASC' : 'DESC'}';
       final maps = await db.query('work_orders', orderBy: orderBy);
       return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
     } catch (e) {

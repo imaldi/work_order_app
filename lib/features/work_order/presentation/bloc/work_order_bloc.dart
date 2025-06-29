@@ -5,6 +5,7 @@ import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_
 import 'package:work_order_app/features/work_order/domain/use_cases/filter_work_orders.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/sort_work_orders.dart';
 
+import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../../../core/params/params.dart';
 import '../../domain/entities/work_order_entity.dart';
 import '../../domain/use_cases/add_work_order.dart';

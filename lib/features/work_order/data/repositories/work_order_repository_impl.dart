@@ -1,6 +1,7 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:work_order_app/core/params/params.dart';
+import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../domain/entities/work_order_entity.dart';
 import '../../domain/entities/technician_entity.dart';
 import '../../domain/repositories/work_order_repository.dart';
@@ -59,7 +60,7 @@ class WorkOrderRepositoryImpl implements WorkOrderRepository {
   }
 
   @override
-  Future<Either<String, List<WorkOrderEntity>>> sortWorkOrders(String sortBy, bool ascending) async {
+  Future<Either<String, List<WorkOrderEntity>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
     final either = await localDataSource.sortWorkOrders(sortBy, ascending);
     return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
   }
