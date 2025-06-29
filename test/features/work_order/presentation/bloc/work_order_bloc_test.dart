@@ -189,45 +189,46 @@ void main() {
       },
     );
   });
-  // group('AddWorkOrderEvent', () {
-  //   final params = AddWorkOrdersParams(workOrderEntity: tWorkOrder);
-  //
-  //   blocTest<WorkOrderBloc, WorkOrderState>(
-  //     'emits [loading, loaded] when add succeeds',
-  //     setUp: () {
-  //       when(mockAddWorkOrder(params)).thenAnswer((_) async => Right(unit));
-  //       when(mockLoadWorkOrders(any)).thenAnswer((_) async => Right(tWorkOrders));
-  //     },
-  //     build: () => bloc,
-  //     act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
-  //     expect: () => [
-  //       const WorkOrderState.loading(),
-  //       WorkOrderState.loaded(tWorkOrders),
-  //     ],
-  //     verify: (_) {
-  //       verify(mockAddWorkOrder(params)).called(1);
-  //       verify(mockLoadWorkOrders(any)).called(1);
-  //     },
-  //   );
-  //
-  //
-  //   blocTest<WorkOrderBloc, WorkOrderState>(
-  //     'emits [loading, error] when add fails',
-  //     setUp: () {
-  //       when(mockAddWorkOrder(params)).thenAnswer((_) async => Left(tFailure));
-  //     },
-  //     build: () => bloc,
-  //     act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
-  //     expect: () => [
-  //       const WorkOrderState.loading(),
-  //       WorkOrderState.error(tFailure),
-  //     ],
-  //     verify: (_) {
-  //       verify(mockAddWorkOrder(params)).called(1);
-  //       verifyNever(mockLoadWorkOrders(any));
-  //     },
-  //   );
-  // });
+
+  group('DeleteWorkOrderEvent', () {
+    final params = DeleteWorkOrdersParams(id: tWorkOrder.id);
+
+    blocTest<WorkOrderBloc, WorkOrderState>(
+      'emits [loading, loaded] when delete succeeds',
+      setUp: () {
+        when(mockDeleteWorkOrder(params)).thenAnswer((_) async => Right(unit));
+        when(mockLoadWorkOrders(any)).thenAnswer((_) async => Right([]));
+      },
+      build: () => bloc,
+      act: (bloc) => bloc.add(DeleteWorkOrderEvent(params)),
+      expect: () => [
+        const WorkOrderState.loading(),
+        WorkOrderState.loaded([]),
+      ],
+      verify: (_) {
+        verify(mockDeleteWorkOrder(params)).called(1);
+        verify(mockLoadWorkOrders(any)).called(1);
+      },
+    );
+
+
+    blocTest<WorkOrderBloc, WorkOrderState>(
+      'emits [loading, error] when delete fails',
+      setUp: () {
+        when(mockDeleteWorkOrder(params)).thenAnswer((_) async => Left(tFailure));
+      },
+      build: () => bloc,
+      act: (bloc) => bloc.add(DeleteWorkOrderEvent(params)),
+      expect: () => [
+        const WorkOrderState.loading(),
+        WorkOrderState.error(tFailure),
+      ],
+      verify: (_) {
+        verify(mockDeleteWorkOrder(params)).called(1);
+        verifyNever(mockLoadWorkOrders(any));
+      },
+    );
+  });
 
   // Tambah test serupa untuk UpdateWorkOrderEvent, DeleteWorkOrderEvent, dll.
   group('SearchWorkOrdersEvent', () {
