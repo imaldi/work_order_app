@@ -46,3 +46,8 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /.fvmrc
+
+*.freezed.dart
+*.g.dart
+*.gr.dart
+*.mocks.dart
