@@ -14,6 +14,9 @@ void main() {
   late MockWorkOrderLocalDataSource mockDataSource;
 
   setUp(() {
+    // Menyediakan dummy value untuk Either<String, List<WorkOrderModel>>
+    provideDummy<Either<String, List<WorkOrderModel>>>(left('Dummy error'));
+
     mockDataSource = MockWorkOrderLocalDataSource();
     repository = WorkOrderRepositoryImpl(mockDataSource);
   });
@@ -37,7 +40,7 @@ void main() {
 
       final result = await repository.getAllWorkOrders();
 
-      // expect(result, isRight);
+      expect(result.isRight(), isTrue);
       result.fold(
             (error) => fail('Expected right, got left: $error'),
             (entities) {
