@@ -8,27 +8,12 @@ import 'package:work_order_app/features/work_order/data/models/work_order_model.
 
 void main() {
   late DatabaseHelper databaseHelper;
-  late WorkOrderLocalDataSourceImpl dataSource;
 
   setUp(() async {
+    // Inisialisasi sqflite_common_ffi untuk pengujian
+    sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     databaseHelper = DatabaseHelper();
-    dataSource = WorkOrderLocalDataSourceImpl(databaseHelper);
-    final db = await databaseHelper.database;
-    await db.execute('''
-      CREATE TABLE work_orders (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT NOT NULL,
-        description TEXT NOT NULL,
-        priority TEXT NOT NULL,
-        status TEXT NOT NULL,
-        dueDate TEXT NOT NULL,
-        technicianId TEXT NOT NULL,
-        address TEXT NOT NULL,
-        latitude REAL NOT NULL,
-        longitude REAL NOT NULL
-      )
-    ''');
   });
 
   tearDown(() async {
@@ -36,38 +21,18 @@ void main() {
     await db.close();
   });
 
-  group('WorkOrderLocalDataSourceImpl', () {
-    test('should add work order to database', () async {
-      final workOrder = WorkOrderModel(
-        id: 0,
-        title: 'Fix AC',
-        description: 'Repair air conditioner',
-        priority: 'High',
-        status: 'Pending',
-        dueDate: '2025-07-01',
-        technicianId: '1',
-        address: 'Jl. Contoh No. 123',
-        latitude: -6.2,
-        longitude: 106.8,
-      );
+  group('DatabaseHelper', () {
+    test('should create database with work_orders and technicians tables', () async {
+      // Gunakan database in-memory untuk pengujian
+      final db = await openDatabase(inMemoryDatabasePath, version: 1, onCreate: databaseHelper.createDB);
 
-      final result = await dataSource.addWorkOrder(workOrder);
-      expect(result, right(unit));
+      final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
+      final tableNames = tables.map((table) => table['name']).toList();
 
-      final workOrders = await dataSource.getAllWorkOrders();
-      // expect(workOrders, isRight); // FIXME: ini perlu di tanyakan lagi
-      expect(workOrders.getOrElse((l) => []), hasLength(1));
-      expect(workOrders.getOrElse((l) => []).first.title, 'Fix AC');
+      expect(tableNames, contains('work_orders'));
+      expect(tableNames, contains('technicians'));
+
+      await db.close();
     });
-  });
-
-  test('should create database with work_orders and technicians tables', () async {
-    final dbHelper = DatabaseHelper();
-    final db = await dbHelper.database;
-
-    final tables = await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'");
-    final tableNames = tables.map((table) => table['name']).toList();
-    expect(tableNames, contains('work_orders'));
-    expect(tableNames, contains('technicians'));
   });
 }

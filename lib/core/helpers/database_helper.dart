@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -22,11 +23,13 @@ class DatabaseHelper {
     return await openDatabase(
       path,
       version: 1,
-      onCreate: _createDB,
+      onCreate: createDB,
     );
   }
 
-  Future _createDB(Database db, int version) async {
+  /// Only exposed for testing
+  @visibleForTesting
+  Future createDB(Database db, int version) async {
     await db.execute('''
       CREATE TABLE work_orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
