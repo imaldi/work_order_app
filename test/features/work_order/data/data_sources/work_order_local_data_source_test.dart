@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:work_order_app/core/errors/failures.dart';
 import 'package:work_order_app/core/helpers/database_helper.dart';
 import 'package:work_order_app/features/work_order/data/data_sources/work_order_local_data_source.dart';
 import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
@@ -8,6 +9,7 @@ import 'package:work_order_app/features/work_order/data/models/work_order_model.
 void main() {
   late DatabaseHelper databaseHelper;
   late WorkOrderLocalDataSourceImpl dataSource;
+  // late MockDatabase mockDatabase;
 
   setUpAll(() async {
     sqfliteFfiInit();
@@ -82,8 +84,15 @@ void main() {
       final result = await dataSource.deleteWorkOrder(999);
 
       expect(result.isLeft(), isTrue);
-      expect(result, left('Work order not found'));
+      result.fold(
+            (failure) {
+          expect(failure, isA<DatabaseFailure>());
+          expect(failure.message, 'Work order not found');
+        },
+            (unit) => fail('Expected Left, but got Right'),
+      );
     });
+
     //   Pertimbangkan menambahkan test case untuk skenario lain, seperti:
     //
     //     Menambahkan WorkOrderModel dengan field null (jika diperbolehkan).
