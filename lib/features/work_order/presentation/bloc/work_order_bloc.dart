@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart';
@@ -48,7 +50,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onLoadWorkOrders(LoadWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await getAllWorkOrders();
+    final result = await getAllWorkOrders(NoParams()); // Kalau mau begini, di test nya harus sediakan stub nya
     result.fold(
           (error) => emit(WorkOrderState.error(error)),
           (workOrders) => emit(WorkOrderState.loaded(workOrders)),
@@ -60,13 +62,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     final result = await addWorkOrder(event.params);
     result.fold(
           (error) => emit(WorkOrderState.error(error)),
-          (_) async {
-        final workOrders = await getAllWorkOrders();
-        workOrders.fold(
-              (error) => emit(WorkOrderState.error(error)),
-              (workOrders) => emit(WorkOrderState.loaded(workOrders)),
-        );
-      },
+          (_) => add(const LoadWorkOrdersEvent()),
     );
   }
 
@@ -76,7 +72,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     result.fold(
         (error) => emit(WorkOrderState.error(error)),
         (_) async {
-          final workOrders = await getAllWorkOrders();
+          final workOrders = await getAllWorkOrders(NoParams());
           workOrders.fold(
               (error) => emit(WorkOrderState.error(error)),
               (workOrders) => emit(WorkOrderState.loaded(workOrders))
@@ -91,7 +87,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
     result.fold(
             (error) => emit(WorkOrderState.error(error)),
             (_) async {
-          final workOrders = await getAllWorkOrders();
+          final workOrders = await getAllWorkOrders(NoParams());
           workOrders.fold(
                   (error) => emit(WorkOrderState.error(error)),
                   (workOrders) => emit(WorkOrderState.loaded(workOrders))

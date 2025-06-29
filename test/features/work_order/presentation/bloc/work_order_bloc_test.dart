@@ -3,6 +3,8 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:work_order_app/core/errors/failures.dart';
+import 'package:work_order_app/core/params/params.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/add_work_order.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart';
@@ -26,7 +28,7 @@ import 'work_order_bloc_test.mocks.dart';
 void main() {
   late WorkOrderBloc bloc;
   late MockAddWorkOrder mockAddWorkOrder;
-  late MockGetAllWorkOrders mockGetAllWorkOrders;
+  late MockGetAllWorkOrders mockLoadWorkOrders;
   late MockUpdateWorkOrder mockUpdateWorkOrder;
   late MockDeleteWorkOrder mockDeleteWorkOrder;
   late MockSearchWorkOrders mockSearchWorkOrders;
@@ -34,8 +36,12 @@ void main() {
   late MockFilterWorkOrders mockFilterWorkOrders;
 
   setUp(() {
+    // Menyediakan dummy value untuk Either<String, List<WorkOrderModel>>
+    provideDummy<Either<Failure, List<WorkOrderEntity>>>(left(DatabaseFailure('Dummy error')));
+    provideDummy<Either<Failure, Unit>>(left(DatabaseFailure('Dummy error')));
+
     mockAddWorkOrder = MockAddWorkOrder();
-    mockGetAllWorkOrders = MockGetAllWorkOrders();
+    mockLoadWorkOrders = MockGetAllWorkOrders();
     mockUpdateWorkOrder = MockUpdateWorkOrder();
     mockDeleteWorkOrder = MockDeleteWorkOrder();
     mockSearchWorkOrders = MockSearchWorkOrders();
@@ -43,7 +49,7 @@ void main() {
     mockFilterWorkOrders = MockFilterWorkOrders();
     bloc = WorkOrderBloc(
         mockAddWorkOrder,
-        mockGetAllWorkOrders,
+        mockLoadWorkOrders,
         mockUpdateWorkOrder,
         mockDeleteWorkOrder,
         mockSearchWorkOrders,
@@ -52,11 +58,138 @@ void main() {
     );
   });
 
+  final tWorkOrder = WorkOrderEntity(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: '', address: '', latitude: 0.0, longitude: 0.0);
+  final tWorkOrders = [tWorkOrder];
+  final tFailure = DatabaseFailure('Operation failed');
+
+  group('WorkOrderBloc', () {
+    test('initial state should be WorkOrderInitial', () {
+      expect(bloc.state, WorkOrderInitial());
+    });
+
+    group('LoadWorkOrdersEvent', () {
+      test('should emit [WorkOrderLoaded] when load succeeds', () async {
+        // Arrange
+        // ini sediakan stub nya
+        when(mockLoadWorkOrders(any))
+            .thenAnswer((_) async => Right(tWorkOrders));
+        // Act
+        bloc.add(const LoadWorkOrdersEvent());
+        await untilCalled(mockLoadWorkOrders(any));
+        // Assert
+        expectLater(
+          bloc.stream,
+          emitsInOrder([
+            WorkOrderLoaded(tWorkOrders),
+          ]),
+        );
+        verify(mockLoadWorkOrders(any)).called(1);
+      });
+
+      test('should emit [WorkOrderError] when load fails', () async {
+        // Arrange
+        when(mockLoadWorkOrders(any))
+            .thenAnswer((_) async => Left(tFailure));
+        // Act
+        bloc.add(const LoadWorkOrdersEvent());
+        await untilCalled(mockLoadWorkOrders(any));
+        // Assert
+        expectLater(
+          bloc.stream,
+          emitsInOrder([
+            WorkOrderError(tFailure),
+          ]),
+        );
+        verify(mockLoadWorkOrders(any)).called(1);
+      });
+    });
+  });
+
+  group('AddWorkOrderEvent', () {
+    final params = AddWorkOrdersParams(workOrderEntity: tWorkOrder);
+
+    blocTest<WorkOrderBloc, WorkOrderState>(
+      'emits [loading, loaded] when add succeeds',
+      setUp: () {
+        when(mockAddWorkOrder(params)).thenAnswer((_) async => Right(unit));
+        when(mockLoadWorkOrders(any)).thenAnswer((_) async => Right(tWorkOrders));
+      },
+      build: () => bloc,
+      act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
+      expect: () => [
+        const WorkOrderState.loading(),
+        WorkOrderState.loaded(tWorkOrders),
+      ],
+      verify: (_) {
+        verify(mockAddWorkOrder(params)).called(1);
+        verify(mockLoadWorkOrders(any)).called(1);
+      },
+    );
+
+
+    blocTest<WorkOrderBloc, WorkOrderState>(
+      'emits [loading, error] when add fails',
+      setUp: () {
+        when(mockAddWorkOrder(params)).thenAnswer((_) async => Left(tFailure));
+      },
+      build: () => bloc,
+      act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
+      expect: () => [
+        const WorkOrderState.loading(),
+        WorkOrderState.error(tFailure),
+      ],
+      verify: (_) {
+        verify(mockAddWorkOrder(params)).called(1);
+        verifyNever(mockLoadWorkOrders(any));
+      },
+    );
+  });
+
+  // Tambah test serupa untuk UpdateWorkOrderEvent, DeleteWorkOrderEvent, dll.
+  group('SearchWorkOrdersEvent', () {
+    final params = SearchWorkOrdersParams(query: 'test');
+    test('should emit [WorkOrderLoaded] when search succeeds', () async {
+      // Arrange
+      when(mockSearchWorkOrders(params))
+          .thenAnswer((_) async => Right(tWorkOrders));
+      // Act
+      bloc.add(SearchWorkOrdersEvent(params));
+      await untilCalled(mockSearchWorkOrders(params));
+      // Assert
+      expectLater(
+        bloc.stream,
+        emitsInOrder([
+          WorkOrderLoaded(tWorkOrders),
+        ]),
+      );
+      verify(mockSearchWorkOrders(params)).called(1);
+    });
+
+    test('should emit [WorkOrderError] when search fails', () async {
+      // Arrange
+      when(mockSearchWorkOrders(params))
+          .thenAnswer((_) async => Left(tFailure));
+      // Act
+      bloc.add(SearchWorkOrdersEvent(params));
+      await untilCalled(mockSearchWorkOrders(params));
+      // Assert
+      expectLater(
+        bloc.stream,
+        emitsInOrder([
+          WorkOrderError(tFailure),
+        ]),
+      );
+      verify(mockSearchWorkOrders(params)).called(1);
+    });
+  });
+
+
+  /// ini tes awal
   blocTest<WorkOrderBloc, WorkOrderState>(
     'emits [loading, loaded] when LoadWorkOrdersEvent is added and getAllWorkOrders succeeds',
     setUp: () {
       provideDummy<Either<String, List<WorkOrderEntity>>>(left('Dummy error'));
-      when(mockGetAllWorkOrders()).thenAnswer((_) async => right([
+      when(mockLoadWorkOrders(any)).thenAnswer((_) async => right([
         WorkOrderEntity(
           id: 1,
           title: 'Fix AC',
