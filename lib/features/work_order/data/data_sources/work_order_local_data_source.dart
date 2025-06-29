@@ -2,21 +2,22 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
 import '../models/work_order_model.dart';
 import '../models/technician_model.dart';
 import '../../../../core/helpers/database_helper.dart';
 
 abstract class WorkOrderLocalDataSource {
-  Future<Either<String, Unit>> addWorkOrder(WorkOrderModel workOrder);
-  Future<Either<String, Unit>> updateWorkOrder(WorkOrderModel workOrder);
-  Future<Either<String, Unit>> deleteWorkOrder(int id);
-  Future<Either<String, List<WorkOrderModel>>> getAllWorkOrders();
-  Future<Either<String, Unit>> addTechnician(TechnicianModel technician);
-  Future<Either<String, List<TechnicianModel>>> getAllTechnicians();
-  Future<Either<String, List<WorkOrderModel>>> searchWorkOrders(String query);
-  Future<Either<String, List<WorkOrderModel>>> filterWorkOrders(FilterParams params);
-  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
+  Future<Either<Failure, Unit>> addWorkOrder(WorkOrderModel workOrder);
+  Future<Either<Failure, Unit>> updateWorkOrder(WorkOrderModel workOrder);
+  Future<Either<Failure, Unit>> deleteWorkOrder(int id);
+  Future<Either<Failure, List<WorkOrderModel>>> getAllWorkOrders();
+  Future<Either<Failure, Unit>> addTechnician(TechnicianModel technician);
+  Future<Either<Failure, List<TechnicianModel>>> getAllTechnicians();
+  Future<Either<Failure, List<WorkOrderModel>>> searchWorkOrders(String query);
+  Future<Either<Failure, List<WorkOrderModel>>> filterWorkOrders(FilterWorkOrderParams params);
+  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
 }
 
 @LazySingleton(as: WorkOrderLocalDataSource)
@@ -26,7 +27,7 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
   WorkOrderLocalDataSourceImpl(this.databaseHelper);
 
   @override
-  Future<Either<String, Unit>> addWorkOrder(WorkOrderModel workOrder) async {
+  Future<Either<Failure, Unit>> addWorkOrder(WorkOrderModel workOrder) async {
     try {
       final db = await databaseHelper.database;
       await db.insert('work_orders', {
@@ -43,12 +44,12 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       });
       return right(unit);
     } catch (e) {
-      return left('Failed to add work order: $e');
+      return left(DatabaseFailure('Failed to add work order: $e'));
     }
   }
 
   @override
-  Future<Either<String, Unit>> updateWorkOrder(WorkOrderModel workOrder) async {
+  Future<Either<Failure, Unit>> updateWorkOrder(WorkOrderModel workOrder) async {
     try {
       final db = await databaseHelper.database;
       await db.update(
@@ -69,12 +70,12 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       );
       return right(unit);
     } catch (e) {
-      return left('Failed to update work order: $e');
+      return left(DatabaseFailure('Failed to update work order: $e'));
     }
   }
 
   @override
-  Future<Either<String, Unit>> deleteWorkOrder(int id) async {
+  Future<Either<Failure, Unit>> deleteWorkOrder(int id) async {
     try {
       final db = await databaseHelper.database;
       final result = await db.delete(
@@ -83,28 +84,28 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
         whereArgs: [id],
       );
       if (result == 0) {
-        return left('Work order not found');
+        return left(DatabaseFailure('Work order not found'));
       }
       return right(unit);
     } catch (e) {
-      return left('Failed to delete work order: $e');
+      return left(DatabaseFailure('Failed to delete work order: $e'));
     }
   }
 
   @override
-  Future<Either<String, List<WorkOrderModel>>> getAllWorkOrders() async {
+  Future<Either<Failure, List<WorkOrderModel>>> getAllWorkOrders() async {
     try {
       final db = await databaseHelper.database;
       final maps = await db.query('work_orders');
       final workOrders = maps.map((map) => WorkOrderModel.fromJson(map)).toList();
       return right(workOrders);
     } catch (e) {
-      return left('Failed to get work orders: $e');
+      return left(DatabaseFailure('Failed to get work orders: $e'));
     }
   }
 
   @override
-  Future<Either<String, Unit>> addTechnician(TechnicianModel technician) async {
+  Future<Either<Failure, Unit>> addTechnician(TechnicianModel technician) async {
     try {
       final db = await databaseHelper.database;
       await db.insert('technicians', {
@@ -114,24 +115,24 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       });
       return right(unit);
     } catch (e) {
-      return left('Failed to add technician: $e');
+      return left(DatabaseFailure('Failed to add technician: $e'));
     }
   }
 
   @override
-  Future<Either<String, List<TechnicianModel>>> getAllTechnicians() async {
+  Future<Either<Failure, List<TechnicianModel>>> getAllTechnicians() async {
     try {
       final db = await databaseHelper.database;
       final maps = await db.query('technicians');
       final technicians = maps.map((map) => TechnicianModel.fromJson(map)).toList();
       return right(technicians);
     } catch (e) {
-      return left('Failed to get technicians: $e');
+      return left(DatabaseFailure('Failed to get technicians: $e'));
     }
   }
 
   @override
-  Future<Either<String, List<WorkOrderModel>>> searchWorkOrders(String query) async {
+  Future<Either<Failure, List<WorkOrderModel>>> searchWorkOrders(String query) async {
     try {
       final db = await databaseHelper.database;
       final maps = await db.query(
@@ -141,12 +142,12 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       );
       return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
     } catch (e) {
-      return left('Failed to search work orders: $e');
+      return left(DatabaseFailure('Failed to search work orders: $e'));
     }
   }
 
   @override
-  Future<Either<String, List<WorkOrderModel>>> filterWorkOrders(FilterParams params) async {
+  Future<Either<Failure, List<WorkOrderModel>>> filterWorkOrders(FilterWorkOrderParams params) async {
     try {
       final db = await databaseHelper.database;
       final conditions = <String>[];
@@ -171,19 +172,19 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       );
       return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
     } catch (e) {
-      return left('Failed to filter work orders: $e');
+      return left(DatabaseFailure('Failed to filter work orders: $e'));
     }
   }
 
   @override
-  Future<Either<String, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
+  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
     try {
       final db = await databaseHelper.database;
       final orderBy = '${sortBy.value} ${ascending ? 'ASC' : 'DESC'}';
       final maps = await db.query('work_orders', orderBy: orderBy);
       return right(maps.map((map) => WorkOrderModel.fromJson(map)).toList());
     } catch (e) {
-      return left('Failed to sort work orders: $e');
+      return left(DatabaseFailure('Failed to sort work orders: $e'));
     }
   }
 }

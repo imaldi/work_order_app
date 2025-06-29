@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:work_order_app/core/errors/failures.dart';
 import 'package:work_order_app/features/work_order/data/data_sources/work_order_local_data_source.dart';
 import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
 import 'package:work_order_app/features/work_order/data/repositories/work_order_repository_impl.dart';
@@ -15,7 +16,7 @@ void main() {
 
   setUp(() {
     // Menyediakan dummy value untuk Either<String, List<WorkOrderModel>>
-    provideDummy<Either<String, List<WorkOrderModel>>>(left('Dummy error'));
+    provideDummy<Either<Failure, List<WorkOrderModel>>>(left(DatabaseFailure('Dummy error')));
 
     mockDataSource = MockWorkOrderLocalDataSource();
     repository = WorkOrderRepositoryImpl(mockDataSource);
@@ -53,11 +54,11 @@ void main() {
     });
 
     test('should return error when data source fails', () async {
-      when(mockDataSource.getAllWorkOrders()).thenAnswer((_) async => left('Database error'));
+      when(mockDataSource.getAllWorkOrders()).thenAnswer((_) async => left(DatabaseFailure('Database error')));
 
       final result = await repository.getAllWorkOrders();
 
-      expect(result, left('Database error'));
+      expect(result, left(DatabaseFailure('Database error')));
       verify(mockDataSource.getAllWorkOrders()).called(1);
     });
   });

@@ -6,6 +6,7 @@ import 'package:work_order_app/features/work_order/domain/use_cases/filter_work_
 import 'package:work_order_app/features/work_order/domain/use_cases/sort_work_orders.dart';
 
 import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
+import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
 import '../../domain/entities/work_order_entity.dart';
 import '../../domain/use_cases/add_work_order.dart';
@@ -110,7 +111,7 @@ class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
 
   Future<void> _onSortWorkOrders(SortWorkOrdersEvent event, Emitter<WorkOrderState> emit) async {
     emit(const WorkOrderState.loading());
-    final result = await sortWorkOrders(event.sortBy,event.ascending);
+    final result = await sortWorkOrders(event.params);
     result.fold(
           (error) => emit(WorkOrderState.error(error)),
           (workOrders) => emit(WorkOrderState.loaded(workOrders)),
