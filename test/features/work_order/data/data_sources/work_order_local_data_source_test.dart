@@ -36,7 +36,7 @@ void main() {
       longitude: 106.8,
     );
 
-    testWidgets('should add work order to database', (WidgetTester tester) async {
+    test('should add work order to database', () async {
       final result = await dataSource.addWorkOrder(workOrder);
       expect(result.isRight(), isTrue);
       expect(result, right(unit));
@@ -47,7 +47,7 @@ void main() {
       expect(workOrdersResult.getOrElse((l) => []).first.title, 'Fix AC');
     });
 
-    testWidgets('should edit work order in database', (WidgetTester tester) async {
+    test('should edit work order in database', () async {
       await dataSource.addWorkOrder(workOrder);
       final updatedWorkOrder = workOrder.copyWith(
         title: 'Fix AC Updated',
@@ -65,7 +65,7 @@ void main() {
       expect(workOrdersResult.getOrElse((l) => []).first.title, 'Fix AC Updated');
     });
 
-    testWidgets('should delete work order from database', (WidgetTester tester) async {
+    test('should delete work order from database', () async {
       await dataSource.addWorkOrder(workOrder);
 
       final result = await dataSource.deleteWorkOrder(workOrder.id);
@@ -78,11 +78,24 @@ void main() {
       expect(workOrdersResult.getOrElse((l) => []), hasLength(0));
     });
 
-    testWidgets('should return error when work order not found for deletion', (WidgetTester tester) async {
+    test('should return error when work order not found for deletion', () async {
       final result = await dataSource.deleteWorkOrder(999);
 
       expect(result.isLeft(), isTrue);
       expect(result, left('Work order not found'));
     });
+    //   Pertimbangkan menambahkan test case untuk skenario lain, seperti:
+    //
+    //     Menambahkan WorkOrderModel dengan field null (jika diperbolehkan).
+    //     Mengedit WorkOrderModel yang tidak ada (harus return Left dengan pesan error).
+    //     Mengambil getAllWorkOrders saat database kosong (harus return Right dengan list kosong).
+
+    //     contoh edge cases
+    test('should return empty list when no work orders exist', () async {
+      final workOrdersResult = await dataSource.getAllWorkOrders();
+      expect(workOrdersResult.isRight(), isTrue);
+      expect(workOrdersResult.getOrElse((l) => []), isEmpty);
+    });
   });
+
 }
