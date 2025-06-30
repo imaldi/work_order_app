@@ -29,12 +29,10 @@ class TechnicianBloc extends Bloc<TechnicianEvent, TechnicianState> {
       this.updateTechnician,
       this.deleteTechnician
       ) : super(const TechnicianState.initial()) {
-    on<TechnicianEvent>((event, emit) {
       on<LoadTechniciansEvent>(_onLoadTechnicians);
       on<AddTechnicianEvent>(_onAddTechnician);
       on<UpdateTechnicianEvent>(_onUpdateTechnician);
       on<DeleteTechnicianEvent>(_onDeleteTechnician);
-    });
   }
 
   FutureOr<void> _onLoadTechnicians(LoadTechniciansEvent event, Emitter<TechnicianState> emit) async {
