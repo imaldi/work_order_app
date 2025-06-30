@@ -6,7 +6,6 @@ import 'package:work_order_app/core/consts_and_enums/enums/sort_by_enum.dart';
 import 'package:work_order_app/core/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
-import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work_orders.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
