@@ -4,7 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:work_order_app/core/errors/failures.dart';
-import 'package:work_order_app/core/params/params.dart';
+import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/add_work_order.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart';

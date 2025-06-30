@@ -1,15 +1,13 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
-import 'package:fpdart/fpdart.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/delete_work_order.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/filter_work_orders.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/sort_work_orders.dart';
 
-import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
+import '../../../../core/params/work_order_params.dart';
 import '../../domain/entities/work_order_entity.dart';
 import '../../domain/use_cases/add_work_order.dart';
 import '../../domain/use_cases/get_all_work_orders.dart';

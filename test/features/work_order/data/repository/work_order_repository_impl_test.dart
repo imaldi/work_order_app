@@ -3,10 +3,10 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:work_order_app/core/errors/failures.dart';
-import 'package:work_order_app/core/params/params.dart';
+import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/work_order/data/data_sources/work_order_local_data_source.dart';
-import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
-import 'package:work_order_app/features/work_order/data/repositories/work_order_repository_impl.dart';
+import 'package:work_order_app/features/work_order/data/model/work_order_model.dart';
+import 'package:work_order_app/features/work_order/data/repository/work_order_repository_impl.dart';
 import 'work_order_repository_impl_test.mocks.dart';
 
 @GenerateMocks([WorkOrderLocalDataSource])

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
+import 'package:work_order_app/features/work_order/data/model/work_order_model.dart';
 
 void main() {
   group('WorkOrderModel', () {

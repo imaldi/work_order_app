@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/technician_entity.dart';
+import '../../domain/entity/technician_entity.dart';
 
 part 'technician_model.freezed.dart';
 part 'technician_model.g.dart';

@@ -4,7 +4,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:work_order_app/core/errors/failures.dart';
 import 'package:work_order_app/core/helpers/database_helper.dart';
 import 'package:work_order_app/features/work_order/data/data_sources/work_order_local_data_source.dart';
-import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
+import 'package:work_order_app/features/work_order/data/model/work_order_model.dart';
 
 void main() {
   late DatabaseHelper databaseHelper;

@@ -1,11 +1,9 @@
 import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
-import 'package:sqflite/sqflite.dart';
 import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../../../core/errors/failures.dart';
-import '../../../../core/params/params.dart';
-import '../models/work_order_model.dart';
-import '../models/technician_model.dart';
+import '../../../../core/params/work_order_params.dart';
+import '../model/work_order_model.dart';
 import '../../../../core/helpers/database_helper.dart';
 
 abstract class WorkOrderLocalDataSource {
@@ -13,8 +11,6 @@ abstract class WorkOrderLocalDataSource {
   Future<Either<Failure, Unit>> updateWorkOrder(WorkOrderModel workOrder);
   Future<Either<Failure, Unit>> deleteWorkOrder(int id);
   Future<Either<Failure, List<WorkOrderModel>>> getAllWorkOrders();
-  Future<Either<Failure, Unit>> addTechnician(TechnicianModel technician);
-  Future<Either<Failure, List<TechnicianModel>>> getAllTechnicians();
   Future<Either<Failure, List<WorkOrderModel>>> searchWorkOrders(String query);
   Future<Either<Failure, List<WorkOrderModel>>> filterWorkOrders(FilterWorkOrderParams params);
   Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
@@ -101,33 +97,6 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
       return right(workOrders);
     } catch (e) {
       return left(DatabaseFailure('Failed to get work orders: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, Unit>> addTechnician(TechnicianModel technician) async {
-    try {
-      final db = await databaseHelper.database;
-      await db.insert('technicians', {
-        'id': technician.id == 0 ? null : technician.id, // 0 untuk auto-increment
-        'name': technician.name,
-        'contact': technician.contact,
-      });
-      return right(unit);
-    } catch (e) {
-      return left(DatabaseFailure('Failed to add technician: $e'));
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<TechnicianModel>>> getAllTechnicians() async {
-    try {
-      final db = await databaseHelper.database;
-      final maps = await db.query('technicians');
-      final technicians = maps.map((map) => TechnicianModel.fromJson(map)).toList();
-      return right(technicians);
-    } catch (e) {
-      return left(DatabaseFailure('Failed to get technicians: $e'));
     }
   }
 
