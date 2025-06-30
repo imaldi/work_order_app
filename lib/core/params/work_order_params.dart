@@ -72,14 +72,14 @@ class FilterWorkOrderParams extends Equatable {
 
 class SortWorkOrdersParams extends Equatable{
   final WorkOrderSortField sortBy;
-  final bool ascending;
+  final bool isAscending;
 
-  const SortWorkOrdersParams(this.sortBy, this.ascending);
+  const SortWorkOrdersParams({required this.sortBy, required this.isAscending});
 
   @override
   // TODO: implement props
   List<Object?> get props => [
     sortBy,
-    ascending
+    isAscending
   ];
 }

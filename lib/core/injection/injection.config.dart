@@ -74,8 +74,8 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i965.TechnicianRepositoryImpl(gh<_i349.TechnicianLocalDataSource>()),
     );
-    gh.lazySingleton<_i688.DeleteTechnician>(
-      () => _i688.DeleteTechnician(gh<_i1026.TechnicianRepository>()),
+    gh.lazySingleton<_i139.UpdateTechnician>(
+      () => _i139.UpdateTechnician(gh<_i1026.TechnicianRepository>()),
     );
     gh.lazySingleton<_i504.AddTechnician>(
       () => _i504.AddTechnician(gh<_i1026.TechnicianRepository>()),
@@ -83,20 +83,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i486.GetAllTechnicians>(
       () => _i486.GetAllTechnicians(gh<_i1026.TechnicianRepository>()),
     );
-    gh.lazySingleton<_i139.UpdateTechnician>(
-      () => _i139.UpdateTechnician(gh<_i1026.TechnicianRepository>()),
+    gh.lazySingleton<_i688.DeleteTechnician>(
+      () => _i688.DeleteTechnician(gh<_i1026.TechnicianRepository>()),
     );
-    gh.lazySingleton<_i658.AddWorkOrder>(
-      () => _i658.AddWorkOrder(gh<_i476.WorkOrderRepository>()),
-    );
-    gh.lazySingleton<_i623.GetAllWorkOrders>(
-      () => _i623.GetAllWorkOrders(gh<_i476.WorkOrderRepository>()),
+    gh.lazySingleton<_i752.FilterWorkOrders>(
+      () => _i752.FilterWorkOrders(gh<_i476.WorkOrderRepository>()),
     );
     gh.lazySingleton<_i1034.DeleteWorkOrder>(
       () => _i1034.DeleteWorkOrder(gh<_i476.WorkOrderRepository>()),
-    );
-    gh.lazySingleton<_i167.UpdateWorkOrder>(
-      () => _i167.UpdateWorkOrder(gh<_i476.WorkOrderRepository>()),
     );
     gh.lazySingleton<_i300.SearchWorkOrders>(
       () => _i300.SearchWorkOrders(gh<_i476.WorkOrderRepository>()),
@@ -104,8 +98,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i853.SortWorkOrders>(
       () => _i853.SortWorkOrders(gh<_i476.WorkOrderRepository>()),
     );
-    gh.lazySingleton<_i752.FilterWorkOrders>(
-      () => _i752.FilterWorkOrders(gh<_i476.WorkOrderRepository>()),
+    gh.lazySingleton<_i623.GetAllWorkOrders>(
+      () => _i623.GetAllWorkOrders(gh<_i476.WorkOrderRepository>()),
+    );
+    gh.lazySingleton<_i658.AddWorkOrder>(
+      () => _i658.AddWorkOrder(gh<_i476.WorkOrderRepository>()),
+    );
+    gh.lazySingleton<_i167.UpdateWorkOrder>(
+      () => _i167.UpdateWorkOrder(gh<_i476.WorkOrderRepository>()),
     );
     gh.factory<_i535.WorkOrderBloc>(
       () => _i535.WorkOrderBloc(

@@ -50,7 +50,7 @@ void main() {
 
   group('TechnicianBloc', () {
     test('initial state should be TechnicianInitial', () {
-      expect(bloc.state, TechnicianInitial());
+      expect(bloc.state, TechnicianState.initial());
     });
 
     group('LoadTechniciansEvent', () {
@@ -66,7 +66,7 @@ void main() {
         expectLater(
           bloc.stream,
           emitsInOrder([
-            TechnicianLoaded(tTechnicians),
+            TechnicianState.loaded(tTechnicians),
           ]),
         );
         verify(mockLoadTechnicians(any)).called(1);
@@ -83,7 +83,7 @@ void main() {
         expectLater(
           bloc.stream,
           emitsInOrder([
-            TechnicianError(tFailure),
+            TechnicianState.error(tFailure),
           ]),
         );
         verify(mockLoadTechnicians(any)).called(1);

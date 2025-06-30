@@ -15,6 +15,6 @@ class SortWorkOrders implements UseCase<List<WorkOrderEntity>, SortWorkOrdersPar
 
   @override
   Future<Either<Failure, List<WorkOrderEntity>>> call(SortWorkOrdersParams params) async {
-    return await repository.sortWorkOrders(params.sortBy, params.ascending);
+    return await repository.sortWorkOrders(params.sortBy, params.isAscending);
   }
 }
