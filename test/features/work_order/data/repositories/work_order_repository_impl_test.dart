@@ -7,7 +7,6 @@ import 'package:work_order_app/core/params/params.dart';
 import 'package:work_order_app/features/work_order/data/data_sources/work_order_local_data_source.dart';
 import 'package:work_order_app/features/work_order/data/models/work_order_model.dart';
 import 'package:work_order_app/features/work_order/data/repositories/work_order_repository_impl.dart';
-import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'work_order_repository_impl_test.mocks.dart';
 
 @GenerateMocks([WorkOrderLocalDataSource])
@@ -24,9 +23,7 @@ void main() {
   });
 
   final tWorkOrderModel = WorkOrderModel(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: '', address: '', latitude: 0.0, longitude: 0.0);
-  final tWorkOrderEntity = tWorkOrderModel.toEntity();
   final tWorkOrdersModel = [tWorkOrderModel];
-  final tWorkOrdersEntity = [tWorkOrderEntity];
   final tFailure = DatabaseFailure('Operation failed');
 
   group('WorkOrderRepositoryImpl', () {
@@ -40,7 +37,7 @@ void main() {
         // Assert
         result.fold(
               (failure) {
-              fail('Expected Left, but got Right');
+              fail('Expected Right, but got Left');
           },
               (list) {
                 expect(result, Right(list));
@@ -73,9 +70,7 @@ void main() {
         // expect(result, Right(tWorkOrdersEntity));
         result.fold(
               (failure) {
-            // expect(failure, isA<DatabaseFailure>());
-            // expect(failure.message, 'Work order not found');
-            fail('Expected Left, but got Right');
+            fail('Expected Right, but got Left');
           },
               (list) {
             expect(result, Right(list));
