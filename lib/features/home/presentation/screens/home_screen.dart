@@ -3,6 +3,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_app/core/consts_and_enums/enums/sort_by_enum.dart';
+import 'package:work_order_app/core/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work_orders.dart';
@@ -10,7 +11,6 @@ import 'package:work_order_app/features/work_order/domain/use_cases/get_all_work
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order/presentation/bloc/work_order_bloc.dart';
-
 
 @RoutePage()
 class HomeScreen extends StatefulWidget {
@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   WorkOrderStatus? _filterStatus;
   WorkOrderPriority? _filterPriority;
   DateTimeRange? _filterDateRange;
-  String? _filterAssignedTechnician;
+  TechnicianEntity? _filterAssignedTechnician;
   String _sortBy = 'title'; // title, priority, dueDate
   bool _isAsc = true;
 
@@ -56,9 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 });
                 context.read<WorkOrderBloc>().add(
                   SearchWorkOrdersEvent(
-                    SearchWorkOrdersParams(
-                      query: _searchQuery,
-                    ),
+                    SearchWorkOrdersParams(query: _searchQuery),
                     // searchQuery: _searchQuery,
                     // status: _filterStatus,
                     // priority: _filterPriority,
@@ -83,12 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: DropdownButton<String>(
                     value: _sortBy,
                     hint: const Text('Sort By'),
-                    items: ['title', 'priority', 'dueDate']
-                        .map((e) => DropdownMenuItem(
-                      value: e,
-                      child: Text(e.capitalize()),
-                    ))
-                        .toList(),
+                    items: [
+                      'title',
+                      'priority',
+                      'dueDate',
+                    ].map((e) => DropdownMenuItem(value: e, child: Text(e.capitalize()))).toList(),
                     onChanged: (value) {
                       setState(() {
                         _sortBy = value!;
@@ -97,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         SortWorkOrdersEvent(
                           SortWorkOrdersParams(
                             sortBy: WorkOrderSortField.priority,
-                            isAscending: _isAsc
+                            isAscending: _isAsc,
                           ),
                           // searchQuery: _searchQuery,
                           // status: _filterStatus,
@@ -117,14 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     value: _isAsc,
                     hint: const Text('Order'),
                     items: [
-                      const DropdownMenuItem(
-                        value: true,
-                        child: Text('Asc'),
-                      ),
-                      const DropdownMenuItem(
-                        value: false,
-                        child: Text('Desc'),
-                      ),
+                      const DropdownMenuItem(value: true, child: Text('Asc')),
+                      const DropdownMenuItem(value: false, child: Text('Desc')),
                     ],
                     onChanged: (value) {
                       setState(() {
@@ -154,6 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: BlocBuilder<WorkOrderBloc, WorkOrderState>(
               builder: (context, state) {
+                // Note ini masih belum pakai map dan when
                 if (state is WorkOrderLoading) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is WorkOrderLoaded) {
@@ -163,9 +155,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       final wo = state.workOrders[index];
                       return ListTile(
                         title: Text(wo.title),
-                        subtitle: Text(
-                          'Status: ${wo.status} | Priority: ${wo.priority}',
-                        ),
+                        subtitle: Text('Status: ${wo.status} | Priority: ${wo.priority}'),
                         onTap: () {
                           // TODO hidupkan setelah generate route nya
                           // context.router.push(EditWorkOrderRoute(workOrder: wo));
@@ -202,147 +192,137 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-            DropdownButton<WorkOrderStatus?>(
-            value: _filterStatus,
-              hint: const Text('Status'),
-              items: [
-                const DropdownMenuItem<WorkOrderStatus?>(
-                  value: null,
-                  child: Text('Semua Status'),
+                DropdownButton<WorkOrderStatus?>(
+                  value: _filterStatus,
+                  hint: const Text('Status'),
+                  items: [
+                    const DropdownMenuItem<WorkOrderStatus?>(
+                      value: null,
+                      child: Text('Semua Status'),
+                    ),
+                    ...WorkOrderStatus.values
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
+                        .toList(),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _filterStatus = value;
+                    });
+                  },
                 ),
-                ...WorkOrderStatus.values
-                    .map((e) => DropdownMenuItem(
-                  value: e,
-                  child: Text(e.name.capitalize()),
-                ))
-                    .toList(),
+                DropdownButton<WorkOrderPriority?>(
+                  value: _filterPriority,
+                  hint: const Text('Priority'),
+                  items: [
+                    const DropdownMenuItem<WorkOrderPriority?>(
+                      value: null,
+                      child: Text('Semua Priority'),
+                    ),
+                    ...WorkOrderPriority.values
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
+                        .toList(),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      _filterPriority = value;
+                    });
+                  },
+                ),
+                TextButton(
+                  onPressed: () async {
+                    final dateRange = await showDateRangePicker(
+                      context: context,
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                      initialDateRange: _filterDateRange,
+                    );
+                    setState(() {
+                      _filterDateRange = dateRange;
+                    });
+                  },
+                  child: Text(
+                    _filterDateRange == null
+                        ? 'Pilih Rentang Tanggal'
+                        : 'Tanggal: ${_filterDateRange!.start.toString().substring(0, 10)} - ${_filterDateRange!.end.toString().substring(0, 10)}',
+                  ),
+                ),
+                // Asumsi TechnicianBloc menyediakan daftar technician
+                BlocBuilder<TechnicianBloc, TechnicianState>(
+                  builder: (context, state) {
+                    return state.whenOrNull(
+                          loading: () => Center(child: CircularProgressIndicator()),
+                          loaded: (technicianList) {
+                            return DropdownButton<TechnicianEntity>(
+                                  value: _filterAssignedTechnician,
+                                  hint: const Text('Teknisi'),
+                                  items: [
+                                    const DropdownMenuItem<TechnicianEntity>(
+                                      value: null,
+                                      child: Text('Semua Teknisi'),
+                                    ),
+                                    ...technicianList.map(
+                                      (e) => DropdownMenuItem<TechnicianEntity>(
+                                        value: e,
+                                        child: Text(e.name),
+                                      ),
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _filterAssignedTechnician = value;
+                                    });
+                                  },
+                                )
+                                as Widget;
+                          },
+                        ) ??
+                        const SizedBox.shrink();
+                  },
+                ),
               ],
-              onChanged: (value) {
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
                 setState(() {
-                  _filterStatus = value;
+                  _filterStatus = null;
+                  _filterPriority = null;
+                  _filterDateRange = null;
+                  _filterAssignedTechnician = null;
                 });
+                context.read<WorkOrderBloc>().add(
+                  LoadWorkOrdersEvent(
+                    // searchQuery: _searchQuery,
+                    // sortBy: _sortBy,
+                    // isAsc: _isAsc,
+                  ),
+                );
+                Navigator.pop(context);
               },
+              child: const Text('Reset'),
             ),
-          DropdownButton<WorkOrderPriority?>(
-            value: _filterPriority,
-            hint: const Text('Priority'),
-            items: [
-              const DropdownMenuItem<WorkOrderPriority?>(
-                value: null,
-                child: Text('Semua Priority'),
-              ),
-              ...WorkOrderPriority.values
-                  .map((e) => DropdownMenuItem(
-                value: e,
-                child: Text(e.name.capitalize()),
-              ))
-                  .toList(),
-            ],
-            onChanged: (value) {
-              setState(() {
-                _filterPriority = value;
-              });
-            },
-          ),
-          TextButton(
-            onPressed: () async {
-              final dateRange = await showDateRangePicker(
-                context: context,
-                firstDate: DateTime(2000),
-                lastDate: DateTime(2100),
-                initialDateRange: _filterDateRange,
-              );
-              setState(() {
-                _filterDateRange = dateRange;
-              });
-            },
-            child: Text(
-              _filterDateRange == null
-                  ? 'Pilih Rentang Tanggal'
-                  : 'Tanggal: ${_filterDateRange!.start.toString().substring(0, 10)} - ${_filterDateRange!.end.toString().substring(0, 10)}',
+            TextButton(
+              onPressed: () {
+                context.read<WorkOrderBloc>().add(
+                  LoadWorkOrdersEvent(
+                    // searchQuery: _searchQuery,
+                    // status: _filterStatus,
+                    // priority: _filterPriority,
+                    // dateRange: _filterDateRange,
+                    // assignedTechnician: _filterAssignedTechnician,
+                    // sortBy: _sortBy,
+                    // isAsc: _isAsc,
+                  ),
+                );
+                Navigator.pop(context);
+              },
+              child: const Text('Terapkan'),
             ),
-          ),
-          // Asumsi TechnicianBloc menyediakan daftar technician
-          // BlocBuilder<TechnicianBloc, TechnicianState>(
-          //   builder: (context, state) {
-          //
-          //     var technicianList = state.whenOrNull();
-          //     if (state is TechnicianLoaded) {
-          //       return DropdownButton<TechnicianEntity>(
-          //         value: _filterAssignedTechnician,
-          //         hint: const Text('Teknisi'),
-          //         items: [
-          //           const DropdownMenuItem<int>(
-          //             value: null,
-          //             child: Text('Semua Teknisi'),
-          //           ),
-          //           ...state.technicians
-          //               .map((e) => DropdownMenuItem(
-          //             value: e.id,
-          //             child: Text(e.name),
-          //           ))
-          //               .toList(),
-          //         ],
-          //         onChanged: (value) {
-          //           setState(() {
-          //             _filterAssignedTechnician = value;
-          //           });
-          //         },
-          //       );
-          //     }
-          //     return const SizedBox.shrink();
-          //   },
-          // ),
           ],
-        ),
-        ),
-        actions: [
-        TextButton(
-        onPressed: () {
-        setState(() {
-        _filterStatus = null;
-        _filterPriority = null;
-        _filterDateRange = null;
-        _filterAssignedTechnician = null;
-        });
-        context.read<WorkOrderBloc>().add(
-        LoadWorkOrdersEvent(
-        // searchQuery: _searchQuery,
-        // sortBy: _sortBy,
-        // isAsc: _isAsc,
-        ),
-        );
-        Navigator.pop(context);
-        },
-        child: const Text('Reset'),
-        ),
-        TextButton(
-        onPressed: () {
-        context.read<WorkOrderBloc>().add(
-          LoadWorkOrdersEvent(
-        // searchQuery: _searchQuery,
-        // status: _filterStatus,
-        // priority: _filterPriority,
-        // dateRange: _filterDateRange,
-        // assignedTechnician: _filterAssignedTechnician,
-        // sortBy: _sortBy,
-        // isAsc: _isAsc,
-        ),
-        );
-        Navigator.pop(context);
-        },
-        child: const Text('Terapkan'),
-        ),
-        ],
         );
       },
     );
   }
 }
 
-// Extension untuk capitalize string
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${substring(1)}";
-  }
-}

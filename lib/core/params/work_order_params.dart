@@ -70,7 +70,7 @@ class FilterWorkOrderParams extends Equatable {
   ];
 }
 
-class SortWorkOrdersParams extends Equatable{
+class SortWorkOrdersParams extends Equatable {
   final WorkOrderSortField sortBy;
   final bool isAscending;
 
