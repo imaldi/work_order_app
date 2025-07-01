@@ -5,7 +5,9 @@ import 'package:work_order_app/core/params/params.dart';
 import 'package:work_order_app/features/technician/domain/use_cases/get_all_technicians.dart';
 
 import '../../../../core/injection/injection.dart';
+import '../../../../core/params/technician_params.dart';
 import '../../../../core/router/router.dart';
+import '../../../../widgets/my_confirm_dialog/my_confirm_dialog.dart';
 import '../bloc/technician_bloc.dart';
 
 @RoutePage()
@@ -47,6 +49,36 @@ class _TechnicianListScreenState extends State<TechnicianListScreen> {
                       // FIXME uncomment ketika sudah generate route
                       context.router.push(EditTechnicianRoute(technician: technician));
                     },
+                    trailing:
+                    ElevatedButton(
+                      onPressed: () {
+
+                        myConfirmDialog(
+                          context,
+                          title: "Yakin Hapus data Teknisi?",
+                          positiveButtonCallback: (){
+                            context
+                                .read<TechnicianBloc>()
+                                .add(DeleteTechnicianEvent(
+                                DeleteTechnicianParams(
+                                    id: technician.id
+                                )
+                            ));
+                          },
+                          positiveButtonText: "Ya",
+                          negativeButtonCallback: (){
+                            context.router.pop();
+                          },
+                          negativeButtonText: "Batal",
+                        );
+                      },
+                      // style: ElevatedButton.styleFrom(
+                      //     textStyle: TextStyle(color: Colors.white),
+                      //     backgroundColor: Colors.amber),
+                      child: const Text('Hapus',
+                        style: TextStyle(color: Colors.black),
+                      ),
+                    ),
                   );
                 },
               );

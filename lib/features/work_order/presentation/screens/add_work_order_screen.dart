@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:work_order_app/core/extensions.dart';
+import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
 

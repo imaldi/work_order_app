@@ -90,20 +90,6 @@ class _EditTechnicianScreenState extends State<EditTechnicianScreen> {
                     },
                     child: const Text('Simpan'),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      context
-                          .read<TechnicianBloc>()
-                          .add(DeleteTechnicianEvent(
-                          DeleteTechnicianParams(
-                            id: widget.technician.id
-                          )
-                      ));
-                      context.router.pop();
-                    },
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                    child: const Text('Hapus'),
-                  ),
                 ],
               ),
             ],
