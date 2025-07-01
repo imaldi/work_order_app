@@ -133,6 +133,18 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
         conditions.add('technicianId = ?');
         args.add(params.technicianId);
       }
+
+      // Filter berdasarkan dateRange
+      if (params.dateRange != null) {
+        // Asumsi kolom createdAt disimpan sebagai TEXT dalam format ISO 8601
+        conditions.add('dueDate BETWEEN ? AND ?');
+        // Konversi DateTime ke string ISO 8601 untuk SQLite
+        args.add(params.dateRange!.start.toIso8601String());
+        // Tambahkan 23:59:59.999 ke end date agar mencakup seluruh hari
+        final endDate = params.dateRange!.end.add(Duration(hours: 23, minutes: 59, seconds: 59, milliseconds: 999));
+        args.add(endDate.toIso8601String());
+      }
+
       final where = conditions.isEmpty ? null : conditions.join(' AND ');
       final maps = await db.query(
         'work_orders',

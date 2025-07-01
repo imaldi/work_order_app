@@ -1,6 +1,7 @@
 // This will be used by the code calling the use case whenever the use case
 // doesn't accept any parameters.
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 
@@ -60,13 +61,15 @@ class FilterWorkOrderParams extends Equatable {
   final String? status;
   final String? priority;
   final int? technicianId;
-  const FilterWorkOrderParams({this.status, this.priority, this.technicianId});
+  final DateTimeRange? dateRange;
+  const FilterWorkOrderParams({this.status, this.priority, this.technicianId, this.dateRange});
 
   @override
   List<Object?> get props => [
     status,
     priority,
     technicianId,
+    dateRange,
   ];
 }
 

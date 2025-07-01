@@ -196,9 +196,10 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
   }
 
   void _showFilterDialog(BuildContext context) {
-    WorkOrderStatus? _localFilterStatus = _filterStatus;
-    WorkOrderPriority? _localFilterPriority = _filterPriority;
-    TechnicianEntity? _localFilterAssignedTechnician = _filterAssignedTechnician;
+    WorkOrderStatus? localFilterStatus = _filterStatus;
+    WorkOrderPriority? localFilterPriority = _filterPriority;
+    TechnicianEntity? localFilterAssignedTechnician = _filterAssignedTechnician;
+    DateTimeRange? localFilterDateRange = _filterDateRange;
     showDialog(
       context: context,
       builder: (context) {
@@ -216,7 +217,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       DropdownButton<WorkOrderStatus?>(
-                        value: _localFilterStatus,
+                        value: localFilterStatus,
                         hint: const Text('Status'),
                         items: [
                           const DropdownMenuItem<WorkOrderStatus?>(
@@ -230,12 +231,12 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                         onChanged: (value) {
                           setState(() {
                             _filterStatus = value;
-                            _localFilterStatus = value;
+                            localFilterStatus = value;
                           });
                         },
                       ),
                       DropdownButton<WorkOrderPriority?>(
-                        value: _localFilterPriority,
+                        value: localFilterPriority,
                         hint: const Text('Priority'),
                         items: [
                           const DropdownMenuItem<WorkOrderPriority?>(
@@ -249,37 +250,36 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                         onChanged: (value) {
                           setState(() {
                             _filterPriority = value;
-                            _localFilterPriority = value;
+                            localFilterPriority = value;
                           });
                         },
                       ),
-                      // TODO: Lengkapi di local data source nya
-                      // TextButton(
-                      //   onPressed: () async {
-                      //     final dateRange = await showDateRangePicker(
-                      //       context: context,
-                      //       firstDate: DateTime(2000),
-                      //       lastDate: DateTime(2100),
-                      //       initialDateRange: _filterDateRange,
-                      //     );
-                      //     setState(() {
-                      //       _filterDateRange = dateRange;
-                      //     });
-                      //   },
-                      //   child: Text(
-                      //     _filterDateRange == null
-                      //         ? 'Pilih Rentang Tanggal'
-                      //         : 'Tanggal: ${_filterDateRange!.start.toString().substring(0, 10)} - ${_filterDateRange!.end.toString().substring(0, 10)}',
-                      //   ),
-                      // ),
-                      // Asumsi TechnicianBloc menyediakan daftar technician
+                      TextButton(
+                        onPressed: () async {
+                          final dateRange = await showDateRangePicker(
+                            context: context,
+                            firstDate: DateTime(2000),
+                            lastDate: DateTime(2100),
+                            initialDateRange: localFilterDateRange,
+                          );
+                          setState(() {
+                            _filterDateRange = dateRange;
+                            localFilterDateRange = dateRange;
+                          });
+                        },
+                        child: Text(
+                          localFilterDateRange == null
+                              ? 'Pilih Rentang Tanggal'
+                              : 'Tanggal: ${localFilterDateRange!.start.toString().substring(0, 10)} - ${localFilterDateRange!.end.toString().substring(0, 10)}',
+                        ),
+                      ),
                       BlocBuilder<TechnicianBloc, TechnicianState>(
                         builder: (context, state) {
                           return state.whenOrNull(
                                 loading: () => Center(child: CircularProgressIndicator()),
                                 loaded: (technicianList) {
                                   return DropdownButton<TechnicianEntity>(
-                                        value: _localFilterAssignedTechnician,
+                                        value: localFilterAssignedTechnician,
                                         hint: const Text('Teknisi'),
                                         items: [
                                           const DropdownMenuItem<TechnicianEntity>(
@@ -296,7 +296,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                                         onChanged: (value) {
                                           setState(() {
                                             _filterAssignedTechnician = value;
-                                            _localFilterAssignedTechnician = value;
+                                            localFilterAssignedTechnician = value;
                                           });
                                         },
                                       )
@@ -315,11 +315,12 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                       return TextButton(
                         onPressed: () {
                           setState(() {
-                            _localFilterStatus = null;
-                            _localFilterPriority = null;
-                            _localFilterAssignedTechnician = null;
+                            localFilterStatus = null;
+                            localFilterPriority = null;
+                            localFilterAssignedTechnician = null;
+                            localFilterDateRange = null;
                             // Update state induk
-                            // _filterDateRange = null;
+                            _filterDateRange = null;
                             _filterStatus = null;
                             _filterPriority = null;
                             _filterAssignedTechnician = null;
@@ -338,7 +339,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                               FilterWorkOrderParams(
                                 status: _filterStatus?.value,
                                 priority: _filterPriority?.value,
-                                // dateRange: _filterDateRange, // TODO make this filter later
+                                dateRange: _filterDateRange,
                                 technicianId: _filterAssignedTechnician?.id,
 
                                 // sortBy: _sortBy,
