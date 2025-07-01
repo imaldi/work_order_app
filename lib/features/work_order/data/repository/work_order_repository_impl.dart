@@ -48,7 +48,7 @@ class WorkOrderRepositoryImpl implements WorkOrderRepository {
   }
 
   @override
-  Future<Either<Failure, List<WorkOrderEntity>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
+  Future<Either<Failure, List<WorkOrderEntity>>> sortWorkOrders(WorkOrderSortFieldBy sortBy, bool ascending) async {
     final either = await localDataSource.sortWorkOrders(sortBy, ascending);
     return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
   }

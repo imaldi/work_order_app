@@ -11,5 +11,5 @@ abstract class WorkOrderRepository {
   Future<Either<Failure, List<WorkOrderEntity>>> getAllWorkOrders();
   Future<Either<Failure, List<WorkOrderEntity>>> searchWorkOrders(String query);
   Future<Either<Failure, List<WorkOrderEntity>>> filterWorkOrders(FilterWorkOrderParams params);
-  Future<Either<Failure, List<WorkOrderEntity>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
+  Future<Either<Failure, List<WorkOrderEntity>>> sortWorkOrders(WorkOrderSortFieldBy sortBy, bool ascending);
 }

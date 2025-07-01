@@ -71,7 +71,7 @@ class FilterWorkOrderParams extends Equatable {
 }
 
 class SortWorkOrdersParams extends Equatable {
-  final WorkOrderSortField sortBy;
+  final WorkOrderSortFieldBy sortBy;
   final bool isAscending;
 
   const SortWorkOrdersParams({required this.sortBy, required this.isAscending});

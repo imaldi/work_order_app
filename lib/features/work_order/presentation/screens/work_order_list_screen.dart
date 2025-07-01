@@ -42,7 +42,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
   WorkOrderPriority? _filterPriority;
   DateTimeRange? _filterDateRange;
   TechnicianEntity? _filterAssignedTechnician;
-  String _sortBy = 'title'; // title, priority, dueDate
+  WorkOrderSortFieldBy _sortBy = WorkOrderSortFieldBy.title; // title, priority, dueDate
   bool _isAsc = true;
 
   @override
@@ -94,14 +94,10 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: DropdownButton<String>(
+                  child: DropdownButton<WorkOrderSortFieldBy>(
                     value: _sortBy,
                     hint: const Text('Sort By'),
-                    items: [
-                      'title',
-                      'priority',
-                      'dueDate',
-                    ].map((e) => DropdownMenuItem(value: e, child: Text(e.capitalize()))).toList(),
+                    items: WorkOrderSortFieldBy.values.map((e) => DropdownMenuItem(value: e, child: Text(e.value.capitalize()))).toList(),
                     onChanged: (value) {
                       setState(() {
                         _sortBy = value!;
@@ -109,16 +105,9 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                       context.read<WorkOrderBloc>().add(
                         SortWorkOrdersEvent(
                           SortWorkOrdersParams(
-                            sortBy: WorkOrderSortField.priority,
+                            sortBy: _sortBy,
                             isAscending: _isAsc,
                           ),
-                          // searchQuery: _searchQuery,
-                          // status: _filterStatus,
-                          // priority: _filterPriority,
-                          // dateRange: _filterDateRange,
-                          // assignedTechnician: _filterAssignedTechnician,
-                          // sortBy: _sortBy,
-                          // isAsc: _isAsc,
                         ),
                       );
                     },
@@ -138,14 +127,11 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                         _isAsc = value!;
                       });
                       context.read<WorkOrderBloc>().add(
-                        LoadWorkOrdersEvent(
-                          // searchQuery: _searchQuery,
-                          // status: _filterStatus,
-                          // priority: _filterPriority,
-                          // dateRange: _filterDateRange,
-                          // assignedTechnician: _filterAssignedTechnician,
-                          // sortBy: _sortBy,
-                          // isAsc: _isAsc,
+                        SortWorkOrdersEvent(
+                          SortWorkOrdersParams(
+                            sortBy: _sortBy,
+                            isAscending: _isAsc,
+                          ),
                         ),
                       );
                     },

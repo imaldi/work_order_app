@@ -13,7 +13,7 @@ abstract class WorkOrderLocalDataSource {
   Future<Either<Failure, List<WorkOrderModel>>> getAllWorkOrders();
   Future<Either<Failure, List<WorkOrderModel>>> searchWorkOrders(String query);
   Future<Either<Failure, List<WorkOrderModel>>> filterWorkOrders(FilterWorkOrderParams params);
-  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending);
+  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortFieldBy sortBy, bool ascending);
 }
 
 @LazySingleton(as: WorkOrderLocalDataSource)
@@ -146,7 +146,7 @@ class WorkOrderLocalDataSourceImpl implements WorkOrderLocalDataSource {
   }
 
   @override
-  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortField sortBy, bool ascending) async {
+  Future<Either<Failure, List<WorkOrderModel>>> sortWorkOrders(WorkOrderSortFieldBy sortBy, bool ascending) async {
     try {
       final db = await databaseHelper.database;
       final orderBy = '${sortBy.value} ${ascending ? 'ASC' : 'DESC'}';
