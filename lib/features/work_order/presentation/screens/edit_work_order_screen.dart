@@ -68,7 +68,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
     // _assignedTechnician = null;
     var tecnisianId = widget.workOrder.technicianId;
     print("_assignedTechnician id: ${tecnisianId}");
-    _assignedTechnician = context.read<TechnicianBloc>().state.whenOrNull(loaded: (list) => list.firstWhere((e) => e.id == tecnisianId));
+    _assignedTechnician = context.read<TechnicianBloc>().state.whenOrNull(loaded: (list) => list.firstWhere((e) => e.id == tecnisianId, orElse: ()=> TechnicianEntity(id: 0, name: "Technician Not Found")));
     print("_assignedTechnician: ${_assignedTechnician}");
 
   }
@@ -188,7 +188,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                         },
                         loaded: (list){
                           return DropdownButtonFormField<TechnicianEntity>(
-                            value: _assignedTechnician,
+                            value: (_assignedTechnician?.id ?? 0) != 0 ? _assignedTechnician : null,
                             decoration: const InputDecoration(labelText: 'Teknisi'),
                             items: list
                                 .map((e) => DropdownMenuItem(

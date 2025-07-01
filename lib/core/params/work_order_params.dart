@@ -59,7 +59,7 @@ class DeleteWorkOrdersParams extends Equatable {
 class FilterWorkOrderParams extends Equatable {
   final String? status;
   final String? priority;
-  final String? technicianId;
+  final int? technicianId;
   const FilterWorkOrderParams({this.status, this.priority, this.technicianId});
 
   @override

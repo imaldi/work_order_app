@@ -14,7 +14,7 @@ import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order/presentation/bloc/work_order_bloc.dart';
 
 @RoutePage()
-class WorkOrderListScreen extends StatefulWidget implements AutoRouteWrapper  {
+class WorkOrderListScreen extends StatefulWidget implements AutoRouteWrapper {
   const WorkOrderListScreen({Key? key}) : super(key: key);
 
   @override
@@ -24,12 +24,8 @@ class WorkOrderListScreen extends StatefulWidget implements AutoRouteWrapper  {
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(
-          value: getIt<WorkOrderBloc>()..add(LoadWorkOrdersEvent()),
-        ),
-        BlocProvider.value(
-          value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
-        ),
+        BlocProvider.value(value: getIt<WorkOrderBloc>()..add(LoadWorkOrdersEvent())),
+        BlocProvider.value(value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent())),
       ],
       child: this,
     );
@@ -97,17 +93,16 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                   child: DropdownButton<WorkOrderSortFieldBy>(
                     value: _sortBy,
                     hint: const Text('Sort By'),
-                    items: WorkOrderSortFieldBy.values.map((e) => DropdownMenuItem(value: e, child: Text(e.value.capitalize()))).toList(),
+                    items: WorkOrderSortFieldBy.values
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e.value.capitalize())))
+                        .toList(),
                     onChanged: (value) {
                       setState(() {
                         _sortBy = value!;
                       });
                       context.read<WorkOrderBloc>().add(
                         SortWorkOrdersEvent(
-                          SortWorkOrdersParams(
-                            sortBy: _sortBy,
-                            isAscending: _isAsc,
-                          ),
+                          SortWorkOrdersParams(sortBy: _sortBy, isAscending: _isAsc),
                         ),
                       );
                     },
@@ -128,10 +123,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                       });
                       context.read<WorkOrderBloc>().add(
                         SortWorkOrdersEvent(
-                          SortWorkOrdersParams(
-                            sortBy: _sortBy,
-                            isAscending: _isAsc,
-                          ),
+                          SortWorkOrdersParams(sortBy: _sortBy, isAscending: _isAsc),
                         ),
                       );
                     },
@@ -166,18 +158,13 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                             myConfirmDialog(
                               context,
                               title: "Yakin Hapus data Work Order?",
-                              positiveButtonCallback: (){
-
-                                context
-                                    .read<WorkOrderBloc>()
-                                    .add(DeleteWorkOrderEvent(
-                                    DeleteWorkOrdersParams(
-                                        id: wo.id
-                                    )
-                                ));
+                              positiveButtonCallback: () {
+                                context.read<WorkOrderBloc>().add(
+                                  DeleteWorkOrderEvent(DeleteWorkOrdersParams(id: wo.id)),
+                                );
                               },
                               positiveButtonText: "Ya",
-                              negativeButtonCallback: (){
+                              negativeButtonCallback: () {
                                 context.router.pop();
                               },
                               negativeButtonText: "Batal",
@@ -209,146 +196,168 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
   }
 
   void _showFilterDialog(BuildContext context) {
+    WorkOrderStatus? _localFilterStatus = _filterStatus;
+    WorkOrderPriority? _localFilterPriority = _filterPriority;
+    TechnicianEntity? _localFilterAssignedTechnician = _filterAssignedTechnician;
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Filter Work Order'),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                DropdownButton<WorkOrderStatus?>(
-                  value: _filterStatus,
-                  hint: const Text('Status'),
-                  items: [
-                    const DropdownMenuItem<WorkOrderStatus?>(
-                      value: null,
-                      child: Text('Semua Status'),
-                    ),
-                    ...WorkOrderStatus.values
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
-                        .toList(),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _filterStatus = value;
-                    });
-                  },
-                ),
-                DropdownButton<WorkOrderPriority?>(
-                  value: _filterPriority,
-                  hint: const Text('Priority'),
-                  items: [
-                    const DropdownMenuItem<WorkOrderPriority?>(
-                      value: null,
-                      child: Text('Semua Priority'),
-                    ),
-                    ...WorkOrderPriority.values
-                        .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
-                        .toList(),
-                  ],
-                  onChanged: (value) {
-                    setState(() {
-                      _filterPriority = value;
-                    });
-                  },
-                ),
-                TextButton(
-                  onPressed: () async {
-                    final dateRange = await showDateRangePicker(
-                      context: context,
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      initialDateRange: _filterDateRange,
-                    );
-                    setState(() {
-                      _filterDateRange = dateRange;
-                    });
-                  },
-                  child: Text(
-                    _filterDateRange == null
-                        ? 'Pilih Rentang Tanggal'
-                        : 'Tanggal: ${_filterDateRange!.start.toString().substring(0, 10)} - ${_filterDateRange!.end.toString().substring(0, 10)}',
-                  ),
-                ),
-                // Asumsi TechnicianBloc menyediakan daftar technician
-                BlocBuilder<TechnicianBloc, TechnicianState>(
-                  builder: (context, state) {
-                    return state.whenOrNull(
-                          loading: () => Center(child: CircularProgressIndicator()),
-                          loaded: (technicianList) {
-                            return DropdownButton<TechnicianEntity>(
-                                  value: _filterAssignedTechnician,
-                                  hint: const Text('Teknisi'),
-                                  items: [
-                                    const DropdownMenuItem<TechnicianEntity>(
-                                      value: null,
-                                      child: Text('Semua Teknisi'),
-                                    ),
-                                    ...technicianList.map(
-                                      (e) => DropdownMenuItem<TechnicianEntity>(
-                                        value: e,
-                                        child: Text(e.name),
-                                      ),
-                                    ),
-                                  ],
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _filterAssignedTechnician = value;
-                                    });
-                                  },
-                                )
-                                as Widget;
-                          },
-                        ) ??
-                        const SizedBox.shrink();
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _filterStatus = null;
-                  _filterPriority = null;
-                  _filterDateRange = null;
-                  _filterAssignedTechnician = null;
-                });
-                context.read<WorkOrderBloc>().add(
-                  LoadWorkOrdersEvent(
-                    // searchQuery: _searchQuery,
-                    // sortBy: _sortBy,
-                    // isAsc: _isAsc,
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: const Text('Reset'),
-            ),
-            TextButton(
-              onPressed: () {
-                context.read<WorkOrderBloc>().add(
-                  LoadWorkOrdersEvent(
-                    // searchQuery: _searchQuery,
-                    // status: _filterStatus,
-                    // priority: _filterPriority,
-                    // dateRange: _filterDateRange,
-                    // assignedTechnician: _filterAssignedTechnician,
-                    // sortBy: _sortBy,
-                    // isAsc: _isAsc,
-                  ),
-                );
-                Navigator.pop(context);
-              },
-              child: const Text('Terapkan'),
-            ),
+        return MultiBlocProvider(
+          providers: [
+            BlocProvider.value(value: getIt<WorkOrderBloc>()),
+            BlocProvider.value(value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent())),
           ],
+          child: StatefulBuilder(
+            builder: (context, setState) {
+              return AlertDialog(
+                title: const Text('Filter Work Order'),
+                content: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      DropdownButton<WorkOrderStatus?>(
+                        value: _localFilterStatus,
+                        hint: const Text('Status'),
+                        items: [
+                          const DropdownMenuItem<WorkOrderStatus?>(
+                            value: null,
+                            child: Text('Semua Status'),
+                          ),
+                          ...WorkOrderStatus.values
+                              .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
+                              .toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _filterStatus = value;
+                            _localFilterStatus = value;
+                          });
+                        },
+                      ),
+                      DropdownButton<WorkOrderPriority?>(
+                        value: _localFilterPriority,
+                        hint: const Text('Priority'),
+                        items: [
+                          const DropdownMenuItem<WorkOrderPriority?>(
+                            value: null,
+                            child: Text('Semua Priority'),
+                          ),
+                          ...WorkOrderPriority.values
+                              .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
+                              .toList(),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _filterPriority = value;
+                            _localFilterPriority = value;
+                          });
+                        },
+                      ),
+                      // TODO: Lengkapi di local data source nya
+                      // TextButton(
+                      //   onPressed: () async {
+                      //     final dateRange = await showDateRangePicker(
+                      //       context: context,
+                      //       firstDate: DateTime(2000),
+                      //       lastDate: DateTime(2100),
+                      //       initialDateRange: _filterDateRange,
+                      //     );
+                      //     setState(() {
+                      //       _filterDateRange = dateRange;
+                      //     });
+                      //   },
+                      //   child: Text(
+                      //     _filterDateRange == null
+                      //         ? 'Pilih Rentang Tanggal'
+                      //         : 'Tanggal: ${_filterDateRange!.start.toString().substring(0, 10)} - ${_filterDateRange!.end.toString().substring(0, 10)}',
+                      //   ),
+                      // ),
+                      // Asumsi TechnicianBloc menyediakan daftar technician
+                      BlocBuilder<TechnicianBloc, TechnicianState>(
+                        builder: (context, state) {
+                          return state.whenOrNull(
+                                loading: () => Center(child: CircularProgressIndicator()),
+                                loaded: (technicianList) {
+                                  return DropdownButton<TechnicianEntity>(
+                                        value: _localFilterAssignedTechnician,
+                                        hint: const Text('Teknisi'),
+                                        items: [
+                                          const DropdownMenuItem<TechnicianEntity>(
+                                            value: null,
+                                            child: Text('Semua Teknisi'),
+                                          ),
+                                          ...technicianList.map(
+                                            (e) => DropdownMenuItem<TechnicianEntity>(
+                                              value: e,
+                                              child: Text(e.name),
+                                            ),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            _filterAssignedTechnician = value;
+                                            _localFilterAssignedTechnician = value;
+                                          });
+                                        },
+                                      )
+                                      as Widget;
+                                },
+                              ) ??
+                              const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                actions: [
+                  Builder(
+                    builder: (context) {
+                      return TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _localFilterStatus = null;
+                            _localFilterPriority = null;
+                            _localFilterAssignedTechnician = null;
+                            // Update state induk
+                            // _filterDateRange = null;
+                            _filterStatus = null;
+                            _filterPriority = null;
+                            _filterAssignedTechnician = null;
+                          });
+                        },
+                        child: const Text('Reset'),
+                      );
+                    }
+                  ),
+                  Builder(
+                    builder: (context) {
+                      return TextButton(
+                        onPressed: () {
+                          context.read<WorkOrderBloc>().add(
+                            FilterWorkOrdersEvent(
+                              FilterWorkOrderParams(
+                                status: _filterStatus?.value,
+                                priority: _filterPriority?.value,
+                                // dateRange: _filterDateRange, // TODO make this filter later
+                                technicianId: _filterAssignedTechnician?.id,
+
+                                // sortBy: _sortBy,
+                                // isAsc: _isAsc,
+                              ),
+                            ),
+                          );
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Terapkan'),
+                      );
+                    }
+                  ),
+                ],
+              );
+            }
+          ),
         );
       },
     );
   }
 }
-
