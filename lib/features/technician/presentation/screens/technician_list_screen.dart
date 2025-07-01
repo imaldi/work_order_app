@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_app/core/params/params.dart';
+import 'package:work_order_app/features/technician/domain/use_cases/get_all_technicians.dart';
 
 import '../../../../core/injection/injection.dart';
 import '../../../../core/router/router.dart';
@@ -17,7 +19,7 @@ class TechnicianListScreen extends StatefulWidget implements AutoRouteWrapper {
   @override
   Widget wrappedRoute(BuildContext context) {
     return BlocProvider.value(
-        value: getIt<TechnicianBloc>(),
+        value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
         child: this);
   }
 }
@@ -43,7 +45,7 @@ class _TechnicianListScreenState extends State<TechnicianListScreen> {
                     subtitle: Text(technician.contact ?? 'No Contact'),
                     onTap: () {
                       // FIXME uncomment ketika sudah generate route
-                      // context.router.push(EditTechnicianRoute(technician: technician));
+                      context.router.push(EditTechnicianRoute(technician: technician));
                     },
                   );
                 },

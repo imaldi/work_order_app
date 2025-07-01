@@ -57,7 +57,7 @@ class _AddTechnicianScreenState extends State<AddTechnicianScreen> {
                 keyboardType: TextInputType.number,
                 decoration: const InputDecoration(labelText: 'Contact'),
                 validator: (value) =>
-                value!.isEmpty ? 'Contact wajib diisi' : null,
+                value!.isEmpty ? 'Kontak wajib diisi' : null,
               ),
               const SizedBox(height: 16),
               ElevatedButton(

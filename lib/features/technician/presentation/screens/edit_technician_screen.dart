@@ -9,14 +9,13 @@ import '../../../../core/injection/injection.dart';
 import '../bloc/technician_bloc.dart';
 
 @RoutePage()
-class EditTechnicianPage extends StatefulWidget implements AutoRouteWrapper {
+class EditTechnicianScreen extends StatefulWidget implements AutoRouteWrapper {
   final TechnicianEntity technician;
 
-  const EditTechnicianPage({Key? key, required this.technician})
-      : super(key: key);
+  const EditTechnicianScreen({super.key, required this.technician});
 
   @override
-  State<EditTechnicianPage> createState() => _EditTechnicianPageState();
+  State<EditTechnicianScreen> createState() => _EditTechnicianScreenState();
 
   @override
   Widget wrappedRoute(BuildContext context) {
@@ -26,7 +25,7 @@ class EditTechnicianPage extends StatefulWidget implements AutoRouteWrapper {
   }
 }
 
-class _EditTechnicianPageState extends State<EditTechnicianPage> {
+class _EditTechnicianScreenState extends State<EditTechnicianScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -66,7 +65,7 @@ class _EditTechnicianPageState extends State<EditTechnicianPage> {
                 controller: _phoneController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 validator: (value) =>
-                value!.isEmpty ? 'Email wajib diisi' : null,
+                value!.isEmpty ? 'Kontak wajib diisi' : null,
               ),
               const SizedBox(height: 16),
               Row(
