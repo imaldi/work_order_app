@@ -14,10 +14,6 @@ class SearchWorkOrders implements UseCase<List<WorkOrderEntity>, SearchWorkOrder
 
   @override
   Future<Either<Failure, List<WorkOrderEntity>>> call(SearchWorkOrdersParams params) async {
-    final validation = params.validate();
-    return validation.fold(
-          (failure) => Left(failure),
-          (validQuery) async => await repository.searchWorkOrders(validQuery),
-    );
+     return await repository.searchWorkOrders(params.query);
   }
 }

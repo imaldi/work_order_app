@@ -17,7 +17,7 @@ class SearchWorkOrdersParams extends Equatable {
     query
   ];
 
-  // Opsional: tambah validasi
+  // Opsional: tambah validasi; tidak terpakai karena search nya per user interaction
   Either<Failure, String> validate() {
     if (query.isEmpty) {
       return Left(DatabaseFailure('Search query cannot be empty'));
