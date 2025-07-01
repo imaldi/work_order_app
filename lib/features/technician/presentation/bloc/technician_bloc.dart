@@ -17,7 +17,7 @@ part 'technician_event.dart';
 part 'technician_state.dart';
 part 'technician_bloc.freezed.dart';
 
-@injectable
+@lazySingleton
 class TechnicianBloc extends Bloc<TechnicianEvent, TechnicianState> {
   final AddTechnician addTechnician;
   final GetAllTechnicians getAllTechnicians;

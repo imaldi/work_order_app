@@ -3,7 +3,6 @@ import 'package:injectable/injectable.dart';
 import 'package:work_order_app/core/errors/failures.dart';
 import 'package:work_order_app/core/params/technician_params.dart';
 import 'package:work_order_app/features/technician/domain/repository/technician_repository.dart';
-import '../../../../core/params/work_order_params.dart';
 import '../../../../core/usecase/usecase.dart';
 
 @lazySingleton

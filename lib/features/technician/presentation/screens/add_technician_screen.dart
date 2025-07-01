@@ -3,16 +3,24 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/injection/injection.dart';
 import '../../../../core/params/technician_params.dart';
 import '../../domain/entity/technician_entity.dart';
 import '../bloc/technician_bloc.dart';
 
 @RoutePage()
-class AddTechnicianScreen extends StatefulWidget {
+class AddTechnicianScreen extends StatefulWidget implements AutoRouteWrapper  {
   const AddTechnicianScreen({Key? key}) : super(key: key);
 
   @override
   State<AddTechnicianScreen> createState() => _AddTechnicianScreenState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider.value(
+        value: getIt<TechnicianBloc>(),
+        child: this);
+  }
 }
 
 class _AddTechnicianScreenState extends State<AddTechnicianScreen> {
@@ -46,9 +54,10 @@ class _AddTechnicianScreenState extends State<AddTechnicianScreen> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _phoneController,
-                decoration: const InputDecoration(labelText: 'Email'),
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: 'Contact'),
                 validator: (value) =>
-                value!.isEmpty ? 'Email wajib diisi' : null,
+                value!.isEmpty ? 'Contact wajib diisi' : null,
               ),
               const SizedBox(height: 16),
               ElevatedButton(

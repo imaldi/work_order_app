@@ -3,17 +3,21 @@ import 'package:injectable/injectable.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-@singleton
+@lazySingleton
 class DatabaseHelper {
   static Database? _database;
-  final String? testDbPath;
+  // final String? testDbPath;
 
   @factoryMethod
-  DatabaseHelper({this.testDbPath});
+  DatabaseHelper(
+      // {this.testDbPath}
+      );
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-    _database = await _initDB(this.testDbPath ?? 'work_order.db');
+    _database = await _initDB(
+        // this.testDbPath ??
+        'work_order.db');
     return _database!;
   }
 

@@ -18,7 +18,7 @@ part 'work_order_event.dart';
 part 'work_order_state.dart';
 part 'work_order_bloc.freezed.dart';
 
-@injectable
+@lazySingleton
 class WorkOrderBloc extends Bloc<WorkOrderEvent, WorkOrderState> {
   final AddWorkOrder addWorkOrder;
   final GetAllWorkOrders getAllWorkOrders;

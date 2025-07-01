@@ -3,7 +3,6 @@ import '../../../../core/consts_and_enums/enums/sort_by_enum.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/params/work_order_params.dart';
 import '../entities/work_order_entity.dart';
-import '../../../technician/domain/entity/technician_entity.dart';
 
 abstract class WorkOrderRepository {
   Future<Either<Failure, Unit>> addWorkOrder(WorkOrderEntity workOrder);

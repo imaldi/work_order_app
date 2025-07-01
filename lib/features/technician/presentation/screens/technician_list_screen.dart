@@ -2,12 +2,27 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/injection/injection.dart';
+import '../../../../core/router/router.dart';
 import '../bloc/technician_bloc.dart';
 
 @RoutePage()
-class TechnicianListScreen extends StatelessWidget {
-  const TechnicianListScreen({Key? key}) : super(key: key);
+class TechnicianListScreen extends StatefulWidget implements AutoRouteWrapper {
+  const TechnicianListScreen({super.key});
 
+  @override
+  State<TechnicianListScreen> createState() => _TechnicianListScreenState();
+
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider.value(
+        value: getIt<TechnicianBloc>(),
+        child: this);
+  }
+}
+
+class _TechnicianListScreenState extends State<TechnicianListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +55,7 @@ class TechnicianListScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // context.router.push(const AddTechnicianRoute());
+          context.router.push(const AddTechnicianRoute());
         },
         child: const Icon(Icons.add),
       ),

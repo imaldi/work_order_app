@@ -3,16 +3,34 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_app/core/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
+import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
+import '../../../../core/injection/injection.dart';
+import '../../../technician/presentation/bloc/technician_bloc.dart';
 
 
 @RoutePage()
-class AddWorkOrderScreen extends StatefulWidget {
+class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
   const AddWorkOrderScreen({Key? key}) : super(key: key);
 
   @override
   State<AddWorkOrderScreen> createState() => _AddWorkOrderScreenState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(
+          value: getIt<WorkOrderBloc>(),
+        ),
+        BlocProvider.value(
+          value: getIt<TechnicianBloc>(),
+        ),
+      ],
+      child: this,
+    );
+  }
 }
 
 class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {

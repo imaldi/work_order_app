@@ -5,10 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:work_order_app/core/params/technician_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
 
+import '../../../../core/injection/injection.dart';
 import '../bloc/technician_bloc.dart';
 
 @RoutePage()
-class EditTechnicianPage extends StatefulWidget {
+class EditTechnicianPage extends StatefulWidget implements AutoRouteWrapper {
   final TechnicianEntity technician;
 
   const EditTechnicianPage({Key? key, required this.technician})
@@ -16,6 +17,13 @@ class EditTechnicianPage extends StatefulWidget {
 
   @override
   State<EditTechnicianPage> createState() => _EditTechnicianPageState();
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider.value(
+        value: getIt<TechnicianBloc>(),
+        child: this);
+  }
 }
 
 class _EditTechnicianPageState extends State<EditTechnicianPage> {

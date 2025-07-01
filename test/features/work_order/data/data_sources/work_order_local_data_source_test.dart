@@ -14,7 +14,7 @@ void main() {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     TestWidgetsFlutterBinding.ensureInitialized();
-    databaseHelper = DatabaseHelper(testDbPath: inMemoryDatabasePath);
+    databaseHelper = DatabaseHelper();
     dataSource = WorkOrderLocalDataSourceImpl(databaseHelper);
   });
 
