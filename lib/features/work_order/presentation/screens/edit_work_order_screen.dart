@@ -65,7 +65,12 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
     _dueDate = widget.workOrder.dueDate.isNotEmpty
         ? DateFormat('yyyy-MM-dd').parse(widget.workOrder.dueDate)
         : DateTime.now(); // Default ke tanggal sekarang jika null/kosong
-    _assignedTechnician = null;
+    // _assignedTechnician = null;
+    var tecnisianId = widget.workOrder.technicianId;
+    print("_assignedTechnician id: ${tecnisianId}");
+    _assignedTechnician = context.read<TechnicianBloc>().state.whenOrNull(loaded: (list) => list.firstWhere((e) => e.id == tecnisianId));
+    print("_assignedTechnician: ${_assignedTechnician}");
+
   }
 
   @override
@@ -163,14 +168,18 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                 const SizedBox(height: 16),
                 BlocConsumer<TechnicianBloc, TechnicianState>(
                   listener: (context, state){
-                    state.maybeWhen(
-                        loaded: (list){
-                          _assignedTechnician = list.firstWhere((e) {return e.id == widget.workOrder.technicianId;},
-                              orElse: (){
-                            return TechnicianEntity(id: 0, name: "Technician Not Found");
-                          });
-                        },
-                        orElse: (){});
+
+                    // state.maybeWhen(
+                    //     loaded: (list){
+                    //       setState(() {
+                    //         _assignedTechnician = list.firstWhere((e) {return e.id == widget.workOrder.technicianId;},
+                    //             orElse: (){
+                    //           return TechnicianEntity(id: 0, name: "Technician Not Found");
+                    //         });
+                    //         print("assignedTechnician: ${_assignedTechnician?.name}");
+                    //       });
+                    //     },
+                    //     orElse: (){});
                   },
                   builder: (context, state) {
                     return state.whenOrNull(
