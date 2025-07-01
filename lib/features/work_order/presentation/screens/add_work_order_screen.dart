@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
+import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
@@ -27,7 +28,7 @@ class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
           value: getIt<WorkOrderBloc>(),
         ),
         BlocProvider.value(
-          value: getIt<TechnicianBloc>(),
+          value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
         ),
       ],
       child: this,
@@ -43,7 +44,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
   WorkOrderPriority _priority = WorkOrderPriority.low;
   WorkOrderStatus _status = WorkOrderStatus.pending;
   DateTime? _dueDate;
-  int? _assignedTechnicianId;
+  TechnicianEntity? _assignedTechnician;
 
   @override
   void dispose() {
@@ -141,29 +142,33 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 ),
                 const SizedBox(height: 16),
                 // TODO: Nanti pagi baikin
-                // BlocBuilder<TechnicianBloc, TechnicianState>(
-                //   builder: (context, state) {
-                //
-                //     if (state is TechnicianLoaded) {
-                //       return DropdownButtonFormField<String>(
-                //         value: _assignedTechnicianId,
-                //         decoration: const InputDecoration(labelText: 'Teknisi'),
-                //         items: state.technicians
-                //             .map((e) => DropdownMenuItem(
-                //           value: e.id,
-                //           child: Text(e.name),
-                //         ))
-                //             .toList(),
-                //         onChanged: (value) {
-                //           setState(() {
-                //             _assignedTechnicianId = value;
-                //           });
-                //         },
-                //       );
-                //     }
-                //     return const CircularProgressIndicator();
-                //   },
-                // ),
+                BlocBuilder<TechnicianBloc, TechnicianState>(
+                  builder: (context, state) {
+                    return state.whenOrNull(
+                      loading: (){
+                        return const CircularProgressIndicator();
+                      },
+                      loaded: (list){
+                        return DropdownButtonFormField<TechnicianEntity>(
+                          value: _assignedTechnician,
+                          decoration: const InputDecoration(labelText: 'Teknisi'),
+                          items: list
+                              .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e.name),
+                          ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _assignedTechnician = value;
+                            });
+                          },
+                        );
+                      }
+                      
+                    ) ?? SizedBox.shrink();
+                  },
+                ),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
@@ -178,7 +183,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         longitude: 0.0, // Default value
                         dueDate: _dueDate != null ? DateFormat("yyyy-MM-dd").format(_dueDate!) : "",
                         status: _status.value,
-                        technicianId: _assignedTechnicianId ?? 0,
+                        technicianId: _assignedTechnician?.id ?? 0,
                       );
                       context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
                           AddWorkOrdersParams(

@@ -9,6 +9,7 @@ import 'package:work_order_app/features/technician/domain/entity/technician_enti
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
 import '../../../../core/router/router.dart';
+import '../../../../widgets/my_confirm_dialog/my_confirm_dialog.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order/presentation/bloc/work_order_bloc.dart';
 
@@ -172,9 +173,34 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                         title: Text(wo.title),
                         subtitle: Text('Status: ${wo.status} | Priority: ${wo.priority}'),
                         onTap: () {
-                          // TODO hidupkan setelah generate route nya
-                          // context.router.push(EditWorkOrderRoute(workOrder: wo));
+                          context.router.push(EditWorkOrderRoute(workOrder: wo));
                         },
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            myConfirmDialog(
+                              context,
+                              title: "Yakin Hapus data Work Order?",
+                              positiveButtonCallback: (){
+
+                                context
+                                    .read<WorkOrderBloc>()
+                                    .add(DeleteWorkOrderEvent(
+                                    DeleteWorkOrdersParams(
+                                        id: wo.id
+                                    )
+                                ));
+                              },
+                              positiveButtonText: "Ya",
+                              negativeButtonCallback: (){
+                                context.router.pop();
+                              },
+                              negativeButtonText: "Batal",
+                            );
+                          },
+                          // style: ElevatedButton.styleFrom(
+                          //     backgroundColor: Colors.red),
+                          child: const Text('Hapus'),
+                        ),
                       );
                     },
                   );
@@ -189,7 +215,6 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // TODO hidupkan setelah generate route nya
           context.router.push(const AddWorkOrderRoute());
         },
         child: const Icon(Icons.add),

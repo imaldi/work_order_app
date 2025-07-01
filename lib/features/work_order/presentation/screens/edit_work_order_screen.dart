@@ -2,6 +2,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/presentation/bloc/technician_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:work_order_app/features/work_order/domain/entities/work_order_en
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
+import '../../../technician/domain/entity/technician_entity.dart';
 import '../bloc/work_order_bloc.dart';
 
 @RoutePage()
@@ -44,7 +46,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
   late WorkOrderPriority _priority;
   late WorkOrderStatus _status;
   late DateTime _dueDate;
-  String? _assignedTechnicianId;
+  TechnicianEntity? _assignedTechnician;
 
   @override
   void initState() {
@@ -52,10 +54,18 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
     _titleController.text = widget.workOrder.title;
     _descriptionController.text = widget.workOrder.description;
     _addressController.text = widget.workOrder.address;
-    // _priority = widget.workOrder.priority;
-    // _status = widget.workOrder.status;
-    // _dueDate = widget.workOrder.dueDate;
-    // _assignedTechnicianId = widget.workOrder.assignedTechnicianId;
+    _priority = WorkOrderPriority.values.firstWhere(
+          (priority) => priority.value == widget.workOrder.priority,
+      orElse: () => WorkOrderPriority.low, // Default jika tidak ditemukan
+    );
+    _status = WorkOrderStatus.values.firstWhere(
+          (priority) => priority.value == widget.workOrder.status,
+      orElse: () => WorkOrderStatus.pending, // Default jika tidak ditemukan
+    );
+    _dueDate = widget.workOrder.dueDate.isNotEmpty
+        ? DateFormat('yyyy-MM-dd').parse(widget.workOrder.dueDate)
+        : DateTime.now(); // Default ke tanggal sekarang jika null/kosong
+    _assignedTechnician = null;
   }
 
   @override
@@ -151,35 +161,43 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                // TODO: nanti pagi baikin
-                // BlocBuilder<TechnicianBloc, TechnicianState>(
-                //   builder: (context, state) {
-                //     if (state is TechnicianLoaded) {
-                //       return DropdownButtonFormField<String>(
-                //         value: _assignedTechnicianId,
-                //         decoration: const InputDecoration(labelText: 'Teknisi'),
-                //         items: [
-                //           const DropdownMenuItem<String>(
-                //             value: null,
-                //             child: Text('Tidak Ditugaskan'),
-                //           ),
-                //           ...state.technicians
-                //               .map((e) => DropdownMenuItem(
-                //             value: e.id,
-                //             child: Text(e.name),
-                //           ))
-                //               .toList(),
-                //         ],
-                //         onChanged: (value) {
-                //           setState(() {
-                //             _assignedTechnicianId = value;
-                //           });
-                //         },
-                //       );
-                //     }
-                //     return const CircularProgressIndicator();
-                //   },
-                // ),
+                BlocConsumer<TechnicianBloc, TechnicianState>(
+                  listener: (context, state){
+                    state.maybeWhen(
+                        loaded: (list){
+                          _assignedTechnician = list.firstWhere((e) {return e.id == widget.workOrder.technicianId;},
+                              orElse: (){
+                            return TechnicianEntity(id: 0, name: "Technician Not Found");
+                          });
+                        },
+                        orElse: (){});
+                  },
+                  builder: (context, state) {
+                    return state.whenOrNull(
+                        loading: (){
+                          return const CircularProgressIndicator();
+                        },
+                        loaded: (list){
+                          return DropdownButtonFormField<TechnicianEntity>(
+                            value: _assignedTechnician,
+                            decoration: const InputDecoration(labelText: 'Teknisi'),
+                            items: list
+                                .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.name),
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _assignedTechnician = value;
+                              });
+                            },
+                          );
+                        }
+
+                    ) ?? SizedBox.shrink();
+                  },
+                ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -188,43 +206,30 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // TODO Baikin ini nanti pagi
-                          // final updatedWorkOrder = widget.workOrder.copyWith(
-                          //   title: _titleController.text,
-                          //   description: _descriptionController.text,
-                          //   priority: _priority,
-                          //   address: _addressController.text,
-                          //   latitude: widget.workOrder.latitude,
-                          //   longitude: widget.workOrder.longitude,
-                          //   dueDate: _dueDate,
-                          //   status: _status,
-                          //   assignedTechnicianId: _assignedTechnicianId,
-                          // );
-                          // context
-                          //     .read<WorkOrderBloc>()
-                          //     .add(UpdateWorkOrderEvent(
-                          //     UpdateWorkOrdersParams(
-                          //       workOrderEntity: updatedWorkOrder,
-                          //     )
-                          // ));
-                          // context.router.pop();
+                          final updatedWorkOrder = widget.workOrder.copyWith(
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            priority: _priority.value,
+                            address: _addressController.text,
+                            latitude: widget.workOrder.latitude,
+                            longitude: widget.workOrder.longitude,
+                            dueDate: DateFormat("yyyy-MM-dd").format(_dueDate),
+                            status: _status.value,
+                            technicianId: _assignedTechnician?.id ?? 0,
+                          );
+                          context
+                              .read<WorkOrderBloc>()
+                              .add(UpdateWorkOrderEvent(
+                              UpdateWorkOrdersParams(
+                                workOrderEntity: updatedWorkOrder,
+                              )
+                          ));
+                          context.router.pop();
                         }
                       },
                       child: const Text('Simpan'),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        context
-                            .read<WorkOrderBloc>()
-                            .add(DeleteWorkOrderEvent(
-                            DeleteWorkOrdersParams(
-                              id: widget.workOrder.id
-                            )
-                        ));
-                        context.router.pop();
-                      },
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                      child: const Text('Hapus'),
-                    ),
+
                   ],
                 ),
               ],
