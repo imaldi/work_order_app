@@ -16,13 +16,13 @@ void main() {
 
   setUp(() {
     // Menyediakan dummy value untuk Either<String, List<WorkOrderModel>>
-    provideDummy<Either<DatabaseFailure, List<WorkOrderModel>>>(left(DatabaseFailure('Dummy error')));
+    provideDummy<Either<Failure, List<WorkOrderModel>>>(left(DatabaseFailure('Dummy error')));
 
     mockDataSource = MockWorkOrderLocalDataSource();
     repository = WorkOrderRepositoryImpl(mockDataSource);
   });
 
-  final tWorkOrderModel = WorkOrderModel(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: '', address: '', latitude: 0.0, longitude: 0.0);
+  final tWorkOrderModel = WorkOrderModel(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: 0, address: '', latitude: 0.0, longitude: 0.0);
   final tWorkOrdersModel = [tWorkOrderModel];
   final tFailure = DatabaseFailure('Operation failed');
 

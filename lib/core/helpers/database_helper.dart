@@ -17,7 +17,7 @@ class DatabaseHelper {
     if (_database != null) return _database!;
     _database = await _initDB(
         // this.testDbPath ??
-        'work_order.db');
+        'work_order_app.db');
     return _database!;
   }
 
@@ -43,7 +43,7 @@ class DatabaseHelper {
         priority TEXT NOT NULL,
         status TEXT NOT NULL,
         dueDate TEXT NOT NULL,
-        technicianId TEXT NOT NULL,
+        technicianId INTEGER NOT NULL,
         address TEXT NOT NULL,
         latitude REAL NOT NULL,
         longitude REAL NOT NULL,

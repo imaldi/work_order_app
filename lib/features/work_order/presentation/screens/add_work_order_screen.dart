@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
@@ -8,6 +9,7 @@ import 'package:work_order_app/features/work_order/presentation/bloc/work_order_
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
+import '../../domain/entities/work_order_entity.dart';
 
 
 @RoutePage()
@@ -41,7 +43,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
   WorkOrderPriority _priority = WorkOrderPriority.low;
   WorkOrderStatus _status = WorkOrderStatus.pending;
   DateTime? _dueDate;
-  String? _assignedTechnicianId;
+  int? _assignedTechnicianId;
 
   @override
   void dispose() {
@@ -166,23 +168,23 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate() && _dueDate != null) {
-                      // final workOrder = WorkOrderEntity(
-                      //   id: '', // ID akan di-generate oleh repository
-                      //   title: _titleController.text,
-                      //   description: _descriptionController.text,
-                      //   priority: _priority,
-                      //   address: _addressController.text,
-                      //   latitude: 0.0, // Default value
-                      //   longitude: 0.0, // Default value
-                      //   dueDate: _dueDate!,
-                      //   status: _status,
-                      //   assignedTechnicianId: _assignedTechnicianId,
-                      // );
-                      // context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
-                      //     AddWorkOrdersParams(
-                      //       workOrderEntity: workOrder,
-                      //     )
-                      // ));
+                      final workOrder = WorkOrderEntity(
+                        id: 0, // ID akan di-generate oleh repository
+                        title: _titleController.text,
+                        description: _descriptionController.text,
+                        priority: _priority.value,
+                        address: _addressController.text,
+                        latitude: 0.0, // Default value
+                        longitude: 0.0, // Default value
+                        dueDate: _dueDate != null ? DateFormat("yyyy-MM-dd").format(_dueDate!) : "",
+                        status: _status.value,
+                        technicianId: _assignedTechnicianId ?? 0,
+                      );
+                      context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
+                          AddWorkOrdersParams(
+                            workOrderEntity: workOrder,
+                          )
+                      ));
                       context.router.pop();
                     }
                   },

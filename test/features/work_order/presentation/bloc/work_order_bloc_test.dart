@@ -58,7 +58,18 @@ void main() {
     );
   });
 
-  final tWorkOrder = WorkOrderEntity(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: '', address: '', latitude: 0.0, longitude: 0.0);
+  final tWorkOrder = WorkOrderEntity(
+      id: 1,
+      title: 'Test',
+      description: "Oke",
+      priority: '',
+      status: '',
+      dueDate: '',
+      technicianId: 0,
+      address: '',
+      latitude: 0.0,
+      longitude: 0.0
+  );
   final tWorkOrders = [tWorkOrder];
   final tFailure = DatabaseFailure('Operation failed');
 
@@ -282,7 +293,7 @@ void main() {
           priority: 'High',
           status: 'Pending',
           dueDate: '2025-07-01',
-          technicianId: '1',
+          technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,
           longitude: 106.8,
@@ -301,7 +312,7 @@ void main() {
           priority: 'High',
           status: 'Pending',
           dueDate: '2025-07-01',
-          technicianId: '1',
+          technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,
           longitude: 106.8,

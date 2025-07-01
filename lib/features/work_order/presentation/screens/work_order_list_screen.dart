@@ -8,6 +8,7 @@ import 'package:work_order_app/features/technician/domain/entity/technician_enti
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
+import '../../../../core/router/router.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order/presentation/bloc/work_order_bloc.dart';
 
@@ -23,10 +24,10 @@ class WorkOrderListScreen extends StatefulWidget implements AutoRouteWrapper  {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(
-          value: getIt<WorkOrderBloc>(),
+          value: getIt<WorkOrderBloc>()..add(LoadWorkOrdersEvent()),
         ),
         BlocProvider.value(
-          value: getIt<TechnicianBloc>(),
+          value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
         ),
       ],
       child: this,
@@ -189,7 +190,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           // TODO hidupkan setelah generate route nya
-          // context.router.push(const AddWorkOrderRoute());
+          context.router.push(const AddWorkOrderRoute());
         },
         child: const Icon(Icons.add),
       ),
