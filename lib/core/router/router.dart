@@ -27,22 +27,13 @@ class AppRouter extends RootStackRouter {
 
     AutoRoute(path: '/dashboard', page: MainRoute.page, children: [
       AutoRoute(page: HomeRoute.page),
-      AutoRoute(page: WorkOrderListRoute.page, children: [
-        AutoRoute(page: AddWorkOrderRoute.page),
-        AutoRoute(page: EditWorkOrderRoute.page),
-      ]),
-      AutoRoute(page: TechnicianListRoute.page, children: [
-        AutoRoute(page: AddTechnicianRoute.page),
-        AutoRoute(page: EditTechnicianRoute.page),
-      ]),
+      AutoRoute(page: WorkOrderListRoute.page),
+      AutoRoute(page: TechnicianListRoute.page),
       AutoRoute(page: ProfileRoute.page),
-
-      // AutoRoute(page: ExploreWorldRoute.page),
-      // AutoRoute(page: WishListRoute.page),
-      // AutoRoute(page: BookingRoute.page),
-      // AutoRoute(page: VoucherRoute.page),
-      // // AutoRoute(page: SearchRoute.page),
-      // AutoRoute(page: ProfileRoute.page),
     ]),
+    AutoRoute(page: AddWorkOrderRoute.page),
+    AutoRoute(page: EditWorkOrderRoute.page),
+    AutoRoute(page: AddTechnicianRoute.page),
+    AutoRoute(page: EditTechnicianRoute.page),
   ];
 }
