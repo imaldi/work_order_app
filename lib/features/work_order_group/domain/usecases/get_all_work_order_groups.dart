@@ -7,10 +7,10 @@ import '../../../../core/usecase/usecase.dart';
 import '../repository/work_order_group_repository.dart';
 
 @lazySingleton
-class GetAllWorkOrders implements UseCase<List<WorkOrderGroupEntity>, NoParams> {
+class GetAllWorkOrderGroups implements UseCase<List<WorkOrderGroupEntity>, NoParams> {
   final WorkOrderGroupRepository repository;
 
-  GetAllWorkOrders(this.repository);
+  GetAllWorkOrderGroups(this.repository);
 
   @override
   Future<Either<Failure, List<WorkOrderGroupEntity>>> call(NoParams params) async {

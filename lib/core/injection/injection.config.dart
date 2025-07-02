@@ -62,6 +62,8 @@ import '../../features/work_order_group/domain/usecases/get_all_work_order_group
     as _i39;
 import '../../features/work_order_group/domain/usecases/update_work_order_group.dart'
     as _i702;
+import '../../features/work_order_group/presentation/bloc/work_order_group_bloc.dart'
+    as _i274;
 import '../helpers/database_helper.dart' as _i771;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -72,14 +74,25 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i771.DatabaseHelper>(() => _i771.DatabaseHelper());
-    gh.lazySingleton<_i39.GetAllWorkOrders>(
-      () => _i39.GetAllWorkOrders(gh<_i959.WorkOrderGroupRepository>()),
+    gh.lazySingleton<_i500.CreateWorkOrderGroup>(
+      () => _i500.CreateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i39.GetAllWorkOrderGroups>(
+      () => _i39.GetAllWorkOrderGroups(gh<_i959.WorkOrderGroupRepository>()),
     );
     gh.lazySingleton<_i702.UpdateWorkOrderGroup>(
       () => _i702.UpdateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
     );
     gh.lazySingleton<_i129.DeleteWorkOrderGroup>(
       () => _i129.DeleteWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i274.WorkOrderGroupBloc>(
+      () => _i274.WorkOrderGroupBloc(
+        gh<_i39.GetAllWorkOrderGroups>(),
+        gh<_i500.CreateWorkOrderGroup>(),
+        gh<_i702.UpdateWorkOrderGroup>(),
+        gh<_i129.DeleteWorkOrderGroup>(),
+      ),
     );
     gh.lazySingleton<_i929.TechnicianLocalDataSource>(
       () => _i929.TechnicianLocalDataSourceImpl(gh<_i771.DatabaseHelper>()),
@@ -137,9 +150,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i654.UpdateWorkOrder>(
       () => _i654.UpdateWorkOrder(gh<_i750.WorkOrderRepository>()),
-    );
-    gh.lazySingleton<_i500.CreateWorkOrderGroup>(
-      () => _i500.CreateWorkOrderGroup(gh<_i750.WorkOrderRepository>()),
     );
     gh.lazySingleton<_i683.WorkOrderBloc>(
       () => _i683.WorkOrderBloc(

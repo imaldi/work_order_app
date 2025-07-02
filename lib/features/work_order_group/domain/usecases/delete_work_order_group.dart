@@ -2,7 +2,6 @@ import 'package:fpdart/fpdart.dart';
 import 'package:injectable/injectable.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
-import '../../../../core/params/work_order_params.dart';
 import '../../../../core/usecase/usecase.dart';
 import '../repository/work_order_group_repository.dart';
 
