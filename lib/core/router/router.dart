@@ -8,6 +8,10 @@ import 'package:work_order_app/features/work_order/presentation/screens/work_ord
 import 'package:work_order_app/features/work_order/presentation/screens/add_work_order_screen.dart';
 import 'package:work_order_app/features/work_order/presentation/screens/edit_work_order_screen.dart';
 
+import '../../features/home/presentation/screens/main_screen.dart';
+import '../../features/home/presentation/screens/menu_screen.dart';
+import '../../features/home/presentation/screens/splash_screen.dart';
+import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/technician/domain/entity/technician_entity.dart';
 import '../../features/work_order/domain/entities/work_order_entity.dart';
 
@@ -17,12 +21,28 @@ part 'router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: HomeRoute.page, initial: true),
-    AutoRoute(page: WorkOrderListRoute.page),
-    AutoRoute(page: AddWorkOrderRoute.page),
-    AutoRoute(page: EditWorkOrderRoute.page),
-    AutoRoute(page: TechnicianListRoute.page),
-    AutoRoute(page: AddTechnicianRoute.page),
-    AutoRoute(page: EditTechnicianRoute.page),
+    AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: ProfileRoute.page),
+    AutoRoute(page: MenuRoute.page),
+
+    AutoRoute(path: '/dashboard', page: MainRoute.page, children: [
+      AutoRoute(page: HomeRoute.page),
+      AutoRoute(page: WorkOrderListRoute.page, children: [
+        AutoRoute(page: AddWorkOrderRoute.page),
+        AutoRoute(page: EditWorkOrderRoute.page),
+      ]),
+      AutoRoute(page: TechnicianListRoute.page, children: [
+        AutoRoute(page: AddTechnicianRoute.page),
+        AutoRoute(page: EditTechnicianRoute.page),
+      ]),
+      AutoRoute(page: ProfileRoute.page),
+
+      // AutoRoute(page: ExploreWorldRoute.page),
+      // AutoRoute(page: WishListRoute.page),
+      // AutoRoute(page: BookingRoute.page),
+      // AutoRoute(page: VoucherRoute.page),
+      // // AutoRoute(page: SearchRoute.page),
+      // AutoRoute(page: ProfileRoute.page),
+    ]),
   ];
 }

@@ -23,50 +23,115 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Work Order App'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.router.push(const TechnicianListRoute());
-                    },
-                    child: const Text("Manage Teknisi"),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.router.push(const WorkOrderListRoute());
-                    },
-                    child: const Text("Manage Work Order"),
-                  ),
-                ),
-              ],
+    return
+
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('My Dashboard'),
+          backgroundColor: Colors.blue,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () {},
             ),
           ],
         ),
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildMetricCard('Assigned', 5, Colors.blue),
+                  _buildMetricCard('In Progress', 3, Colors.orange),
+                  _buildMetricCard('Completed', 12, Colors.green),
+                ],
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Today\'s Schedule',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8.0),
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildScheduleItem('AC Repair', 'Downtown Office', '9:00 AM - 11:00 AM', Icons.build),
+                    _buildScheduleItem('Emergency Plumbing', 'Downtown Office', '1:30 PM - 3:00 PM', Icons.warning),
+                    _buildScheduleItem('Light Installation', 'West Wing', '3:30 PM - 4:30 PM', Icons.lightbulb),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                'Quick Actions',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildActionButton('Work Orders', Icons.cases_sharp),
+                  _buildActionButton('Groups', Icons.group),
+                  _buildActionButton('Inventory', Icons.inventory),
+                  _buildActionButton('Messages', Icons.email),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+  }
+
+  Widget _buildMetricCard(String title, int count, Color color) {
+    return Expanded(
+      child: Card(
+        color: color,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text(
+                count.toString(),
+                style: const TextStyle(fontSize: 24, color: Colors.white),
+              ),
+              Text(
+                title,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+        ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO hidupkan setelah generate route nya
-          // context.router.push(const AddWorkOrderRoute());
-        },
-        child: const Icon(Icons.add),
+    );
+  }
+
+  Widget _buildScheduleItem(String title, String location, String time, IconData icon) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        subtitle: Text('$location\n$time'),
+        trailing: const Icon(Icons.arrow_forward),
+      ),
+    );
+  }
+
+  Widget _buildActionButton(String title, IconData icon) {
+    return Card(
+      color: Colors.lightBlue[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            Icon(icon, size: 30),
+            const SizedBox(height: 8.0),
+            Text(title),
+          ],
+        ),
       ),
     );
   }
