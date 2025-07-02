@@ -52,6 +52,8 @@ import '../../features/work_order/presentation/bloc/work_order_bloc.dart'
     as _i683;
 import '../../features/work_order_group/data/data_sources/work_order_group_local_data_source.dart'
     as _i515;
+import '../../features/work_order_group/data/repository/work_order_group_repository_impl.dart'
+    as _i1040;
 import '../../features/work_order_group/domain/repository/work_order_group_repository.dart'
     as _i959;
 import '../../features/work_order_group/domain/usecases/create_work_order_group.dart'
@@ -74,26 +76,6 @@ extension GetItInjectableX on _i174.GetIt {
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     gh.lazySingleton<_i771.DatabaseHelper>(() => _i771.DatabaseHelper());
-    gh.lazySingleton<_i500.CreateWorkOrderGroup>(
-      () => _i500.CreateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
-    );
-    gh.lazySingleton<_i39.GetAllWorkOrderGroups>(
-      () => _i39.GetAllWorkOrderGroups(gh<_i959.WorkOrderGroupRepository>()),
-    );
-    gh.lazySingleton<_i702.UpdateWorkOrderGroup>(
-      () => _i702.UpdateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
-    );
-    gh.lazySingleton<_i129.DeleteWorkOrderGroup>(
-      () => _i129.DeleteWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
-    );
-    gh.lazySingleton<_i274.WorkOrderGroupBloc>(
-      () => _i274.WorkOrderGroupBloc(
-        gh<_i39.GetAllWorkOrderGroups>(),
-        gh<_i500.CreateWorkOrderGroup>(),
-        gh<_i702.UpdateWorkOrderGroup>(),
-        gh<_i129.DeleteWorkOrderGroup>(),
-      ),
-    );
     gh.lazySingleton<_i929.TechnicianLocalDataSource>(
       () => _i929.TechnicianLocalDataSourceImpl(gh<_i771.DatabaseHelper>()),
     );
@@ -119,6 +101,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i423.DeleteTechnician>(
       () => _i423.DeleteTechnician(gh<_i702.TechnicianRepository>()),
     );
+    gh.lazySingleton<_i959.WorkOrderGroupRepository>(
+      () => _i1040.WorkOrderGroupRepositoryImpl(
+        localDataSource: gh<_i515.WorkOrderGroupLocalDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i1031.TechnicianBloc>(
       () => _i1031.TechnicianBloc(
         gh<_i981.GetAllTechnicians>(),
@@ -129,6 +116,26 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i750.WorkOrderRepository>(
       () => _i258.WorkOrderRepositoryImpl(gh<_i416.WorkOrderLocalDataSource>()),
+    );
+    gh.lazySingleton<_i500.CreateWorkOrderGroup>(
+      () => _i500.CreateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i39.GetAllWorkOrderGroups>(
+      () => _i39.GetAllWorkOrderGroups(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i702.UpdateWorkOrderGroup>(
+      () => _i702.UpdateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i129.DeleteWorkOrderGroup>(
+      () => _i129.DeleteWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i274.WorkOrderGroupBloc>(
+      () => _i274.WorkOrderGroupBloc(
+        gh<_i39.GetAllWorkOrderGroups>(),
+        gh<_i500.CreateWorkOrderGroup>(),
+        gh<_i702.UpdateWorkOrderGroup>(),
+        gh<_i129.DeleteWorkOrderGroup>(),
+      ),
     );
     gh.lazySingleton<_i962.FilterWorkOrders>(
       () => _i962.FilterWorkOrders(gh<_i750.WorkOrderRepository>()),

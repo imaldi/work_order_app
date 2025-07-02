@@ -14,6 +14,10 @@ import '../../features/home/presentation/screens/splash_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/technician/domain/entity/technician_entity.dart';
 import '../../features/work_order/domain/entities/work_order_entity.dart';
+import '../../features/work_order_group/domain/entity/work_order_group_entity.dart';
+import '../../features/work_order_group/presentation/screens/create_work_order_group_screen.dart';
+import '../../features/work_order_group/presentation/screens/edit_work_order_group_screen.dart';
+import '../../features/work_order_group/presentation/screens/work_order_group_list_screen.dart';
 
 part 'router.gr.dart';
 
@@ -21,16 +25,19 @@ part 'router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: SplashRoute.page, initial: true),
+    AutoRoute(page: SplashRoute.page),
     AutoRoute(page: ProfileRoute.page),
-    AutoRoute(page: MenuRoute.page),
+    AutoRoute(page: MenuRoute.page, initial: true),
 
     AutoRoute(path: '/dashboard', page: MainRoute.page, children: [
       AutoRoute(page: HomeRoute.page),
-      AutoRoute(page: WorkOrderListRoute.page),
-      AutoRoute(page: TechnicianListRoute.page),
       AutoRoute(page: ProfileRoute.page),
     ]),
+    AutoRoute(page: WorkOrderListRoute.page),
+    AutoRoute(page: TechnicianListRoute.page),
+    AutoRoute(page: WorkOrderGroupListRoute.page),
+    AutoRoute(page: CreateWorkOrderGroupRoute.page),
+    AutoRoute(page: EditWorkOrderGroupRoute.page),
     AutoRoute(page: AddWorkOrderRoute.page),
     AutoRoute(page: EditWorkOrderRoute.page),
     AutoRoute(page: AddTechnicianRoute.page),

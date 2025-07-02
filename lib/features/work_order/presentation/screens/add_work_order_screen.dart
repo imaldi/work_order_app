@@ -141,7 +141,6 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                // TODO: Nanti pagi baikin
                 BlocBuilder<TechnicianBloc, TechnicianState>(
                   builder: (context, state) {
                     return state.whenOrNull(

@@ -29,12 +29,10 @@ class WorkOrderGroupBloc extends Bloc<WorkOrderGroupEvent, WorkOrderGroupState> 
       this.updateWorkOrderGroup,
       this.deleteWorkOrderGroup,
       ) : super(const WorkOrderGroupState.initial()) {
-    on<WorkOrderGroupEvent>((event, emit) {
-      on<GetAllWorkOrderGroupsEvent>(_onGetAllWorkOrderGroups);
-      on<CreateWorkOrderGroupEvent>(_onAddWorkOrderGroup);
-      on<UpdateWorkOrderGroupEvent>(_onUpdateWorkOrderGroup);
-      on<DeleteWorkOrderGroupEvent>(_onDeleteWorkOrderGroup);
-    });
+    on<GetAllWorkOrderGroupsEvent>(_onGetAllWorkOrderGroups);
+    on<CreateWorkOrderGroupEvent>(_onAddWorkOrderGroup);
+    on<UpdateWorkOrderGroupEvent>(_onUpdateWorkOrderGroup);
+    on<DeleteWorkOrderGroupEvent>(_onDeleteWorkOrderGroup);
   }
 
   FutureOr<void> _onGetAllWorkOrderGroups(GetAllWorkOrderGroupsEvent event, Emitter<WorkOrderGroupState> emit) async {

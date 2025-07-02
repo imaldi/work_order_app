@@ -1,20 +1,16 @@
-import 'package:equatable/equatable.dart';
 
-class WorkOrderGroupEntity extends Equatable {
-  final int? id;
-  final String title;
-  final String description;
-  final String createdAt;
-  final int createdBy;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  WorkOrderGroupEntity({
-    this.id,
-    required this.title,
-    required this.description,
-    required this.createdAt,
-    required this.createdBy,
-  });
+part 'work_order_group_entity.freezed.dart';
 
-  @override
-  List<Object?> get props => [id, title, description, createdAt, createdBy];
+
+@freezed
+class WorkOrderGroupEntity with _$WorkOrderGroupEntity {
+  const factory WorkOrderGroupEntity({
+    required int id,
+    required String title,
+    required String description,
+    required String createdAt,
+    required int createdBy,
+  }) = _WorkOrderGroupEntity;
 }

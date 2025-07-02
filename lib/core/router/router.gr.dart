@@ -43,6 +43,22 @@ class AddWorkOrderRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [CreateWorkOrderGroupScreen]
+class CreateWorkOrderGroupRoute extends PageRouteInfo<void> {
+  const CreateWorkOrderGroupRoute({List<PageRouteInfo>? children})
+    : super(CreateWorkOrderGroupRoute.name, initialChildren: children);
+
+  static const String name = 'CreateWorkOrderGroupRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const CreateWorkOrderGroupScreen());
+    },
+  );
+}
+
+/// generated route for
 /// [EditTechnicianScreen]
 class EditTechnicianRoute extends PageRouteInfo<EditTechnicianRouteArgs> {
   EditTechnicianRoute({
@@ -89,6 +105,56 @@ class EditTechnicianRouteArgs {
 
   @override
   int get hashCode => key.hashCode ^ technician.hashCode;
+}
+
+/// generated route for
+/// [EditWorkOrderGroupScreen]
+class EditWorkOrderGroupRoute
+    extends PageRouteInfo<EditWorkOrderGroupRouteArgs> {
+  EditWorkOrderGroupRoute({
+    Key? key,
+    required WorkOrderGroupEntity group,
+    List<PageRouteInfo>? children,
+  }) : super(
+         EditWorkOrderGroupRoute.name,
+         args: EditWorkOrderGroupRouteArgs(key: key, group: group),
+         initialChildren: children,
+       );
+
+  static const String name = 'EditWorkOrderGroupRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditWorkOrderGroupRouteArgs>();
+      return WrappedRoute(
+        child: EditWorkOrderGroupScreen(key: args.key, group: args.group),
+      );
+    },
+  );
+}
+
+class EditWorkOrderGroupRouteArgs {
+  const EditWorkOrderGroupRouteArgs({this.key, required this.group});
+
+  final Key? key;
+
+  final WorkOrderGroupEntity group;
+
+  @override
+  String toString() {
+    return 'EditWorkOrderGroupRouteArgs{key: $key, group: $group}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditWorkOrderGroupRouteArgs) return false;
+    return key == other.key && group == other.group;
+  }
+
+  @override
+  int get hashCode => key.hashCode ^ group.hashCode;
 }
 
 /// generated route for
@@ -232,6 +298,22 @@ class TechnicianListRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return WrappedRoute(child: const TechnicianListScreen());
+    },
+  );
+}
+
+/// generated route for
+/// [WorkOrderGroupListScreen]
+class WorkOrderGroupListRoute extends PageRouteInfo<void> {
+  const WorkOrderGroupListRoute({List<PageRouteInfo>? children})
+    : super(WorkOrderGroupListRoute.name, initialChildren: children);
+
+  static const String name = 'WorkOrderGroupListRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return WrappedRoute(child: const WorkOrderGroupListScreen());
     },
   );
 }

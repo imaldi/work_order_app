@@ -47,7 +47,7 @@ class WorkOrderGroupLocalDataSourceImpl implements WorkOrderGroupLocalDataSource
       if (result.isEmpty) {
         return left(DatabaseFailure('Work order group not found'));
       }
-      return right(WorkOrderGroupModel.fromMap(result.first));
+      return right(WorkOrderGroupModel.fromJson(result.first));
     } catch (e) {
       return left(DatabaseFailure('Failed to delete work order group: $e'));
     }
@@ -58,10 +58,10 @@ class WorkOrderGroupLocalDataSourceImpl implements WorkOrderGroupLocalDataSource
     try {
       final db = await databaseHelper.database;
       final maps = await db.query('work_order_groups');
-      final workOrders = maps.map((map) => WorkOrderGroupModel.fromMap(map)).toList();
+      final workOrders = maps.map((map) => WorkOrderGroupModel.fromJson(map)).toList();
       return right(workOrders);
     } catch (e) {
-      return left(DatabaseFailure('Failed to get work orders: $e'));
+      return left(DatabaseFailure('Failed to get work order Groups: $e'));
     }
   }
 

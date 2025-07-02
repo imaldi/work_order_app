@@ -67,7 +67,7 @@ class DatabaseHelper {
         description TEXT NOT NULL,
         createdAt TEXT NOT NULL,
         createdBy INTEGER NOT NULL,
-        FOREIGN KEY (created_by) REFERENCES technicians(id)
+        FOREIGN KEY (createdBy) REFERENCES technicians(id)
       )
     ''');
   }

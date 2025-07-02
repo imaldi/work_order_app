@@ -49,15 +49,21 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
               ],
             ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.router.push(const WorkOrderGroupListRoute());
+                    },
+                    child: const Text("Manage Work Order Group"),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // TODO hidupkan setelah generate route nya
-          // context.router.push(const AddWorkOrderRoute());
-        },
-        child: const Icon(Icons.add),
       ),
     );
   }
