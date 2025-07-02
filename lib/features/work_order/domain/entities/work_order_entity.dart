@@ -11,6 +11,7 @@ abstract class WorkOrderEntity with _$WorkOrderEntity {
     required String priority,
     required String status,
     required String dueDate,
+    required String createdAt,
     required int technicianId,
     required String address,
     required double latitude,

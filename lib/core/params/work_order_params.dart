@@ -47,15 +47,6 @@ class UpdateWorkOrdersParams extends Equatable {
   ];
 }
 
-class DeleteWorkOrdersParams extends Equatable {
-  final int id;
-
-  const DeleteWorkOrdersParams({required this.id});
-  @override
-  List<Object?> get props => [
-    id
-  ];
-}
 
 class FilterWorkOrderParams extends Equatable {
   final String? status;

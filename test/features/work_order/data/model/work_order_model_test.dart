@@ -10,11 +10,12 @@ void main() {
         description: 'Repair air conditioner',
         priority: 'High',
         status: 'Pending',
-        dueDate: '2025-07-01',
         technicianId: 1,
         address: 'Jl. Contoh No. 123',
         latitude: -6.2,
         longitude: 106.8,
+        dueDate: '2025-07-01 00:00',
+        createdAt: '2025-06-01 00:00',
       );
 
       final json = workOrder.toJson();
@@ -50,7 +51,8 @@ void main() {
         description: 'Repair air conditioner',
         priority: 'High',
         status: 'Pending',
-        dueDate: '2025-07-01',
+        dueDate: '2025-07-01 00:00',
+        createdAt: '2025-06-01 00:00',
         technicianId: 1,
         address: 'Jl. Contoh No. 123',
         latitude: -6.2,
@@ -63,7 +65,8 @@ void main() {
         description: 'Repair air conditioner',
         priority: 'High',
         status: 'Pending',
-        dueDate: '2025-07-01',
+        dueDate: '2025-07-01 00:00',
+        createdAt: '2025-06-01 00:00',
         technicianId: 1,
         address: 'Jl. Contoh No. 123',
         latitude: -6.2,

@@ -22,7 +22,19 @@ void main() {
     repository = WorkOrderRepositoryImpl(mockDataSource);
   });
 
-  final tWorkOrderModel = WorkOrderModel(id: 1, title: 'Test', description: "Oke", priority: '', status: '', dueDate: '', technicianId: 0, address: '', latitude: 0.0, longitude: 0.0);
+  final tWorkOrderModel = WorkOrderModel(
+      id: 1,
+      title: 'Test',
+      description: "Oke",
+      priority: '',
+      status: '',
+      dueDate: '',
+      createdAt: '',
+      technicianId: 0,
+      address: '',
+      latitude: 0.0,
+      longitude: 0.0
+  );
   final tWorkOrdersModel = [tWorkOrderModel];
   final tFailure = DatabaseFailure('Operation failed');
 

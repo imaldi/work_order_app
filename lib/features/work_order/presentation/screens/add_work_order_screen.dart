@@ -181,9 +181,10 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         address: _addressController.text,
                         latitude: 0.0, // Default value
                         longitude: 0.0, // Default value
-                        dueDate: _dueDate != null ? DateFormat("yyyy-MM-dd").format(_dueDate!) : "",
+                        dueDate: _dueDate != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!) : "",
                         status: _status.value,
                         technicianId: _assignedTechnician?.id ?? 0,
+                        createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
                       );
                       context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
                           AddWorkOrdersParams(

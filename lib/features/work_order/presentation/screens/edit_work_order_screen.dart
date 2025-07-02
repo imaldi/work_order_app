@@ -63,7 +63,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
       orElse: () => WorkOrderStatus.pending, // Default jika tidak ditemukan
     );
     _dueDate = widget.workOrder.dueDate.isNotEmpty
-        ? DateFormat('yyyy-MM-dd').parse(widget.workOrder.dueDate)
+        ? DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.dueDate)
         : DateTime.now(); // Default ke tanggal sekarang jika null/kosong
     // _assignedTechnician = null;
     var tecnisianId = widget.workOrder.technicianId;
@@ -222,7 +222,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             address: _addressController.text,
                             latitude: widget.workOrder.latitude,
                             longitude: widget.workOrder.longitude,
-                            dueDate: DateFormat("yyyy-MM-dd").format(_dueDate),
+                            dueDate: DateFormat("yy-MM-dd HH:mm").format(_dueDate),
                             status: _status.value,
                             technicianId: _assignedTechnician?.id ?? 0,
                           );

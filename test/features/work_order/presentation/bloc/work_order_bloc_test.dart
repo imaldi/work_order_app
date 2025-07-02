@@ -4,6 +4,7 @@ import 'package:fpdart/fpdart.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:work_order_app/core/errors/failures.dart';
+import 'package:work_order_app/core/params/params.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'package:work_order_app/features/work_order/domain/use_cases/add_work_order.dart';
@@ -65,6 +66,7 @@ void main() {
       priority: '',
       status: '',
       dueDate: '',
+      createdAt: '',
       technicianId: 0,
       address: '',
       latitude: 0.0,
@@ -202,7 +204,7 @@ void main() {
   });
 
   group('DeleteWorkOrderEvent', () {
-    final params = DeleteWorkOrdersParams(id: tWorkOrder.id);
+    final params = QueryIdParams(id: tWorkOrder.id);
 
     blocTest<WorkOrderBloc, WorkOrderState>(
       'emits [loading, loaded] when delete succeeds',
@@ -292,7 +294,8 @@ void main() {
           description: 'Repair air conditioner',
           priority: 'High',
           status: 'Pending',
-          dueDate: '2025-07-01',
+          dueDate: '2025-07-01 00:00',
+          createdAt: '2025-06-01 00:00',
           technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,
@@ -311,7 +314,8 @@ void main() {
           description: 'Repair air conditioner',
           priority: 'High',
           status: 'Pending',
-          dueDate: '2025-07-01',
+          dueDate: '2025-07-01 00:00',
+          createdAt: '2025-06-01 00:00',
           technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,

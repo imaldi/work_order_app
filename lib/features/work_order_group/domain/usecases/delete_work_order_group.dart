@@ -4,16 +4,16 @@ import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
 import '../../../../core/params/work_order_params.dart';
 import '../../../../core/usecase/usecase.dart';
-import '../repository/work_order_repository.dart';
+import '../repository/work_order_group_repository.dart';
 
 @lazySingleton
-class DeleteWorkOrder implements UseCase<Unit, QueryIdParams> {
-  final WorkOrderRepository repository;
+class DeleteWorkOrderGroup implements UseCase<Unit, QueryIdParams> {
+  final WorkOrderGroupRepository repository;
 
-  DeleteWorkOrder(this.repository);
+  DeleteWorkOrderGroup(this.repository);
 
   @override
   Future<Either<Failure, Unit>> call(QueryIdParams params) async {
-    return await repository.deleteWorkOrder(params.id);
+    return await repository.deleteWorkOrderGroup(params.id);
   }
 }

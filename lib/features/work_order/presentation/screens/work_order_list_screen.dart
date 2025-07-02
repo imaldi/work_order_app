@@ -8,6 +8,7 @@ import 'package:work_order_app/features/technician/domain/entity/technician_enti
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
+import '../../../../core/params/params.dart';
 import '../../../../core/router/router.dart';
 import '../../../../widgets/my_confirm_dialog/my_confirm_dialog.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
@@ -160,7 +161,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                               title: "Yakin Hapus data Work Order?",
                               positiveButtonCallback: () {
                                 context.read<WorkOrderBloc>().add(
-                                  DeleteWorkOrderEvent(DeleteWorkOrdersParams(id: wo.id)),
+                                  DeleteWorkOrderEvent(QueryIdParams(id: wo.id)),
                                 );
                               },
                               positiveButtonText: "Ya",
