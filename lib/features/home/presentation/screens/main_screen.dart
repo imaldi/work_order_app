@@ -58,6 +58,9 @@ class _MainScreenState extends State<MainScreen> {
             onTap: (index){
               tabsRouter.setActiveIndex(index);
             },
+            type: BottomNavigationBarType.fixed, // Tetapkan tipe ke fixed
+            showSelectedLabels: true, // Pastikan label yang dipilih terlihat
+            showUnselectedLabels: true, // Pastikan label yang tidak dipilih terlihat
           );
         },
       ),

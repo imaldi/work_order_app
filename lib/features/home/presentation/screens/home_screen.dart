@@ -70,13 +70,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8.0),
-              Row(
+              Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildActionButton('Work Orders', Icons.cases_sharp),
-                  _buildActionButton('Groups', Icons.group),
-                  _buildActionButton('Inventory', Icons.inventory),
-                  _buildActionButton('Messages', Icons.email),
+                  Row(children: [
+                    _buildActionButton('Work Orders', Icons.cases_sharp),
+                    _buildActionButton('Groups', Icons.group),
+                  ],),
+                  Row(children: [
+                    _buildActionButton('Inventory', Icons.inventory),
+                    _buildActionButton('Messages', Icons.email),
+                  ],),
                 ],
               ),
             ],
@@ -121,16 +125,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildActionButton(String title, IconData icon) {
-    return Card(
-      color: Colors.lightBlue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Icon(icon, size: 30),
-            const SizedBox(height: 8.0),
-            Text(title),
-          ],
+    return Expanded(
+      child: Card(
+        color: Colors.lightBlue[50],
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Icon(icon, size: 30),
+              const SizedBox(height: 8.0),
+              Text(title),
+            ],
+          ),
         ),
       ),
     );
