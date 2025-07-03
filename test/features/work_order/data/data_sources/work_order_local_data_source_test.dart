@@ -35,7 +35,7 @@ void main() {
       technicianId: 1,
       address: 'Jl. Contoh No. 123',
       latitude: -6.2,
-      longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+      longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
     );
 
     test('should add work order to database', () async {

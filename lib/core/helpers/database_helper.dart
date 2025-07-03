@@ -48,6 +48,7 @@ class DatabaseHelper {
         scheduledEnd TEXT NOT NULL,
         createdAt TEXT NOT NULL,
         technicianId INTEGER NOT NULL,
+        groupId INTEGER NOT NULL,
         materials TEXT NOT NULL,
         photoPath TEXT NOT NULL,
         attachmentPath TEXT NOT NULL,
@@ -56,6 +57,7 @@ class DatabaseHelper {
         latitude REAL NOT NULL,
         longitude REAL NOT NULL,
         FOREIGN KEY (technicianId) REFERENCES technicians(id)
+        FOREIGN KEY (groupId) REFERENCES work_order_groups(id)
       )
     ''');
 

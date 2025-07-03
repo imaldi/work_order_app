@@ -15,7 +15,7 @@ void main() {
         latitude: -6.2,
         longitude: 106.8,
         dueDate: '2025-07-01 00:00',
-        createdAt: '2025-06-01 00:00', customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+        createdAt: '2025-06-01 00:00', customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
       );
 
       final json = workOrder.toJson();
@@ -57,7 +57,7 @@ void main() {
         technicianId: 1,
         address: 'Jl. Contoh No. 123',
         latitude: -6.2,
-        longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+        longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
       );
 
       final workOrder2 = WorkOrderModel(
@@ -71,7 +71,7 @@ void main() {
         technicianId: 1,
         address: 'Jl. Contoh No. 123',
         latitude: -6.2,
-        longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+        longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
       );
 
       expect(workOrder1, workOrder2);

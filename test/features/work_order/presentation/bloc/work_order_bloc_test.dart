@@ -70,7 +70,7 @@ void main() {
     technicianId: 0,
     address: '',
     latitude: 0.0,
-    longitude: 0.0, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+    longitude: 0.0, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
   );
   final tWorkOrders = [tWorkOrder];
   final tFailure = DatabaseFailure('Operation failed');
@@ -253,7 +253,7 @@ void main() {
             technicianId: 1,
             address: 'Jl. Contoh No. 123',
             latitude: -6.2,
-            longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+            longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
           ),
         ]),
       );
@@ -274,7 +274,7 @@ void main() {
           technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,
-          longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+          longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '', groupId: 0,
         ),
       ]),
     ],

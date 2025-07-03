@@ -6,10 +6,12 @@ import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
+import 'package:work_order_app/features/work_order_group/presentation/bloc/work_order_group_bloc.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
+import '../../../work_order_group/domain/entity/work_order_group_entity.dart';
 import '../../domain/entities/work_order_entity.dart';
 
 
@@ -30,6 +32,9 @@ class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
         BlocProvider.value(
           value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
         ),
+        BlocProvider.value(
+          value: getIt<WorkOrderGroupBloc>()..add(GetAllWorkOrderGroupsEvent()),
+        ),
       ],
       child: this,
     );
@@ -47,6 +52,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
   WorkOrderStatus _status = WorkOrderStatus.pending;
   DateTime? _dueDate;
   TechnicianEntity? _assignedTechnician;
+  WorkOrderGroupEntity? _assignedGroup;
 
   @override
   void dispose() {
@@ -190,6 +196,34 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
+                BlocBuilder<WorkOrderGroupBloc, WorkOrderGroupState>(
+                  builder: (context, state) {
+                    return state.whenOrNull(
+                      loading: (){
+                        return const CircularProgressIndicator();
+                      },
+                      loaded: (list){
+                        return DropdownButtonFormField<WorkOrderGroupEntity>(
+                          value: _assignedGroup,
+                          decoration: const InputDecoration(labelText: 'Group'),
+                          items: list
+                              .map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e.title),
+                          ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _assignedGroup = value;
+                            });
+                          },
+                        );
+                      }
+
+                    ) ?? SizedBox.shrink();
+                  },
+                ),
+                const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate() && _dueDate != null) {
@@ -204,10 +238,11 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         dueDate: _dueDate != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!) : "",
                         status: _status.value,
                         technicianId: _assignedTechnician?.id ?? 0,
+                        groupId: _assignedGroup?.id ?? 0,
                         createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
                         // TODO: Urus 7 field baru ini
-                        customId: '',
-                        materials: '',
+                        customId: _titleController.text,
+                        materials: _reqMaterialsController.text,
                         photoPath: '',
                         attachmentPath: '',
                         scheduledStart: '',

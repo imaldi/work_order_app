@@ -80,7 +80,7 @@ class _CreateWorkOrderGroupScreenState extends State<CreateWorkOrderGroupScreen>
                       loaded: (list){
                         return DropdownButtonFormField<TechnicianEntity>(
                           value: _creator,
-                          decoration: const InputDecoration(labelText: 'Work Order Group'),
+                          decoration: const InputDecoration(labelText: 'Created By'),
                           items: list
                               .map((e) => DropdownMenuItem(
                             value: e,

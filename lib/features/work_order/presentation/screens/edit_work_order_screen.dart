@@ -7,10 +7,12 @@ import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/presentation/bloc/technician_bloc.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
+import 'package:work_order_app/features/work_order_group/presentation/bloc/work_order_group_bloc.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
 import '../../../technician/domain/entity/technician_entity.dart';
+import '../../../work_order_group/domain/entity/work_order_group_entity.dart';
 import '../bloc/work_order_bloc.dart';
 
 @RoutePage()
@@ -32,6 +34,9 @@ class EditWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper {
         BlocProvider.value(
             value: getIt<TechnicianBloc>(),
             ),
+        BlocProvider.value(
+            value: getIt<WorkOrderGroupBloc>(),
+            ),
       ],
         child: this,
     );
@@ -49,6 +54,8 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
   late WorkOrderStatus _status;
   late DateTime _dueDate;
   TechnicianEntity? _assignedTechnician;
+  WorkOrderGroupEntity? _assignedGroup;
+
 
   @override
   void initState() {
@@ -71,8 +78,10 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
         : DateTime.now(); // Default ke tanggal sekarang jika null/kosong
     // _assignedTechnician = null;
     var tecnisianId = widget.workOrder.technicianId;
+    var groupId = widget.workOrder.groupId;
     print("_assignedTechnician id: ${tecnisianId}");
     _assignedTechnician = context.read<TechnicianBloc>().state.whenOrNull(loaded: (list) => list.firstWhere((e) => e.id == tecnisianId, orElse: ()=> TechnicianEntity(id: 0, name: "Technician Not Found")));
+    _assignedGroup = context.read<WorkOrderGroupBloc>().state.whenOrNull(loaded: (list) => list.firstWhere((e) => e.id == groupId, orElse: ()=> WorkOrderGroupEntity(id: 0, title: "Work Order Group Not Found", description: '', createdAt: '', createdBy: 0)));
     print("_assignedTechnician: ${_assignedTechnician}");
 
   }
@@ -219,6 +228,35 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                     ) ?? SizedBox.shrink();
                   },
                 ),
+
+                const SizedBox(height: 16),
+                BlocBuilder<WorkOrderGroupBloc, WorkOrderGroupState>(
+                  builder: (context, state) {
+                    return state.whenOrNull(
+                        loading: (){
+                          return const CircularProgressIndicator();
+                        },
+                        loaded: (list){
+                          return DropdownButtonFormField<WorkOrderGroupEntity>(
+                            value: _assignedGroup,
+                            decoration: const InputDecoration(labelText: 'Group'),
+                            items: list
+                                .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e.title),
+                            ))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _assignedGroup = value;
+                              });
+                            },
+                          );
+                        }
+
+                    ) ?? SizedBox.shrink();
+                  },
+                ),
                 const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -239,6 +277,8 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             dueDate: DateFormat("yy-MM-dd HH:mm").format(_dueDate),
                             status: _status.value,
                             technicianId: _assignedTechnician?.id ?? 0,
+                            groupId: _assignedGroup?.id ?? 0,
+                            customId: _titleController.text,
                           );
                           context
                               .read<WorkOrderBloc>()
