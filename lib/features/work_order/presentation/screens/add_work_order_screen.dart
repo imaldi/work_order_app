@@ -41,6 +41,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _addressController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _reqMaterialsController = TextEditingController();
   WorkOrderPriority _priority = WorkOrderPriority.low;
   WorkOrderStatus _status = WorkOrderStatus.pending;
   DateTime? _dueDate;
@@ -51,6 +53,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
     _titleController.dispose();
     _descriptionController.dispose();
     _addressController.dispose();
+    _locationController.dispose();
+    _reqMaterialsController.dispose();
     super.dispose();
   }
 
@@ -97,11 +101,28 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _reqMaterialsController,
+                  decoration: const InputDecoration(labelText: 'Material yang diperlukan'),
+                  maxLines: 4,
+                  validator: (value) =>
+                  value!.isEmpty ? 'Material wajib diisi' : null,
+                ),
+                const SizedBox(height: 16),
+                // FIXME: Ini akan auto fill oleh widget map
+                TextFormField(
                   controller: _addressController,
                   decoration: const InputDecoration(labelText: 'Alamat'),
-                  maxLines: 5,
+                  maxLines: 4,
                   validator: (value) =>
                   value!.isEmpty ? 'Alamat wajib diisi' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _locationController,
+                  decoration: const InputDecoration(labelText: 'Lokasi'),
+                  maxLines: 4,
+                  validator: (value) =>
+                  value!.isEmpty ? 'Lokasi wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -191,7 +212,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         attachmentPath: '',
                         scheduledStart: '',
                         scheduledEnd: '',
-                        location: '',
+                        location: _locationController.text,
                       );
                       context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
                           AddWorkOrdersParams(

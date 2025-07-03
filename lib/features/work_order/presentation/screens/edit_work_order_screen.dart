@@ -43,6 +43,8 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
   final _addressController = TextEditingController();
+  final _locationController = TextEditingController();
+  final _reqMaterialsController = TextEditingController();
   late WorkOrderPriority _priority;
   late WorkOrderStatus _status;
   late DateTime _dueDate;
@@ -53,7 +55,9 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
     super.initState();
     _titleController.text = widget.workOrder.title;
     _descriptionController.text = widget.workOrder.description;
+    _reqMaterialsController.text = widget.workOrder.address;
     _addressController.text = widget.workOrder.address;
+    _locationController.text = widget.workOrder.location;
     _priority = WorkOrderPriority.values.firstWhere(
           (priority) => priority.value == widget.workOrder.priority,
       orElse: () => WorkOrderPriority.low, // Default jika tidak ditemukan
@@ -77,7 +81,9 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
   void dispose() {
     _titleController.dispose();
     _descriptionController.dispose();
+    _locationController.dispose();
     _addressController.dispose();
+    _reqMaterialsController.dispose();
     super.dispose();
   }
 
@@ -124,11 +130,28 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  controller: _reqMaterialsController,
+                  decoration: const InputDecoration(labelText: 'Material yang diperlukan'),
+                  maxLines: 4,
+                  validator: (value) =>
+                  value!.isEmpty ? 'Material wajib diisi' : null,
+                ),
+                const SizedBox(height: 16),
+                // FIXME: Ini akan auto fill oleh widget map
+                TextFormField(
                   controller: _addressController,
                   decoration: const InputDecoration(labelText: 'Alamat'),
                   maxLines: 5,
                   validator: (value) =>
                   value!.isEmpty ? 'Alamat wajib diisi' : null,
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _locationController,
+                  decoration: const InputDecoration(labelText: 'Lokasi'),
+                  maxLines: 5,
+                  validator: (value) =>
+                  value!.isEmpty ? 'Lokasi wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -169,17 +192,6 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                 BlocConsumer<TechnicianBloc, TechnicianState>(
                   listener: (context, state){
 
-                    // state.maybeWhen(
-                    //     loaded: (list){
-                    //       setState(() {
-                    //         _assignedTechnician = list.firstWhere((e) {return e.id == widget.workOrder.technicianId;},
-                    //             orElse: (){
-                    //           return TechnicianEntity(id: 0, name: "Technician Not Found");
-                    //         });
-                    //         print("assignedTechnician: ${_assignedTechnician?.name}");
-                    //       });
-                    //     },
-                    //     orElse: (){});
                   },
                   builder: (context, state) {
                     return state.whenOrNull(
@@ -219,7 +231,9 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             title: _titleController.text,
                             description: _descriptionController.text,
                             priority: _priority.value,
+                            materials: _reqMaterialsController.text,
                             address: _addressController.text,
+                            location: _locationController.text,
                             latitude: widget.workOrder.latitude,
                             longitude: widget.workOrder.longitude,
                             dueDate: DateFormat("yy-MM-dd HH:mm").format(_dueDate),
