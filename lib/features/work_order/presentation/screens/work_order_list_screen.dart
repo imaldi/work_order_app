@@ -149,7 +149,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                       final wo = state.workOrders[index];
                       return ListTile(
                         title: Text(wo.title),
-                        subtitle: Text('Status: ${wo.status} | Priority: ${wo.priority}'),
+                        subtitle: Text('Status: ${WorkOrderStatus.values.firstWhere((el) => el.value == wo.status).string } | Priority: ${wo.priority}'),
                         onTap: () {
                           context.router.push(EditWorkOrderRoute(workOrder: wo));
                         },

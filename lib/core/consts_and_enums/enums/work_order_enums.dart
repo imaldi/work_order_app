@@ -1,10 +1,11 @@
 enum WorkOrderStatus {
-  pending("pending"),
-  inProgress("in_progress"),
-  completed("completed");
+  pending("pending", "Pending"),
+  inProgress("in_progress", "In Progress"),
+  completed("completed", "Completed");
 
   final String value;
-  const WorkOrderStatus(this.value);
+  final String string;
+  const WorkOrderStatus(this.value, this.string);
 }
 enum WorkOrderPriority {
   low("low"),

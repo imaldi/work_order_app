@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           var todayDate = DateTime.now();
           var todayList = list.where((el) {
-            var formattedDueDate = DateFormat('yy-MM-dd HH:mm').parse(el.dueDate);
+            var formattedDueDate = DateFormat('yy-MM-dd').parse(el.dueDate);
             return formattedDueDate.year == todayDate.year &&
                 formattedDueDate.month == todayDate.month &&
                 formattedDueDate.day == todayDate.day;

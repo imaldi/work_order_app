@@ -51,6 +51,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
   WorkOrderPriority _priority = WorkOrderPriority.low;
   WorkOrderStatus _status = WorkOrderStatus.pending;
   DateTime? _dueDate;
+  DateTime? _scheduledStart;
+  DateTime? _scheduledEnd;
   TechnicianEntity? _assignedTechnician;
   WorkOrderGroupEntity? _assignedGroup;
 
@@ -142,6 +144,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                     if (selectedDate != null) {
                       setState(() {
                         _dueDate = selectedDate;
+                        _scheduledStart = _scheduledStart?.copyWith(year: _dueDate!.year, month: _dueDate!.month, day: _dueDate!.day);
+                        _scheduledEnd = _scheduledEnd?.copyWith(year: _dueDate!.year, month: _dueDate!.month, day: _dueDate!.day);
                       });
                     }
                   },
@@ -149,6 +153,46 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                     _dueDate == null
                         ? 'Pilih Tanggal Jatuh Tempo'
                         : 'Jatuh Tempo: ${_dueDate!.toString().substring(0, 10)}',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () async {
+                    var baseDateTime = _scheduledStart ?? DateTime.now();
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: baseDateTime.hour, minute: baseDateTime.minute),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        _scheduledStart = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                      });
+                    }
+                  },
+                  child: Text(
+                    _scheduledStart == null
+                        ? 'Pilih Waktu Mulai Tugas'
+                        : 'Waktu Mulai: ${DateFormat("HH:mm").format(_scheduledStart!)}',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () async {
+                    var baseDateTime = _scheduledEnd ?? DateTime.now();
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: baseDateTime.hour, minute: baseDateTime.minute),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        _scheduledEnd = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                      });
+                    }
+                  },
+                  child: Text(
+                    _scheduledEnd == null
+                        ? 'Pilih Waktu Selesai Tugas'
+                        : 'Waktu Selesai: ${DateFormat("HH:mm").format(_scheduledEnd!)}',
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -235,7 +279,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         address: _addressController.text,
                         latitude: 0.0, // Default value
                         longitude: 0.0, // Default value
-                        dueDate: _dueDate != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!) : "",
+                        dueDate: _dueDate != null ? DateFormat("yy-MM-dd").format(_dueDate!) : "",
                         status: _status.value,
                         technicianId: _assignedTechnician?.id ?? 0,
                         groupId: _assignedGroup?.id ?? 0,
@@ -245,8 +289,9 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         materials: _reqMaterialsController.text,
                         photoPath: '',
                         attachmentPath: '',
-                        scheduledStart: '',
-                        scheduledEnd: '',
+                        // TODO: Pastikan scheduledEnd > scheduledStart
+                        scheduledStart: _dueDate != null && _scheduledStart != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!.copyWith(hour: _scheduledStart?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
+                        scheduledEnd: _dueDate != null && _scheduledEnd != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!.copyWith(hour: _scheduledEnd?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
                         location: _locationController.text,
                       );
                       context.read<WorkOrderBloc>().add(AddWorkOrderEvent(

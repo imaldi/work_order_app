@@ -106,7 +106,7 @@ class _CreateWorkOrderGroupScreenState extends State<CreateWorkOrderGroupScreen>
                       id: 0, // ID di-generate oleh repository
                       title: _titleController.text,
                       description: _descriptionController.text,
-                      createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
+                      createdAt: DateFormat("yy-MM-dd").format(DateTime.now()),
                       createdBy: _creator?.id ?? 0,
                     );
                     context.read<WorkOrderGroupBloc>().add(CreateWorkOrderGroupEvent(

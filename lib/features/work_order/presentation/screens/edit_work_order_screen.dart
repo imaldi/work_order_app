@@ -53,6 +53,8 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
   late WorkOrderPriority _priority;
   late WorkOrderStatus _status;
   late DateTime _dueDate;
+  DateTime? _scheduledStart;
+  DateTime? _scheduledEnd;
   TechnicianEntity? _assignedTechnician;
   WorkOrderGroupEntity? _assignedGroup;
 
@@ -62,7 +64,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
     super.initState();
     _titleController.text = widget.workOrder.title;
     _descriptionController.text = widget.workOrder.description;
-    _reqMaterialsController.text = widget.workOrder.address;
+    _reqMaterialsController.text = widget.workOrder.materials;
     _addressController.text = widget.workOrder.address;
     _locationController.text = widget.workOrder.location;
     _priority = WorkOrderPriority.values.firstWhere(
@@ -74,8 +76,15 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
       orElse: () => WorkOrderStatus.pending, // Default jika tidak ditemukan
     );
     _dueDate = widget.workOrder.dueDate.isNotEmpty
-        ? DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.dueDate)
-        : DateTime.now(); // Default ke tanggal sekarang jika null/kosong
+        ? DateFormat('yy-MM-dd').parse(widget.workOrder.dueDate)
+        : DateTime.now();
+    var nowTime = DateTime.now();
+    _scheduledStart = widget.workOrder.scheduledStart.isNotEmpty
+        ? DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.scheduledStart)
+        : DateTime.now();
+    _scheduledEnd = widget.workOrder.scheduledEnd.isNotEmpty
+        ? DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.scheduledEnd)
+        : DateTime.now();
     // _assignedTechnician = null;
     var tecnisianId = widget.workOrder.technicianId;
     var groupId = widget.workOrder.groupId;
@@ -174,11 +183,53 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                     if (selectedDate != null) {
                       setState(() {
                         _dueDate = selectedDate;
+                        _scheduledStart = _scheduledStart?.copyWith(year: _dueDate.year, month: _dueDate.month, day: _dueDate.day);
+                        _scheduledEnd = _scheduledEnd?.copyWith(year: _dueDate.year, month: _dueDate.month, day: _dueDate.day);
                       });
                     }
                   },
                   child: Text(
                     'Jatuh Tempo: ${_dueDate.toString().substring(0, 10)}',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () async {
+                    var baseDateTime = _scheduledStart ?? DateTime.now();
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: baseDateTime.hour, minute: baseDateTime.minute),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        _scheduledStart = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                      });
+                    }
+                  },
+                  child: Text(
+                    _scheduledStart == null
+                        ? 'Pilih Waktu Mulai Tugas'
+                        : 'Waktu Mulai: ${DateFormat("HH:mm").format(_scheduledStart!)}',
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () async {
+                    var baseDateTime = _scheduledEnd ?? DateTime.now();
+                    final selectedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay(hour: baseDateTime.hour, minute: baseDateTime.minute),
+                    );
+                    if (selectedTime != null) {
+                      setState(() {
+                        _scheduledEnd = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                      });
+                    }
+                  },
+                  child: Text(
+                    _scheduledEnd == null
+                        ? 'Pilih Waktu Selesai Tugas'
+                        : 'Waktu Selesai: ${DateFormat("HH:mm").format(_scheduledEnd!)}',
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -274,11 +325,13 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             location: _locationController.text,
                             latitude: widget.workOrder.latitude,
                             longitude: widget.workOrder.longitude,
-                            dueDate: DateFormat("yy-MM-dd HH:mm").format(_dueDate),
+                            dueDate: DateFormat("yy-MM-dd").format(_dueDate),
                             status: _status.value,
                             technicianId: _assignedTechnician?.id ?? 0,
                             groupId: _assignedGroup?.id ?? 0,
                             customId: _titleController.text,
+                            scheduledStart: _scheduledStart != null ? DateFormat("yy-MM-dd HH:mm").format(DateTime.now().copyWith(hour: _scheduledStart?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
+                            scheduledEnd: _scheduledEnd != null ? DateFormat("yy-MM-dd HH:mm").format(DateTime.now().copyWith(hour: _scheduledEnd?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
                           );
                           context
                               .read<WorkOrderBloc>()
