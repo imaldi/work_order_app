@@ -217,7 +217,7 @@ class HomeRoute extends PageRouteInfo<void> {
   static PageInfo page = PageInfo(
     name,
     builder: (data) {
-      return const HomeScreen();
+      return WrappedRoute(child: const HomeScreen());
     },
   );
 }
@@ -300,6 +300,53 @@ class TechnicianListRoute extends PageRouteInfo<void> {
       return WrappedRoute(child: const TechnicianListScreen());
     },
   );
+}
+
+/// generated route for
+/// [WorkOrderDetailScreen]
+class WorkOrderDetailRoute extends PageRouteInfo<WorkOrderDetailRouteArgs> {
+  WorkOrderDetailRoute({
+    required WorkOrderEntity workOrder,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         WorkOrderDetailRoute.name,
+         args: WorkOrderDetailRouteArgs(workOrder: workOrder, key: key),
+         initialChildren: children,
+       );
+
+  static const String name = 'WorkOrderDetailRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<WorkOrderDetailRouteArgs>();
+      return WorkOrderDetailScreen(workOrder: args.workOrder, key: args.key);
+    },
+  );
+}
+
+class WorkOrderDetailRouteArgs {
+  const WorkOrderDetailRouteArgs({required this.workOrder, this.key});
+
+  final WorkOrderEntity workOrder;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'WorkOrderDetailRouteArgs{workOrder: $workOrder, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! WorkOrderDetailRouteArgs) return false;
+    return workOrder == other.workOrder && key == other.key;
+  }
+
+  @override
+  int get hashCode => workOrder.hashCode ^ key.hashCode;
 }
 
 /// generated route for

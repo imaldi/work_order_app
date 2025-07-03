@@ -14,6 +14,7 @@ import '../../features/home/presentation/screens/splash_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
 import '../../features/technician/domain/entity/technician_entity.dart';
 import '../../features/work_order/domain/entities/work_order_entity.dart';
+import '../../features/work_order/presentation/screens/work_order_detail_screen.dart';
 import '../../features/work_order_group/domain/entity/work_order_group_entity.dart';
 import '../../features/work_order_group/presentation/screens/create_work_order_group_screen.dart';
 import '../../features/work_order_group/presentation/screens/edit_work_order_group_screen.dart';
@@ -40,6 +41,7 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: EditWorkOrderGroupRoute.page),
     AutoRoute(page: AddWorkOrderRoute.page),
     AutoRoute(page: EditWorkOrderRoute.page),
+    AutoRoute(page: WorkOrderDetailRoute.page),
     AutoRoute(page: AddTechnicianRoute.page),
     AutoRoute(page: EditTechnicianRoute.page),
   ];

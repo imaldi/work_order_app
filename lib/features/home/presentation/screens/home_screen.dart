@@ -8,6 +8,8 @@ import 'package:work_order_app/core/router/router.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
+import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
+import 'package:work_order_app/widgets/appbar/custom_app_bar.dart';
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
@@ -37,29 +39,29 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('My Dashboard'),
-        backgroundColor: Colors.blueAccent,
-        actions: [
-          PopupMenuButton(
-            icon: const Icon(Icons.settings),
-            onSelected: (value) {
-              // Tangani pilihan menu
+      appBar: CustomAppBar(title: "My Dashboard", actions: [
+        PopupMenuButton<String>(
+          icon: const Icon(Icons.settings),
+          onSelected: (value) {
+            if (value == 'manage_technician') {
               if (value == 'manage_technician') {
                 context.router.push(TechnicianListRoute());
               }
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: 'manage_technician',
-                  child: Text('Manage Technician'),
-                ),
-              ];
+            }
           },
-          ),
-        ]
-      ),
+          itemBuilder: (BuildContext context) {
+            return [
+              const PopupMenuItem<String>(
+                value: 'manage_technician',
+                child: Text('Manage Technician'),
+              ),
+              // Tambahkan opsi lain jika perlu
+            ];
+          },
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 4,
+        ),
+      ],),
       body: BlocConsumer<WorkOrderBloc, WorkOrderState>(
         listener: (context, state) {
           // TODO: implement listener
@@ -101,27 +103,25 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: todayList.length,
                     itemBuilder: (ctx, idx){
                       var item = todayList[idx];
-                      return _buildScheduleItem(
-                        item.title ?? 'AC Repair',
-                        item.address ?? 'Downtown Office',
-                        '9:00 AM - 11:00 AM',
-                        Icons.build,
-                      );
+                      
+                      var time = '9:00 AM - 11:00 AM';
+                      
+                      return
+                        InkWell(
+                          onTap: (){
+                            context.router.push(WorkOrderDetailRoute(workOrder: item));
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: ListTile(
+                              leading: Icon(Icons.build),
+                              title: Text(item.title),
+                              subtitle: Text('${item.description}\n$time'),
+                              trailing: const Icon(Icons.arrow_forward),
+                            ),
+                          ),
+                        );
                     },
-                    // children: [
-                    //   _buildScheduleItem(
-                    //     'Emergency Plumbing',
-                    //     'Downtown Office',
-                    //     '1:30 PM - 3:00 PM',
-                    //     Icons.warning,
-                    //   ),
-                    //   _buildScheduleItem(
-                    //     'Light Installation',
-                    //     'West Wing',
-                    //     '3:30 PM - 4:30 PM',
-                    //     Icons.lightbulb,
-                    //   ),
-                    // ],
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -172,18 +172,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildScheduleItem(String title, String location, String time, IconData icon) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8.0),
-      child: ListTile(
-        leading: Icon(icon),
-        title: Text(title),
-        subtitle: Text('$location\n$time'),
-        trailing: const Icon(Icons.arrow_forward),
       ),
     );
   }
