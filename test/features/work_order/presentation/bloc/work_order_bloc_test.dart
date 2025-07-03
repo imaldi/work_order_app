@@ -49,28 +49,28 @@ void main() {
     mockSortWorkOrders = MockSortWorkOrders();
     mockFilterWorkOrders = MockFilterWorkOrders();
     bloc = WorkOrderBloc(
-        mockAddWorkOrder,
-        mockLoadWorkOrders,
-        mockUpdateWorkOrder,
-        mockDeleteWorkOrder,
-        mockSearchWorkOrders,
-        mockSortWorkOrders,
-        mockFilterWorkOrders,
+      mockAddWorkOrder,
+      mockLoadWorkOrders,
+      mockUpdateWorkOrder,
+      mockDeleteWorkOrder,
+      mockSearchWorkOrders,
+      mockSortWorkOrders,
+      mockFilterWorkOrders,
     );
   });
 
   final tWorkOrder = WorkOrderEntity(
-      id: 1,
-      title: 'Test',
-      description: "Oke",
-      priority: '',
-      status: '',
-      dueDate: '',
-      createdAt: '',
-      technicianId: 0,
-      address: '',
-      latitude: 0.0,
-      longitude: 0.0
+    id: 1,
+    title: 'Test',
+    description: "Oke",
+    priority: '',
+    status: '',
+    dueDate: '',
+    createdAt: '',
+    technicianId: 0,
+    address: '',
+    latitude: 0.0,
+    longitude: 0.0, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
   );
   final tWorkOrders = [tWorkOrder];
   final tFailure = DatabaseFailure('Operation failed');
@@ -84,35 +84,23 @@ void main() {
       test('should emit [WorkOrderLoaded] when load succeeds', () async {
         // Arrange
         // ini sediakan stub nya
-        when(mockLoadWorkOrders(any))
-            .thenAnswer((_) async => Right(tWorkOrders));
+        when(mockLoadWorkOrders(any)).thenAnswer((_) async => Right(tWorkOrders));
         // Act
         bloc.add(const LoadWorkOrdersEvent());
         await untilCalled(mockLoadWorkOrders(any));
         // Assert
-        expectLater(
-          bloc.stream,
-          emitsInOrder([
-            WorkOrderLoaded(tWorkOrders),
-          ]),
-        );
+        expectLater(bloc.stream, emitsInOrder([WorkOrderLoaded(tWorkOrders)]));
         verify(mockLoadWorkOrders(any)).called(1);
       });
 
       test('should emit [WorkOrderError] when load fails', () async {
         // Arrange
-        when(mockLoadWorkOrders(any))
-            .thenAnswer((_) async => Left(tFailure));
+        when(mockLoadWorkOrders(any)).thenAnswer((_) async => Left(tFailure));
         // Act
         bloc.add(const LoadWorkOrdersEvent());
         await untilCalled(mockLoadWorkOrders(any));
         // Assert
-        expectLater(
-          bloc.stream,
-          emitsInOrder([
-            WorkOrderError(tFailure),
-          ]),
-        );
+        expectLater(bloc.stream, emitsInOrder([WorkOrderError(tFailure)]));
         verify(mockLoadWorkOrders(any)).called(1);
       });
     });
@@ -129,16 +117,12 @@ void main() {
       },
       build: () => bloc,
       act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.loaded(tWorkOrders),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.loaded(tWorkOrders)],
       verify: (_) {
         verify(mockAddWorkOrder(params)).called(1);
         verify(mockLoadWorkOrders(any)).called(1);
       },
     );
-
 
     blocTest<WorkOrderBloc, WorkOrderState>(
       'emits [loading, error] when add fails',
@@ -147,10 +131,7 @@ void main() {
       },
       build: () => bloc,
       act: (bloc) => bloc.add(AddWorkOrderEvent(params)),
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.error(tFailure),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.error(tFailure)],
       verify: (_) {
         verify(mockAddWorkOrder(params)).called(1);
         verifyNever(mockLoadWorkOrders(any));
@@ -163,9 +144,7 @@ void main() {
 
     final updateTparams = UpdateWorkOrdersParams(workOrderEntity: updatedWorkOrder);
 
-    final updatedWorkOrders = [
-      updatedWorkOrder
-    ];
+    final updatedWorkOrders = [updatedWorkOrder];
     blocTest<WorkOrderBloc, WorkOrderState>(
       'emits [loading, loaded] when update succeeds',
       setUp: () {
@@ -176,10 +155,7 @@ void main() {
       act: (bloc) {
         bloc.add(UpdateWorkOrderEvent(updateTparams));
       },
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.loaded(updatedWorkOrders),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.loaded(updatedWorkOrders)],
       verify: (_) {
         verify(mockUpdateWorkOrder(updateTparams)).called(1);
         verify(mockLoadWorkOrders(any)).called(1);
@@ -192,10 +168,7 @@ void main() {
       },
       build: () => bloc,
       act: (bloc) => bloc.add(UpdateWorkOrderEvent(updateTparams)),
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.error(tFailure),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.error(tFailure)],
       verify: (_) {
         verify(mockUpdateWorkOrder(updateTparams)).called(1);
         verifyNever(mockLoadWorkOrders(any));
@@ -214,16 +187,12 @@ void main() {
       },
       build: () => bloc,
       act: (bloc) => bloc.add(DeleteWorkOrderEvent(params)),
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.loaded([]),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.loaded([])],
       verify: (_) {
         verify(mockDeleteWorkOrder(params)).called(1);
         verify(mockLoadWorkOrders(any)).called(1);
       },
     );
-
 
     blocTest<WorkOrderBloc, WorkOrderState>(
       'emits [loading, error] when delete fails',
@@ -232,10 +201,7 @@ void main() {
       },
       build: () => bloc,
       act: (bloc) => bloc.add(DeleteWorkOrderEvent(params)),
-      expect: () => [
-        const WorkOrderState.loading(),
-        WorkOrderState.error(tFailure),
-      ],
+      expect: () => [const WorkOrderState.loading(), WorkOrderState.error(tFailure)],
       verify: (_) {
         verify(mockDeleteWorkOrder(params)).called(1);
         verifyNever(mockLoadWorkOrders(any));
@@ -248,60 +214,49 @@ void main() {
     final params = SearchWorkOrdersParams(query: 'test');
     test('should emit [WorkOrderLoaded] when search succeeds', () async {
       // Arrange
-      when(mockSearchWorkOrders(params))
-          .thenAnswer((_) async => Right(tWorkOrders));
+      when(mockSearchWorkOrders(params)).thenAnswer((_) async => Right(tWorkOrders));
       // Act
       bloc.add(SearchWorkOrdersEvent(params));
       await untilCalled(mockSearchWorkOrders(params));
       // Assert
-      expectLater(
-        bloc.stream,
-        emitsInOrder([
-          WorkOrderLoaded(tWorkOrders),
-        ]),
-      );
+      expectLater(bloc.stream, emitsInOrder([WorkOrderLoaded(tWorkOrders)]));
       verify(mockSearchWorkOrders(params)).called(1);
     });
 
     test('should emit [WorkOrderError] when search fails', () async {
       // Arrange
-      when(mockSearchWorkOrders(params))
-          .thenAnswer((_) async => Left(tFailure));
+      when(mockSearchWorkOrders(params)).thenAnswer((_) async => Left(tFailure));
       // Act
       bloc.add(SearchWorkOrdersEvent(params));
       await untilCalled(mockSearchWorkOrders(params));
       // Assert
-      expectLater(
-        bloc.stream,
-        emitsInOrder([
-          WorkOrderError(tFailure),
-        ]),
-      );
+      expectLater(bloc.stream, emitsInOrder([WorkOrderError(tFailure)]));
       verify(mockSearchWorkOrders(params)).called(1);
     });
   });
-
 
   /// ini tes awal
   blocTest<WorkOrderBloc, WorkOrderState>(
     'emits [loading, loaded] when LoadWorkOrdersEvent is added and getAllWorkOrders succeeds',
     setUp: () {
       provideDummy<Either<String, List<WorkOrderEntity>>>(left('Dummy error'));
-      when(mockLoadWorkOrders(any)).thenAnswer((_) async => right([
-        WorkOrderEntity(
-          id: 1,
-          title: 'Fix AC',
-          description: 'Repair air conditioner',
-          priority: 'High',
-          status: 'Pending',
-          dueDate: '2025-07-01 00:00',
-          createdAt: '2025-06-01 00:00',
-          technicianId: 1,
-          address: 'Jl. Contoh No. 123',
-          latitude: -6.2,
-          longitude: 106.8,
-        ),
-      ]));
+      when(mockLoadWorkOrders(any)).thenAnswer(
+        (_) async => right([
+          WorkOrderEntity(
+            id: 1,
+            title: 'Fix AC',
+            description: 'Repair air conditioner',
+            priority: 'High',
+            status: 'Pending',
+            dueDate: '2025-07-01 00:00',
+            createdAt: '2025-06-01 00:00',
+            technicianId: 1,
+            address: 'Jl. Contoh No. 123',
+            latitude: -6.2,
+            longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
+          ),
+        ]),
+      );
     },
     build: () => bloc,
     act: (bloc) => bloc.add(const LoadWorkOrdersEvent()),
@@ -319,7 +274,7 @@ void main() {
           technicianId: 1,
           address: 'Jl. Contoh No. 123',
           latitude: -6.2,
-          longitude: 106.8,
+          longitude: 106.8, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: '',
         ),
       ]),
     ],

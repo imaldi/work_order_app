@@ -33,7 +33,7 @@ void main() {
       technicianId: 0,
       address: '',
       latitude: 0.0,
-      longitude: 0.0
+      longitude: 0.0, customId: '', materials: '', photoPath: '', attachmentPath: '', scheduledStart: '', scheduledEnd: '', location: ''
   );
   final tWorkOrdersModel = [tWorkOrderModel];
   final tFailure = DatabaseFailure('Operation failed');

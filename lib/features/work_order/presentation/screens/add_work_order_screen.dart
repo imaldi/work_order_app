@@ -184,6 +184,14 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         status: _status.value,
                         technicianId: _assignedTechnician?.id ?? 0,
                         createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
+                        // TODO: Urus 7 field baru ini
+                        customId: '',
+                        materials: '',
+                        photoPath: '',
+                        attachmentPath: '',
+                        scheduledStart: '',
+                        scheduledEnd: '',
+                        location: '',
                       );
                       context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
                           AddWorkOrdersParams(
