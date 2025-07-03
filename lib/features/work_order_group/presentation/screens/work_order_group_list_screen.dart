@@ -30,7 +30,10 @@ class _WorkOrderGroupListScreenState extends State<WorkOrderGroupListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Daftar Work Order Group')),
+      appBar: AppBar(
+        title: const Text('Daftar Work Order Group'),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: BlocBuilder<WorkOrderGroupBloc, WorkOrderGroupState>(
         builder: (context, state) {
           return state.whenOrNull(
@@ -46,13 +49,11 @@ class _WorkOrderGroupListScreenState extends State<WorkOrderGroupListScreen> {
                     title: Text(group.title),
                     subtitle: Text(group.description),
                     onTap: () {
-                      // FIXME uncomment ketika sudah generate route
                       context.router.push(EditWorkOrderGroupRoute(group: group));
                     },
                     trailing:
                     ElevatedButton(
                       onPressed: () {
-
                         myConfirmDialog(
                           context,
                           title: "Yakin Hapus data Work Order Group?",

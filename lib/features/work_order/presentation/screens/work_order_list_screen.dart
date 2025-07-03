@@ -52,13 +52,19 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Work Order'),
+        title: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: const Text('Daftar Work Order'),
+        ),
+        backgroundColor: Colors.blueAccent,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(48.0),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
+          preferredSize: const Size.fromHeight(80.0),
+          child: Container(
+            color: Colors.white,
+            padding: const EdgeInsets.all(16.0),
             child: TextField(
               decoration: const InputDecoration(
+                fillColor: Colors.white,
                 hintText: 'Cari Work Order...',
                 border: OutlineInputBorder(),
                 prefixIcon: Icon(Icons.search),
@@ -70,13 +76,6 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                 context.read<WorkOrderBloc>().add(
                   SearchWorkOrdersEvent(
                     SearchWorkOrdersParams(query: _searchQuery),
-                    // searchQuery: _searchQuery,
-                    // status: _filterStatus,
-                    // priority: _filterPriority,
-                    // dateRange: _filterDateRange,
-                    // assignedTechnician: _filterAssignedTechnician,
-                    // sortBy: _sortBy,
-                    // isAsc: _isAsc,
                   ),
                 );
               },

@@ -19,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
         routes:  [
           HomeRoute(),
           WorkOrderListRoute(),
-          TechnicianListRoute(),
+          WorkOrderGroupListRoute(),
           ProfileRoute()
         ],
         backgroundColor: Colors.white,

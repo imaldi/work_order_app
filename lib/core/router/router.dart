@@ -25,17 +25,17 @@ part 'router.gr.dart';
 class AppRouter extends RootStackRouter {
   @override
   List<AutoRoute> get routes => [
-    AutoRoute(page: SplashRoute.page),
+    AutoRoute(page: SplashRoute.page, initial: true),
     AutoRoute(page: ProfileRoute.page),
-    AutoRoute(page: MenuRoute.page, initial: true),
+    AutoRoute(page: MenuRoute.page),
 
     AutoRoute(path: '/dashboard', page: MainRoute.page, children: [
       AutoRoute(page: HomeRoute.page),
+      AutoRoute(page: WorkOrderListRoute.page),
+      AutoRoute(page: WorkOrderGroupListRoute.page),
       AutoRoute(page: ProfileRoute.page),
     ]),
-    AutoRoute(page: WorkOrderListRoute.page),
     AutoRoute(page: TechnicianListRoute.page),
-    AutoRoute(page: WorkOrderGroupListRoute.page),
     AutoRoute(page: CreateWorkOrderGroupRoute.page),
     AutoRoute(page: EditWorkOrderGroupRoute.page),
     AutoRoute(page: AddWorkOrderRoute.page),

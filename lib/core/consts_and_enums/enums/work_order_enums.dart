@@ -1,7 +1,7 @@
 enum WorkOrderStatus {
   pending("pending"),
   inProgress("in_progress"),
-  completed("completed") ;
+  completed("completed");
 
   final String value;
   const WorkOrderStatus(this.value);
