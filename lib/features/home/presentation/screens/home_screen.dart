@@ -135,8 +135,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Row(
                       children: [
-                        _buildActionButton('Work Orders', Icons.cases_sharp),
-                        _buildActionButton('Groups', Icons.group),
+                        _buildActionButton('Work Orders', Icons.cases_sharp, onTap: (){
+                          context.router.push(WorkOrderListRoute());
+                        }),
+                        _buildActionButton('Groups', Icons.group, onTap: (){
+                          context.router.push(WorkOrderGroupListRoute());
+                        }),
                       ],
                     ),
                     Row(
@@ -184,13 +188,16 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildActionButton(String title, IconData icon) {
+  Widget _buildActionButton(String title, IconData icon, {Function()? onTap}) {
     return Expanded(
-      child: Card(
-        color: Colors.lightBlue[50],
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(children: [Icon(icon, size: 30), const SizedBox(height: 8.0), Text(title)]),
+      child: InkWell(
+        onTap: onTap,
+        child: Card(
+          color: Colors.lightBlue[50],
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(children: [Icon(icon, size: 30), const SizedBox(height: 8.0), Text(title)]),
+          ),
         ),
       ),
     );
