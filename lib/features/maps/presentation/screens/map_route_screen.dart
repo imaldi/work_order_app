@@ -26,6 +26,8 @@ class MapRouteScreen extends StatefulWidget implements AutoRouteWrapper {
 }
 
 class _MapRouteScreenState extends State<MapRouteScreen> {
+  String? totalDistance;
+  String? totalTime;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,22 +41,60 @@ class _MapRouteScreenState extends State<MapRouteScreen> {
                 success: (locationParam) {
                   (double, double) coord = (locationParam.latitude, locationParam.longitude);
 
-                  return GoogleMapsWidget(
-                    apiKey: googleApiKey,
-                    sourceLatLng: LatLng(coord.$1, coord.$2),
-                    sourceMarkerIconInfo: MarkerIconInfo(
-                      infoWindowTitle: "You are here",
-                      onTapInfoWindow: (_) {
-                        print("Your Location");
-                      },
-                    ),
-                    destinationLatLng: LatLng(widget.addressCord.$1, widget.addressCord.$2),
-                    destinationMarkerIconInfo: MarkerIconInfo(
-                      infoWindowTitle: "This is your destination",
-                      onTapInfoWindow: (_) {
-                        print("Your Location");
-                      },
-                    ),
+                  return Stack(
+                    children: [
+                      GoogleMapsWidget(
+                        apiKey: googleApiKey,
+                        sourceLatLng: LatLng(coord.$1, coord.$2),
+                        sourceMarkerIconInfo: MarkerIconInfo(
+                          infoWindowTitle: "You are here",
+                          onTapInfoWindow: (_) {
+                            print("Your Location");
+                          },
+                        ),
+                        destinationLatLng: LatLng(widget.addressCord.$1, widget.addressCord.$2),
+                        destinationMarkerIconInfo: MarkerIconInfo(
+                          infoWindowTitle: "This is your destination",
+                          onTapInfoWindow: (_) {
+                            print("Your Destination");
+                          },
+                        ),
+                        totalDistanceCallback: (val){
+                          print("The distance: $val");
+                          setState(() {
+                            totalDistance = val;
+                          });
+                        },
+                        totalTimeCallback: (val){
+                          setState(() {
+                            totalTime = val;
+                          });
+                        },
+                      ),
+                      Positioned(
+                          left: 16,
+                          bottom: 32,
+                          child: Card(
+                        child: Container(
+                          padding: EdgeInsets.all(16),
+                          // height: 75,
+                          // width: 75,
+                          child: Center(
+                            child: IntrinsicHeight(
+                              child: IntrinsicWidth(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text("Distance: ${totalDistance ?? "0 km"}"),
+                                    Text("Time: ${totalTime ?? "0 seconds"}"),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ))
+                    ],
                   );
                 },
               ) ??
