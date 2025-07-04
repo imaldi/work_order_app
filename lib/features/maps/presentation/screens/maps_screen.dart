@@ -222,7 +222,7 @@ class _MapsScreenState extends State<MapsScreen> {
                     //     ? 'GOOGLE_MAPS_API_KEY_ANDROID'
                     //     : 'GOOGLE_MAPS_API_KEY_IOS',
                     googleAPIParameters: GoogleAPIParameters(region: "id"),
-                    minMaxZoomPreference: const MinMaxZoomPreference(0, 17),
+                    minMaxZoomPreference: const MinMaxZoomPreference(0, 18),
                     zoomControlsEnabled: false,
                     myLocationFABConfig: MyLocationFABConfig(
                       tooltip: "Lokasi Saya",

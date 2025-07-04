@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:location/location.dart';
+import 'package:location/location.dart';
 import 'package:work_order_app/core/router/router.dart';
 import 'package:work_order_app/core/themes/text_styles.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
@@ -17,9 +19,8 @@ import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order_group/domain/entity/work_order_group_entity.dart';
 import '../../domain/entities/work_order_entity.dart';
 
-
 @RoutePage()
-class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
+class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper {
   const AddWorkOrderScreen({Key? key}) : super(key: key);
 
   @override
@@ -29,18 +30,10 @@ class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
   Widget wrappedRoute(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider.value(
-          value: getIt<WorkOrderBloc>(),
-        ),
-        BlocProvider.value(
-          value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent()),
-        ),
-        BlocProvider.value(
-          value: getIt<WorkOrderGroupBloc>()..add(GetAllWorkOrderGroupsEvent()),
-        ),
-        BlocProvider.value(
-          value: getIt<LocationCubit>()..getCurrentLocationCoordinateAndAddress(),
-        ),
+        BlocProvider.value(value: getIt<WorkOrderBloc>()),
+        BlocProvider.value(value: getIt<TechnicianBloc>()..add(LoadTechniciansEvent())),
+        BlocProvider.value(value: getIt<WorkOrderGroupBloc>()..add(GetAllWorkOrderGroupsEvent())),
+        BlocProvider.value(value: getIt<LocationCubit>()..getCurrentLocationCoordinateAndAddress()),
       ],
       child: this,
     );
@@ -86,26 +79,21 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 TextFormField(
                   controller: _titleController,
                   decoration: const InputDecoration(labelText: 'Judul'),
-                  validator: (value) =>
-                  value!.isEmpty ? 'Judul wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Judul wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Deskripsi'),
                   maxLines: 5,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Deskripsi wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Deskripsi wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<WorkOrderPriority>(
                   value: _priority,
                   decoration: const InputDecoration(labelText: 'Prioritas'),
                   items: WorkOrderPriority.values
-                      .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e.name.capitalize()),
-                  ))
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -118,27 +106,70 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   controller: _reqMaterialsController,
                   decoration: const InputDecoration(labelText: 'Material yang diperlukan'),
                   maxLines: 4,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Material wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Material wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 // FIXME: Ini akan auto fill oleh widget map
-                TextFormField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(labelText: 'Alamat'),
-                  maxLines: 4,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Alamat wajib diisi' : null,
+                BlocConsumer<LocationCubit, LocationState>(
+                  listener: (context, state) {
+                    state.maybeWhen(
+                      loading: (l){
+                        _addressController.text = "Loading...";
+                      },
+                      success: (s) {
+                        _addressController.text = s.currentAddress ?? "";
+                      },
+                      successSelectLocation: (s) {
+                        _addressController.text = s.currentAddress ?? "";
+                      },
+                      orElse: () {},
+                    );
+                  },
+                  builder: (context, state) {
+                    return InkWell(
+                      onTap: () {
+                        context.router.push(MapsRoute());
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 16),
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Column(
+                                children: [
+                                  Icon(Icons.remove_red_eye, size: 32),
+                                  // CustomImageView(
+                                  //     imagePath: ImageConstant.imgRectangle682,
+                                  //     height: 32,
+                                  //     width: 32),
+                                  SizedBox(height: 8),
+                                  Text("Ubah", style: MyTextStyles.titleMedium),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                enabled: false,
+                                controller: _addressController,
+                                decoration: const InputDecoration(labelText: 'Alamat'),
+                                maxLines: 4,
+                                validator: (value) => value!.isEmpty ? 'Alamat wajib diisi' : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                const SizedBox(height: 16),
-                _buildMaps(context),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _locationController,
                   decoration: const InputDecoration(labelText: 'Lokasi'),
                   maxLines: 4,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Lokasi wajib diisi' : null,
+                  validator: (value) => value!.isEmpty ? 'Lokasi wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
                 TextButton(
@@ -152,8 +183,16 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                     if (selectedDate != null) {
                       setState(() {
                         _dueDate = selectedDate;
-                        _scheduledStart = _scheduledStart?.copyWith(year: _dueDate!.year, month: _dueDate!.month, day: _dueDate!.day);
-                        _scheduledEnd = _scheduledEnd?.copyWith(year: _dueDate!.year, month: _dueDate!.month, day: _dueDate!.day);
+                        _scheduledStart = _scheduledStart?.copyWith(
+                          year: _dueDate!.year,
+                          month: _dueDate!.month,
+                          day: _dueDate!.day,
+                        );
+                        _scheduledEnd = _scheduledEnd?.copyWith(
+                          year: _dueDate!.year,
+                          month: _dueDate!.month,
+                          day: _dueDate!.day,
+                        );
                       });
                     }
                   },
@@ -173,7 +212,10 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                     );
                     if (selectedTime != null) {
                       setState(() {
-                        _scheduledStart = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                        _scheduledStart = baseDateTime.copyWith(
+                          hour: selectedTime.hour,
+                          minute: selectedTime.minute,
+                        );
                       });
                     }
                   },
@@ -193,7 +235,10 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                     );
                     if (selectedTime != null) {
                       setState(() {
-                        _scheduledEnd = baseDateTime.copyWith(hour: selectedTime.hour, minute: selectedTime.minute);
+                        _scheduledEnd = baseDateTime.copyWith(
+                          hour: selectedTime.hour,
+                          minute: selectedTime.minute,
+                        );
                       });
                     }
                   },
@@ -208,10 +253,7 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   value: _status,
                   decoration: const InputDecoration(labelText: 'Status'),
                   items: WorkOrderStatus.values
-                      .map((e) => DropdownMenuItem(
-                    value: e,
-                    child: Text(e.name.capitalize()),
-                  ))
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e.name.capitalize())))
                       .toList(),
                   onChanged: (value) {
                     setState(() {
@@ -223,60 +265,64 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 BlocBuilder<TechnicianBloc, TechnicianState>(
                   builder: (context, state) {
                     return state.whenOrNull(
-                      loading: (){
-                        return const CircularProgressIndicator();
-                      },
-                      loaded: (list){
-                        return DropdownButtonFormField<TechnicianEntity>(
-                          value: _assignedTechnician,
-                          decoration: const InputDecoration(labelText: 'Teknisi'),
-                          items: list
-                              .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e.name),
-                          ))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _assignedTechnician = value;
-                            });
+                          loading: () {
+                            return const CircularProgressIndicator();
                           },
-                        );
-                      }
-                      
-                    ) ?? SizedBox.shrink();
+                          loaded: (list) {
+                            return DropdownButtonFormField<TechnicianEntity>(
+                              value: _assignedTechnician,
+                              decoration: const InputDecoration(labelText: 'Teknisi'),
+                              items: list
+                                  .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _assignedTechnician = value;
+                                });
+                              },
+                            );
+                          },
+                        ) ??
+                        SizedBox.shrink();
                   },
                 ),
                 const SizedBox(height: 16),
                 BlocBuilder<WorkOrderGroupBloc, WorkOrderGroupState>(
                   builder: (context, state) {
                     return state.whenOrNull(
-                      loading: (){
-                        return const CircularProgressIndicator();
-                      },
-                      loaded: (list){
-                        return DropdownButtonFormField<WorkOrderGroupEntity>(
-                          value: _assignedGroup,
-                          decoration: const InputDecoration(labelText: 'Group'),
-                          items: list
-                              .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e.title),
-                          ))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _assignedGroup = value;
-                            });
+                          loading: () {
+                            return const CircularProgressIndicator();
                           },
-                        );
-                      }
-
-                    ) ?? SizedBox.shrink();
+                          loaded: (list) {
+                            return DropdownButtonFormField<WorkOrderGroupEntity>(
+                              value: _assignedGroup,
+                              decoration: const InputDecoration(labelText: 'Group'),
+                              items: list
+                                  .map((e) => DropdownMenuItem(value: e, child: Text(e.title)))
+                                  .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _assignedGroup = value;
+                                });
+                              },
+                            );
+                          },
+                        ) ??
+                        SizedBox.shrink();
                   },
                 ),
                 const SizedBox(height: 16),
-                ElevatedButton(
+                BlocBuilder<LocationCubit, LocationState>(
+  builder: (context, state) {
+    (double, double) selectedPoint = state.whenOrNull(
+        successSelectLocation: (res)=> (res.latitude, res.latitude),
+        success: (res)=> (res.latitude, res.latitude),
+    ) ?? (0.0,0.0);
+    String selectedAdress = state.whenOrNull(
+        successSelectLocation: (res)=> res.currentAddress,
+        success: (res)=> res.currentAddress,
+    ) ?? "";
+    return ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate() && _dueDate != null) {
                       final workOrder = WorkOrderEntity(
@@ -285,8 +331,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         description: _descriptionController.text,
                         priority: _priority.value,
                         address: _addressController.text,
-                        latitude: 0.0, // Default value
-                        longitude: 0.0, // Default value
+                        latitude: selectedPoint.$1, // Default value
+                        longitude: selectedPoint.$2, // Default value
                         dueDate: _dueDate != null ? DateFormat("yy-MM-dd").format(_dueDate!) : "",
                         status: _status.value,
                         technicianId: _assignedTechnician?.id ?? 0,
@@ -298,85 +344,39 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         photoPath: '',
                         attachmentPath: '',
                         // TODO: Pastikan scheduledEnd > scheduledStart
-                        scheduledStart: _dueDate != null && _scheduledStart != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!.copyWith(hour: _scheduledStart?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
-                        scheduledEnd: _dueDate != null && _scheduledEnd != null ? DateFormat("yy-MM-dd HH:mm").format(_dueDate!.copyWith(hour: _scheduledEnd?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
+                        scheduledStart: _dueDate != null && _scheduledStart != null
+                            ? DateFormat("yy-MM-dd HH:mm").format(
+                                _dueDate!.copyWith(
+                                  hour: _scheduledStart?.hour ?? 0,
+                                  minute: _scheduledStart?.minute ?? 0,
+                                ),
+                              )
+                            : "",
+                        scheduledEnd: _dueDate != null && _scheduledEnd != null
+                            ? DateFormat("yy-MM-dd HH:mm").format(
+                                _dueDate!.copyWith(
+                                  hour: _scheduledEnd?.hour ?? 0,
+                                  minute: _scheduledStart?.minute ?? 0,
+                                ),
+                              )
+                            : "",
                         location: _locationController.text,
                       );
-                      context.read<WorkOrderBloc>().add(AddWorkOrderEvent(
-                          AddWorkOrdersParams(
-                            workOrderEntity: workOrder,
-                          )
-                      ));
+                      context.read<WorkOrderBloc>().add(
+                        AddWorkOrderEvent(AddWorkOrdersParams(workOrderEntity: workOrder)),
+                      );
                       context.router.pop();
                     }
                   },
                   child: const Text('Simpan'),
-                ),
+                );
+  },
+),
               ],
             ),
           ),
         ),
       ),
-    );
-  }
-
-  /// Maps Widget
-  Widget _buildMaps(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        context.router.push(MapsRoute());
-      },
-      child: Container(
-          width: double.maxFinite,
-          margin: EdgeInsets.only(left: 16),
-          padding: EdgeInsets.symmetric(vertical: 16),
-          // decoration: AppDecoration.outlineOnPrimaryContainer,
-          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Padding(
-                padding: EdgeInsets.only(bottom: 16),
-                child: Column(children: [
-                  Icon(Icons.remove_red_eye, size: 32,),
-                  // CustomImageView(
-                  //     imagePath: ImageConstant.imgRectangle682,
-                  //     height: 32,
-                  //     width: 32),
-                  SizedBox(height: 8),
-                  Text("Lihat", style: MyTextStyles.titleMedium)
-                ])),
-            Expanded(
-              child: BlocBuilder<LocationCubit, LocationState>(
-                builder: (context, state) {
-                  return Padding(
-                      padding: EdgeInsets.only(left: 8, bottom: 32),
-                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        Text(
-                            state.whenOrNull(
-                                loading: (l) {
-                                  return "Loading...";
-                                },
-                                success: (s) => s.simpleName,
-                                successSelectLocation: (s) => s.simpleName) ??
-                                "Tidak ada nama pendek",
-                            style: MyTextStyles.titleMedium),
-                        SizedBox(height: 16),
-                        Text(
-                          state.whenOrNull(
-                              loading: (l) {
-                                return "Loading...";
-                              },
-                              success: (s) => s.currentAddress,
-                              successSelectLocation: (s) => s.currentAddress) ??
-                              "Alamat tidak diketahui",
-                          style: MyTextStyles.bodyText,
-                          softWrap: true,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        )
-                      ]));
-                },
-              ),
-            )
-          ])),
     );
   }
 }

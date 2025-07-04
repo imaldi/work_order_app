@@ -55,10 +55,10 @@ class LocationCubit extends Cubit<LocationState> {
         (r) => emit(LocationState.success(
           // tambah disini kota kabupaten
             state.param.copyWith(
-                currentAddress: r?.displayName,
-                simpleName: r?.displayName,
+                currentAddress: r.displayName,
+                simpleName: r.displayName,
                 latitude: lat,
                 longitude: long,
-                kotaKabupaten: r?.address?.cityDistrict))));
+                kotaKabupaten: r.address?.cityDistrict))));
   }
 }
