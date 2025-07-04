@@ -11,7 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:internet_connection_checker/internet_connection_checker.dart'
+    as _i973;
 
+import '../../features/maps/datasource/current_location_remote_data_source.dart'
+    as _i771;
+import '../../features/maps/presentation/state_management/location_cubit.dart'
+    as _i337;
+import '../../features/maps/repository/location_repository.dart' as _i54;
 import '../../features/technician/data/data_sources/technician_local_data_source.dart'
     as _i929;
 import '../../features/technician/data/repository/technician_repository_impl.dart'
@@ -67,6 +74,7 @@ import '../../features/work_order_group/domain/usecases/update_work_order_group.
 import '../../features/work_order_group/presentation/bloc/work_order_group_bloc.dart'
     as _i274;
 import '../helpers/database_helper.dart' as _i771;
+import '../services/network_info/network_info.dart' as _i1021;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -75,7 +83,14 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final internetConnectionCheckerModule = _$InternetConnectionCheckerModule();
+    gh.factory<_i973.InternetConnectionChecker>(
+      () => internetConnectionCheckerModule.internetConnectionChecker,
+    );
     gh.lazySingleton<_i771.DatabaseHelper>(() => _i771.DatabaseHelper());
+    gh.factory<_i771.CurrentLocationRemoteDataSource>(
+      () => _i771.CurrentLocationRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i929.TechnicianLocalDataSource>(
       () => _i929.TechnicianLocalDataSourceImpl(gh<_i771.DatabaseHelper>()),
     );
@@ -84,6 +99,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i416.WorkOrderLocalDataSource>(
       () => _i416.WorkOrderLocalDataSourceImpl(gh<_i771.DatabaseHelper>()),
+    );
+    gh.factory<_i1021.NetworkInfo>(
+      () => _i1021.NetworkInfoImpl(gh<_i973.InternetConnectionChecker>()),
     );
     gh.lazySingleton<_i702.TechnicianRepository>(
       () =>
@@ -117,8 +135,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i750.WorkOrderRepository>(
       () => _i258.WorkOrderRepositoryImpl(gh<_i416.WorkOrderLocalDataSource>()),
     );
+    gh.factory<_i54.LocationRepository>(
+      () => _i54.LocationRepository(
+        currentLocationRemoteDataSource:
+            gh<_i771.CurrentLocationRemoteDataSource>(),
+        networkInfo: gh<_i1021.NetworkInfo>(),
+      ),
+    );
     gh.lazySingleton<_i500.CreateWorkOrderGroup>(
       () => _i500.CreateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    );
+    gh.lazySingleton<_i129.DeleteWorkOrderGroup>(
+      () => _i129.DeleteWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
     );
     gh.lazySingleton<_i39.GetAllWorkOrderGroups>(
       () => _i39.GetAllWorkOrderGroups(gh<_i959.WorkOrderGroupRepository>()),
@@ -126,8 +154,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i702.UpdateWorkOrderGroup>(
       () => _i702.UpdateWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
     );
-    gh.lazySingleton<_i129.DeleteWorkOrderGroup>(
-      () => _i129.DeleteWorkOrderGroup(gh<_i959.WorkOrderGroupRepository>()),
+    gh.lazySingleton<_i337.LocationCubit>(
+      () => _i337.LocationCubit(
+        gh<_i54.LocationRepository>(),
+        gh<_i1021.NetworkInfo>(),
+      ),
     );
     gh.lazySingleton<_i274.WorkOrderGroupBloc>(
       () => _i274.WorkOrderGroupBloc(
@@ -172,3 +203,6 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$InternetConnectionCheckerModule
+    extends _i1021.InternetConnectionCheckerModule {}

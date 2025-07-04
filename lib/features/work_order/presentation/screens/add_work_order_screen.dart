@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:work_order_app/core/router/router.dart';
+import 'package:work_order_app/core/themes/text_styles.dart';
 import 'package:work_order_app/core/utils/extensions/extensions.dart';
 import 'package:work_order_app/core/params/work_order_params.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
@@ -10,6 +12,7 @@ import 'package:work_order_app/features/work_order_group/presentation/bloc/work_
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
+import '../../../maps/presentation/state_management/location_cubit.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order_group/domain/entity/work_order_group_entity.dart';
 import '../../domain/entities/work_order_entity.dart';
@@ -34,6 +37,9 @@ class AddWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper  {
         ),
         BlocProvider.value(
           value: getIt<WorkOrderGroupBloc>()..add(GetAllWorkOrderGroupsEvent()),
+        ),
+        BlocProvider.value(
+          value: getIt<LocationCubit>()..getCurrentLocationCoordinateAndAddress(),
         ),
       ],
       child: this,
@@ -124,6 +130,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   validator: (value) =>
                   value!.isEmpty ? 'Alamat wajib diisi' : null,
                 ),
+                const SizedBox(height: 16),
+                _buildMaps(context),
                 const SizedBox(height: 16),
                 TextFormField(
                   controller: _locationController,
@@ -309,6 +317,66 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  /// Maps Widget
+  Widget _buildMaps(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.router.push(MapsRoute());
+      },
+      child: Container(
+          width: double.maxFinite,
+          margin: EdgeInsets.only(left: 16),
+          padding: EdgeInsets.symmetric(vertical: 16),
+          // decoration: AppDecoration.outlineOnPrimaryContainer,
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Padding(
+                padding: EdgeInsets.only(bottom: 16),
+                child: Column(children: [
+                  Icon(Icons.remove_red_eye, size: 32,),
+                  // CustomImageView(
+                  //     imagePath: ImageConstant.imgRectangle682,
+                  //     height: 32,
+                  //     width: 32),
+                  SizedBox(height: 8),
+                  Text("Lihat", style: MyTextStyles.titleMedium)
+                ])),
+            Expanded(
+              child: BlocBuilder<LocationCubit, LocationState>(
+                builder: (context, state) {
+                  return Padding(
+                      padding: EdgeInsets.only(left: 8, bottom: 32),
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                        Text(
+                            state.whenOrNull(
+                                loading: (l) {
+                                  return "Loading...";
+                                },
+                                success: (s) => s.simpleName,
+                                successSelectLocation: (s) => s.simpleName) ??
+                                "Tidak ada nama pendek",
+                            style: MyTextStyles.titleMedium),
+                        SizedBox(height: 16),
+                        Text(
+                          state.whenOrNull(
+                              loading: (l) {
+                                return "Loading...";
+                              },
+                              success: (s) => s.currentAddress,
+                              successSelectLocation: (s) => s.currentAddress) ??
+                              "Alamat tidak diketahui",
+                          style: MyTextStyles.bodyText,
+                          softWrap: true,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ]));
+                },
+              ),
+            )
+          ])),
     );
   }
 }

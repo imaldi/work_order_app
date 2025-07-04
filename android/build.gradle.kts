@@ -2,6 +2,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+//        gradlePluginPortal()
     }
 }
 
@@ -19,3 +20,15 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+//buildscript {
+////    repositories {
+////        google()
+////        mavenCentral()
+////        gradlePluginPortal()
+////    }
+//
+//    dependencies {
+//        classpath("com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1")
+//    }
+//}

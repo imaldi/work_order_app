@@ -9,6 +9,7 @@ import 'package:work_order_app/features/work_order/presentation/screens/add_work
 import 'package:work_order_app/features/work_order/presentation/screens/edit_work_order_screen.dart';
 
 import '../../features/home/presentation/screens/main_screen.dart';
+import '../../features/maps/presentation/screens/maps_screen.dart';
 import '../../features/home/presentation/screens/menu_screen.dart';
 import '../../features/home/presentation/screens/splash_screen.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
@@ -44,5 +45,6 @@ class AppRouter extends RootStackRouter {
     AutoRoute(page: WorkOrderDetailRoute.page),
     AutoRoute(page: AddTechnicianRoute.page),
     AutoRoute(page: EditTechnicianRoute.page),
+    AutoRoute(page: MapsRoute.page),
   ];
 }

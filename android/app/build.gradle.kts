@@ -3,7 +3,14 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+//    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
+
+//// Load secrets.properties
+//val secretsFile = file("../secrets.properties") // Sesuaikan path jika diperlukan
+//val secrets = Properties().apply {
+//    load(FileInputStream(secretsFile))
+//}
 
 android {
     namespace = "com.imaldi.work_order_app"
@@ -28,6 +35,9 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+
+//        // Ambil API key dari secrets.properties
+//        resValue("string", "google_maps_api_key", secrets.getProperty("GOOGLE_API_KEY"))
     }
 
     buildTypes {
@@ -37,8 +47,18 @@ android {
             signingConfig = signingConfigs.getByName("debug")
         }
     }
+//
+//    buildFeatures {
+//        buildConfig = true
+//    }
 }
 
 flutter {
     source = "../.."
 }
+
+//dependencies {
+//
+//    // Maps SDK for Android
+//    implementation("com.google.android.gms:play-services-maps:19.0.0")
+//}

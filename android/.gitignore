@@ -4,6 +4,8 @@ gradle-wrapper.jar
 /gradlew
 /gradlew.bat
 /local.properties
+/secrets.properties
+/app/src/main/res/values/secrets.xml
 GeneratedPluginRegistrant.java
 .cxx/
 

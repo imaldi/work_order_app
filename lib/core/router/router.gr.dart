@@ -239,6 +239,22 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MapsScreen]
+class MapsRoute extends PageRouteInfo<void> {
+  const MapsRoute({List<PageRouteInfo>? children})
+    : super(MapsRoute.name, initialChildren: children);
+
+  static const String name = 'MapsRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const MapsScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [MenuScreen]
 class MenuRoute extends PageRouteInfo<void> {
   const MenuRoute({List<PageRouteInfo>? children})
