@@ -45,7 +45,9 @@ class _SplashScreenState extends State<SplashScreen>
               },
               child: Container(
                 height: 400,
-                child: Icon(Icons.cases_rounded, color: Colors.purpleAccent,),
+                child:
+                Icon(Icons.cases_rounded, size: 64, color: Colors.blueAccent,)
+                // Image.asset('assets/icons/maintainx_icon.png'),
               ),
             ),
             //   MyGradientContainer(
