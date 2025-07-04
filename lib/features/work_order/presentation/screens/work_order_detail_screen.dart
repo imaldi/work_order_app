@@ -142,10 +142,6 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
-
-                  Text(widget.workOrder.address),
-                  Text("Lat: ${widget.workOrder.latitude}"),
-                  Text("Lng: ${widget.workOrder.longitude}"),
                 ],
               ),
               _section(
@@ -202,7 +198,7 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                   )),
                   _detailRow((
                     title: Text("Address", style: MyTextStyles.textGreyDetail),
-                    content: Text("123 Main St, Suite 300, Anytown, Use"),
+                    content: Text(widget.workOrder.address),
                   )),
                 ],
               ),
