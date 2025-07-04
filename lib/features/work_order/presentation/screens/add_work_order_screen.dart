@@ -109,11 +109,10 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                   validator: (value) => value!.isEmpty ? 'Material wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
-                // FIXME: Ini akan auto fill oleh widget map
                 BlocConsumer<LocationCubit, LocationState>(
                   listener: (context, state) {
                     state.maybeWhen(
-                      loading: (l){
+                      loading: (l) {
                         _addressController.text = "Loading...";
                       },
                       success: (s) {
@@ -140,10 +139,6 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                               child: Column(
                                 children: [
                                   Icon(Icons.remove_red_eye, size: 32),
-                                  // CustomImageView(
-                                  //     imagePath: ImageConstant.imgRectangle682,
-                                  //     height: 32,
-                                  //     width: 32),
                                   SizedBox(height: 8),
                                   Text("Ubah", style: MyTextStyles.titleMedium),
                                 ],
@@ -153,7 +148,10 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                               child: TextFormField(
                                 enabled: false,
                                 controller: _addressController,
-                                decoration: const InputDecoration(labelText: 'Alamat'),
+                                decoration: const InputDecoration(
+                                  labelText: 'Alamat',
+                                  labelStyle: TextStyle(color: Colors.black)
+                                ),
                                 maxLines: 4,
                                 validator: (value) => value!.isEmpty ? 'Alamat wajib diisi' : null,
                               ),
@@ -313,65 +311,70 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                 ),
                 const SizedBox(height: 16),
                 BlocBuilder<LocationCubit, LocationState>(
-  builder: (context, state) {
-    (double, double) selectedPoint = state.whenOrNull(
-        successSelectLocation: (res)=> (res.latitude, res.latitude),
-        success: (res)=> (res.latitude, res.latitude),
-    ) ?? (0.0,0.0);
-    String selectedAdress = state.whenOrNull(
-        successSelectLocation: (res)=> res.currentAddress,
-        success: (res)=> res.currentAddress,
-    ) ?? "";
-    return ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate() && _dueDate != null) {
-                      final workOrder = WorkOrderEntity(
-                        id: 0, // ID akan di-generate oleh repository
-                        title: _titleController.text,
-                        description: _descriptionController.text,
-                        priority: _priority.value,
-                        address: _addressController.text,
-                        latitude: selectedPoint.$1, // Default value
-                        longitude: selectedPoint.$2, // Default value
-                        dueDate: _dueDate != null ? DateFormat("yy-MM-dd").format(_dueDate!) : "",
-                        status: _status.value,
-                        technicianId: _assignedTechnician?.id ?? 0,
-                        groupId: _assignedGroup?.id ?? 0,
-                        createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
-                        // TODO: Urus 7 field baru ini
-                        customId: _titleController.text,
-                        materials: _reqMaterialsController.text,
-                        photoPath: '',
-                        attachmentPath: '',
-                        // TODO: Pastikan scheduledEnd > scheduledStart
-                        scheduledStart: _dueDate != null && _scheduledStart != null
-                            ? DateFormat("yy-MM-dd HH:mm").format(
-                                _dueDate!.copyWith(
-                                  hour: _scheduledStart?.hour ?? 0,
-                                  minute: _scheduledStart?.minute ?? 0,
-                                ),
-                              )
-                            : "",
-                        scheduledEnd: _dueDate != null && _scheduledEnd != null
-                            ? DateFormat("yy-MM-dd HH:mm").format(
-                                _dueDate!.copyWith(
-                                  hour: _scheduledEnd?.hour ?? 0,
-                                  minute: _scheduledStart?.minute ?? 0,
-                                ),
-                              )
-                            : "",
-                        location: _locationController.text,
-                      );
-                      context.read<WorkOrderBloc>().add(
-                        AddWorkOrderEvent(AddWorkOrdersParams(workOrderEntity: workOrder)),
-                      );
-                      context.router.pop();
-                    }
+                  builder: (context, state) {
+                    (double, double) selectedPoint =
+                        state.whenOrNull(
+                          successSelectLocation: (res) => (res.latitude, res.longitude),
+                          success: (res) => (res.latitude, res.longitude),
+                        ) ??
+                        (0.0, 0.0);
+                    String selectedAdress =
+                        state.whenOrNull(
+                          successSelectLocation: (res) => res.currentAddress,
+                          success: (res) => res.currentAddress,
+                        ) ??
+                        "";
+                    return ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate() && _dueDate != null) {
+                          final workOrder = WorkOrderEntity(
+                            id: 0, // ID akan di-generate oleh repository
+                            title: _titleController.text,
+                            description: _descriptionController.text,
+                            priority: _priority.value,
+                            address: selectedAdress,
+                            latitude: selectedPoint.$1, // Default value
+                            longitude: selectedPoint.$2, // Default value
+                            dueDate: _dueDate != null
+                                ? DateFormat("yy-MM-dd").format(_dueDate!)
+                                : "",
+                            status: _status.value,
+                            technicianId: _assignedTechnician?.id ?? 0,
+                            groupId: _assignedGroup?.id ?? 0,
+                            createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
+                            customId: _titleController.text,
+                            materials: _reqMaterialsController.text,
+                            photoPath: '',
+                            attachmentPath: '',
+                            // TODO: Pastikan scheduledEnd > scheduledStart
+                            scheduledStart: _dueDate != null && _scheduledStart != null
+                                ? DateFormat("yy-MM-dd HH:mm").format(
+                                    _dueDate!.copyWith(
+                                      hour: _scheduledStart?.hour ?? 0,
+                                      minute: _scheduledStart?.minute ?? 0,
+                                    ),
+                                  )
+                                : "",
+                            scheduledEnd: _dueDate != null && _scheduledEnd != null
+                                ? DateFormat("yy-MM-dd HH:mm").format(
+                                    _dueDate!.copyWith(
+                                      hour: _scheduledEnd?.hour ?? 0,
+                                      minute: _scheduledStart?.minute ?? 0,
+                                    ),
+                                  )
+                                : "",
+                            location: _locationController.text,
+                          );
+                          context.read<WorkOrderBloc>().add(
+                            AddWorkOrderEvent(AddWorkOrdersParams(workOrderEntity: workOrder)),
+                          );
+                          context.router.pop();
+                        }
+                      },
+                      child: const Text('Simpan'),
+                    );
                   },
-                  child: const Text('Simpan'),
-                );
-  },
-),
+                ),
               ],
             ),
           ),

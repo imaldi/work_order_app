@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:work_order_app/core/consts_and_enums/enums/work_order_enums.dart';
 import 'package:work_order_app/core/injection/injection.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
 import 'package:work_order_app/features/work_order/presentation/bloc/work_order_bloc.dart';
@@ -32,7 +33,9 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
             children: [
               _section("Location Map",
               children: [
-                Text("Ini Map"),
+                Text(widget.workOrder.address),
+                Text("Lat: ${widget.workOrder.latitude}"),
+                Text("Lng: ${widget.workOrder.longitude}"),
               ]),
               _section("Details", children: [
                 _detailRow((
@@ -41,14 +44,16 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                 )),
                 _detailRow((
                   title: Text("Status", style: MyTextStyles.textGreyDetail,),
-                  content: Text("Assigned"),
+                  content: Text(WorkOrderStatus.values.firstWhere((el) => el.value == widget.workOrder.status).string),
                 )),
                 _detailRow((
+                  // FIXME, ini perbaiki gimana bagusnya
                   title: Text("Assigned To", style: MyTextStyles.textGreyDetail,),
                   content: Text("You"),
                 )),
                 _detailRow((
                   title: Text("Created", style: MyTextStyles.textGreyDetail,),
+                  // content: Text("Today, 8:15 AM"),
                   content: Text("Today, 8:15 AM"),
                 )),
                 _detailRow((
@@ -57,7 +62,7 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                 )),
                 _detailRow((
                   title: Text("Location", style: MyTextStyles.textGreyDetail,),
-                  content: Text("Downtown Office, 3rd Floor"),
+                  content: Text(widget.workOrder.location),
                 )),
                 _detailRow((
                   title: Text("Address", style: MyTextStyles.textGreyDetail,),
@@ -82,11 +87,12 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                 )),
               ]),
               _section("Required Materials", children: [
-                Text("- PVC Pipes (1.5\")"),
-                Text("- Pipe cutter"),
-                Text("- Pipe wrench set"),
-                Text("- Teflon tape"),
-                Text("- Joint compound"),
+                Text(widget.workOrder.materials),
+                // Text("- PVC Pipes (1.5\")"),
+                // Text("- Pipe cutter"),
+                // Text("- Pipe wrench set"),
+                // Text("- Teflon tape"),
+                // Text("- Joint compound"),
               ]),
               _section("Attachments", children: [
                 Row(

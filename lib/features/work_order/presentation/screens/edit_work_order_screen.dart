@@ -11,6 +11,9 @@ import 'package:work_order_app/features/work_order_group/presentation/bloc/work_
 
 import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
+import '../../../../core/router/router.dart';
+import '../../../../core/themes/text_styles.dart';
+import '../../../maps/presentation/state_management/location_cubit.dart';
 import '../../../technician/domain/entity/technician_entity.dart';
 import '../../../work_order_group/domain/entity/work_order_group_entity.dart';
 import '../bloc/work_order_bloc.dart';
@@ -37,6 +40,7 @@ class EditWorkOrderScreen extends StatefulWidget implements AutoRouteWrapper {
         BlocProvider.value(
             value: getIt<WorkOrderGroupBloc>(),
             ),
+        BlocProvider.value(value: getIt<LocationCubit>()..updateSelectedCoordinate(workOrder.latitude, workOrder.longitude)),
       ],
         child: this,
     );
@@ -155,13 +159,58 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                   value!.isEmpty ? 'Material wajib diisi' : null,
                 ),
                 const SizedBox(height: 16),
-                // FIXME: Ini akan auto fill oleh widget map
-                TextFormField(
-                  controller: _addressController,
-                  decoration: const InputDecoration(labelText: 'Alamat'),
-                  maxLines: 5,
-                  validator: (value) =>
-                  value!.isEmpty ? 'Alamat wajib diisi' : null,
+                BlocConsumer<LocationCubit, LocationState>(
+                  listener: (context, state) {
+                    state.maybeWhen(
+                      loading: (l) {
+                        _addressController.text = "Loading...";
+                      },
+                      success: (s) {
+                        _addressController.text = s.currentAddress ?? "";
+                      },
+                      successSelectLocation: (s) {
+                        _addressController.text = s.currentAddress ?? "";
+                      },
+                      orElse: () {},
+                    );
+                  },
+                  builder: (context, state) {
+                    return InkWell(
+                      onTap: () {
+                        context.router.push(MapsRoute());
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: 16),
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 16),
+                              child: Column(
+                                children: [
+                                  Icon(Icons.remove_red_eye, size: 32),
+                                  SizedBox(height: 8),
+                                  Text("Ubah", style: MyTextStyles.titleMedium),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              child: TextFormField(
+                                enabled: false,
+                                controller: _addressController,
+                                decoration: const InputDecoration(
+                                  labelText: 'Alamat',
+                                  labelStyle: TextStyle(color: Colors.black)
+                                ),
+                                maxLines: 4,
+                                validator: (value) => value!.isEmpty ? 'Alamat wajib diisi' : null,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -280,6 +329,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                   },
                 ),
 
+
                 const SizedBox(height: 16),
                 BlocBuilder<WorkOrderGroupBloc, WorkOrderGroupState>(
                   builder: (context, state) {
@@ -309,10 +359,21 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    ElevatedButton(
+                BlocBuilder<LocationCubit, LocationState>(
+                  builder: (context, state) {
+                    (double, double) selectedPoint =
+                        state.whenOrNull(
+                          successSelectLocation: (res) => (res.latitude, res.longitude),
+                          success: (res) => (res.latitude, res.longitude),
+                        ) ??
+                            (0.0, 0.0);
+                    String selectedAdress =
+                        state.whenOrNull(
+                          successSelectLocation: (res) => res.currentAddress,
+                          success: (res) => res.currentAddress,
+                        ) ??
+                            "";
+                    return ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // TODO Baikin ini nanti pagi
@@ -320,18 +381,36 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             title: _titleController.text,
                             description: _descriptionController.text,
                             priority: _priority.value,
-                            materials: _reqMaterialsController.text,
                             address: _addressController.text,
-                            location: _locationController.text,
-                            latitude: widget.workOrder.latitude,
-                            longitude: widget.workOrder.longitude,
+                            latitude: selectedPoint.$1, // Default value
+                            longitude: selectedPoint.$2, // Default value
                             dueDate: DateFormat("yy-MM-dd").format(_dueDate),
                             status: _status.value,
                             technicianId: _assignedTechnician?.id ?? 0,
                             groupId: _assignedGroup?.id ?? 0,
+                            createdAt: DateFormat("yy-MM-dd HH:mm").format(DateTime.now()),
                             customId: _titleController.text,
-                            scheduledStart: _scheduledStart != null ? DateFormat("yy-MM-dd HH:mm").format(DateTime.now().copyWith(hour: _scheduledStart?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
-                            scheduledEnd: _scheduledEnd != null ? DateFormat("yy-MM-dd HH:mm").format(DateTime.now().copyWith(hour: _scheduledEnd?.hour ?? 0, minute: _scheduledStart?.minute ?? 0)) : "",
+                            materials: _reqMaterialsController.text,
+                            photoPath: '',
+                            attachmentPath: '',
+                            // TODO: Pastikan scheduledEnd > scheduledStart
+                            scheduledStart: _scheduledStart != null
+                                ? DateFormat("yy-MM-dd HH:mm").format(
+                              _dueDate!.copyWith(
+                                hour: _scheduledStart?.hour ?? 0,
+                                minute: _scheduledStart?.minute ?? 0,
+                              ),
+                            )
+                                : "",
+                            scheduledEnd: _scheduledEnd != null
+                                ? DateFormat("yy-MM-dd HH:mm").format(
+                              _dueDate!.copyWith(
+                                hour: _scheduledEnd?.hour ?? 0,
+                                minute: _scheduledStart?.minute ?? 0,
+                              ),
+                            )
+                                : "",
+                            location: _locationController.text,
                           );
                           context
                               .read<WorkOrderBloc>()
@@ -344,9 +423,8 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                         }
                       },
                       child: const Text('Simpan'),
-                    ),
-
-                  ],
+                    );
+                  },
                 ),
               ],
             ),
