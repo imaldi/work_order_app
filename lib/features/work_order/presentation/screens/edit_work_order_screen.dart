@@ -321,19 +321,31 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             return const CircularProgressIndicator();
                           },
                           loaded: (list) {
-                            return DropdownButtonFormField<TechnicianEntity>(
-                              value: (_assignedTechnician?.id ?? 0) != 0
-                                  ? _assignedTechnician
-                                  : null,
-                              decoration: const InputDecoration(labelText: 'Teknisi'),
-                              items: list
-                                  .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _assignedTechnician = value;
-                                });
+                            return InkWell(
+                              onTap: list.isNotEmpty ? null : (){
+                                Fluttertoast.showToast(
+                                    msg: "Harap buat dulu technician di halaman pengaturan",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.lightBlue,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
                               },
+                              child: DropdownButtonFormField<TechnicianEntity>(
+                                value: (_assignedTechnician?.id ?? 0) != 0
+                                    ? _assignedTechnician
+                                    : null,
+                                decoration: const InputDecoration(labelText: 'Teknisi'),
+                                items: list
+                                    .map((e) => DropdownMenuItem(value: e, child: Text(e.name)))
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _assignedTechnician = value;
+                                  });
+                                },
+                              ),
                             );
                           },
                         ) ??
@@ -349,17 +361,29 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             return const CircularProgressIndicator();
                           },
                           loaded: (list) {
-                            return DropdownButtonFormField<WorkOrderGroupEntity>(
-                              value: _assignedGroup,
-                              decoration: const InputDecoration(labelText: 'Group'),
-                              items: list
-                                  .map((e) => DropdownMenuItem(value: e, child: Text(e.title)))
-                                  .toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _assignedGroup = value;
-                                });
+                            return InkWell(
+                              onTap: list.isNotEmpty ? null : (){
+                                Fluttertoast.showToast(
+                                    msg: "Harap buat dulu group di halamannya",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.BOTTOM,
+                                    timeInSecForIosWeb: 1,
+                                    backgroundColor: Colors.lightBlue,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
                               },
+                              child: DropdownButtonFormField<WorkOrderGroupEntity>(
+                                value: _assignedGroup,
+                                decoration: const InputDecoration(labelText: 'Group'),
+                                items: list
+                                    .map((e) => DropdownMenuItem(value: e, child: Text(e.title)))
+                                    .toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _assignedGroup = value;
+                                  });
+                                },
+                              ),
                             );
                           },
                         ) ??
@@ -392,7 +416,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             Fluttertoast.showToast(
                               msg: "Gagal membuat Work Order: ${failure.message}",
                               toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
+                              gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               backgroundColor: Colors.lightBlue,
                               textColor: Colors.white,
@@ -404,7 +428,7 @@ class _EditWorkOrderScreenState extends State<EditWorkOrderScreen> {
                             Fluttertoast.showToast(
                               msg: "Berhasil membuat Work Order",
                               toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
+                              gravity: ToastGravity.BOTTOM,
                               timeInSecForIosWeb: 1,
                               backgroundColor: Colors.lightBlue,
                               textColor: Colors.white,

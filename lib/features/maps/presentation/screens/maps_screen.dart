@@ -178,7 +178,7 @@ class _MapsScreenState extends State<MapsScreen> {
               Fluttertoast.showToast(
                   msg: "Lokasi terpilih: ${s.param.currentAddress ?? s.param.simpleName}",
                   toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.CENTER,
+                  gravity: ToastGravity.BOTTOM,
                   timeInSecForIosWeb: 1,
                   backgroundColor: Colors.lightBlue,
                   textColor: Colors.white,
