@@ -31,6 +31,8 @@ import '../../features/technician/domain/use_cases/delete_technician.dart'
     as _i423;
 import '../../features/technician/domain/use_cases/get_all_technicians.dart'
     as _i981;
+import '../../features/technician/domain/use_cases/get_technician.dart'
+    as _i344;
 import '../../features/technician/domain/use_cases/update_technician.dart'
     as _i374;
 import '../../features/technician/presentation/bloc/technician_bloc.dart'
@@ -113,6 +115,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i401.AddTechnician>(
       () => _i401.AddTechnician(gh<_i702.TechnicianRepository>()),
     );
+    gh.lazySingleton<_i344.GetTechnician>(
+      () => _i344.GetTechnician(gh<_i702.TechnicianRepository>()),
+    );
     gh.lazySingleton<_i981.GetAllTechnicians>(
       () => _i981.GetAllTechnicians(gh<_i702.TechnicianRepository>()),
     );
@@ -130,6 +135,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i401.AddTechnician>(),
         gh<_i374.UpdateTechnician>(),
         gh<_i423.DeleteTechnician>(),
+        gh<_i344.GetTechnician>(),
       ),
     );
     gh.lazySingleton<_i750.WorkOrderRepository>(

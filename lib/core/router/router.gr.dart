@@ -337,7 +337,9 @@ class WorkOrderDetailRoute extends PageRouteInfo<WorkOrderDetailRouteArgs> {
     name,
     builder: (data) {
       final args = data.argsAs<WorkOrderDetailRouteArgs>();
-      return WorkOrderDetailScreen(workOrder: args.workOrder, key: args.key);
+      return WrappedRoute(
+        child: WorkOrderDetailScreen(workOrder: args.workOrder, key: args.key),
+      );
     },
   );
 }

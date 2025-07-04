@@ -49,7 +49,7 @@ class WorkOrderGroupLocalDataSourceImpl implements WorkOrderGroupLocalDataSource
       }
       return right(WorkOrderGroupModel.fromJson(result.first));
     } catch (e) {
-      return left(DatabaseFailure('Failed to delete work order group: $e'));
+      return left(DatabaseFailure('Failed to get work order group: $e'));
     }
   }
 

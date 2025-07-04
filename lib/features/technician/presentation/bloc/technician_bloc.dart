@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:work_order_app/features/technician/domain/use_cases/get_technician.dart';
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/params/params.dart';
@@ -23,16 +24,19 @@ class TechnicianBloc extends Bloc<TechnicianEvent, TechnicianState> {
   final GetAllTechnicians getAllTechnicians;
   final UpdateTechnician updateTechnician;
   final DeleteTechnician deleteTechnician;
+  final GetTechnician getTechnician;
   TechnicianBloc(
       this.getAllTechnicians,
       this.addTechnician,
       this.updateTechnician,
-      this.deleteTechnician
+      this.deleteTechnician,
+      this.getTechnician,
       ) : super(const TechnicianState.initial()) {
       on<LoadTechniciansEvent>(_onLoadTechnicians);
       on<AddTechnicianEvent>(_onAddTechnician);
       on<UpdateTechnicianEvent>(_onUpdateTechnician);
       on<DeleteTechnicianEvent>(_onDeleteTechnician);
+      on<GetTechnicianEvent>(_onGetTechnician);
   }
 
   FutureOr<void> _onLoadTechnicians(LoadTechniciansEvent event, Emitter<TechnicianState> emit) async {
@@ -70,6 +74,15 @@ class TechnicianBloc extends Bloc<TechnicianEvent, TechnicianState> {
     result.fold(
           (error) => emit(TechnicianState.error(error)),
           (_) => add(const LoadTechniciansEvent()),
+    );
+  }
+
+  FutureOr<void> _onGetTechnician(GetTechnicianEvent event, Emitter<TechnicianState> emit) async {
+    emit(const TechnicianState.loading());
+    final result = await getTechnician(event.params);
+    result.fold(
+          (error) => emit(TechnicianState.error(error)),
+          (technician) => emit(TechnicianState.gotTechnician(technician)),
     );
   }
 }

@@ -32,4 +32,10 @@ class TechnicianRepositoryImpl implements TechnicianRepository {
     final either = await localDataSource.getAllTechnicians();
     return either.map((technicians) => technicians.map((model) => model.toEntity()).toList());
   }
+
+  @override
+  Future<Either<Failure, TechnicianEntity?>> getTechnician(int id) async {
+    final either = await localDataSource.getTechnician(id);
+    return either.map((result) => result?.toEntity());
+  }
 }

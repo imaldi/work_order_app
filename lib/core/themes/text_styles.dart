@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class MyTextStyles {
   static const TextStyle textGreyDetail = TextStyle(
-    color: Colors.grey,
+    color: Colors.blueGrey,
     fontSize: 14,
     fontWeight: FontWeight.normal,
   );

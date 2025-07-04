@@ -10,6 +10,7 @@ import '../../../../core/consts_and_enums/enums/work_order_enums.dart';
 import '../../../../core/injection/injection.dart';
 import '../../../../core/params/params.dart';
 import '../../../../core/router/router.dart';
+import '../../../../widgets/list_tile/wo_list_tile.dart';
 import '../../../../widgets/my_confirm_dialog/my_confirm_dialog.dart';
 import '../../../technician/presentation/bloc/technician_bloc.dart';
 import '../../../work_order/presentation/bloc/work_order_bloc.dart';
@@ -130,7 +131,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                   ),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.filter_list),
+                  icon: const Icon(Icons.filter_alt),
                   onPressed: () => _showFilterDialog(context),
                 ),
               ],
@@ -147,34 +148,7 @@ class _WorkOrderListScreenState extends State<WorkOrderListScreen> {
                     itemCount: state.workOrders.length,
                     itemBuilder: (context, index) {
                       final wo = state.workOrders[index];
-                      return ListTile(
-                        title: Text(wo.title),
-                        subtitle: Text('Status: ${WorkOrderStatus.values.firstWhere((el) => el.value == wo.status).string } | Priority: ${wo.priority}'),
-                        onTap: () {
-                          context.router.push(EditWorkOrderRoute(workOrder: wo));
-                        },
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            myConfirmDialog(
-                              context,
-                              title: "Yakin Hapus data Work Order?",
-                              positiveButtonCallback: () {
-                                context.read<WorkOrderBloc>().add(
-                                  DeleteWorkOrderEvent(QueryIdParams(id: wo.id)),
-                                );
-                              },
-                              positiveButtonText: "Ya",
-                              negativeButtonCallback: () {
-                                context.router.pop();
-                              },
-                              negativeButtonText: "Batal",
-                            );
-                          },
-                          // style: ElevatedButton.styleFrom(
-                          //     backgroundColor: Colors.red),
-                          child: const Text('Hapus'),
-                        ),
-                      );
+                      return WoListTile(wo);
                     },
                   );
                 } else if (state is WorkOrderError) {

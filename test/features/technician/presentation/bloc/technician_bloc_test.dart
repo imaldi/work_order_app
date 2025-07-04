@@ -9,6 +9,7 @@ import 'package:work_order_app/features/technician/domain/entity/technician_enti
 import 'package:work_order_app/features/technician/domain/use_cases/add_technician.dart';
 import 'package:work_order_app/features/technician/domain/use_cases/delete_technician.dart';
 import 'package:work_order_app/features/technician/domain/use_cases/get_all_technicians.dart';
+import 'package:work_order_app/features/technician/domain/use_cases/get_technician.dart';
 import 'package:work_order_app/features/technician/domain/use_cases/update_technician.dart';
 import 'package:work_order_app/features/technician/presentation/bloc/technician_bloc.dart';
 import 'package:work_order_app/features/technician/domain/entity/technician_entity.dart';
@@ -19,6 +20,7 @@ import 'technician_bloc_test.mocks.dart';
   GetAllTechnicians,
   UpdateTechnician,
   DeleteTechnician,
+  GetTechnician,
 ])
 void main() {
   late TechnicianBloc bloc;
@@ -26,6 +28,7 @@ void main() {
   late MockGetAllTechnicians mockLoadTechnicians;
   late MockUpdateTechnician mockUpdateTechnician;
   late MockDeleteTechnician mockDeleteTechnician;
+  late MockGetTechnician mockGetTechnician;
 
   setUp(() {
     // Menyediakan dummy value untuk Either<String, List<TechnicianModel>>
@@ -36,11 +39,13 @@ void main() {
     mockLoadTechnicians = MockGetAllTechnicians();
     mockUpdateTechnician = MockUpdateTechnician();
     mockDeleteTechnician = MockDeleteTechnician();
+    mockGetTechnician = MockGetTechnician();
     bloc = TechnicianBloc(
         mockLoadTechnicians,
         mockAddTechnician,
         mockUpdateTechnician,
         mockDeleteTechnician,
+        mockGetTechnician,
     );
   });
 

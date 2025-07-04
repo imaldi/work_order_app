@@ -8,6 +8,7 @@ abstract class TechnicianLocalDataSource {
   Future<Either<Failure, Unit>> addTechnician(TechnicianModel technician);
   Future<Either<Failure, Unit>> updateTechnician(TechnicianModel technician);
   Future<Either<Failure, Unit>> deleteTechnician(int id);
+  Future<Either<Failure, TechnicianModel?>> getTechnician(int id);
   Future<Either<Failure, List<TechnicianModel>>> getAllTechnicians();
 }
 
@@ -78,6 +79,24 @@ class TechnicianLocalDataSourceImpl implements TechnicianLocalDataSource {
       return right(technicians);
     } catch (e) {
       return left(DatabaseFailure('Failed to get technicians: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, TechnicianModel?>> getTechnician(int id) async {
+    try {
+      final db = await databaseHelper.database;
+      final result = await db.query(
+        'technicians',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      if (result.isEmpty) {
+        return left(DatabaseFailure('Technician not found'));
+      }
+      return right(TechnicianModel.fromJson(result.first));
+    } catch (e) {
+      return left(DatabaseFailure('Failed to get technician: $e'));
     }
   }
 }
