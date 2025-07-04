@@ -239,6 +239,55 @@ class MainRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [MapRouteScreen]
+class MapRouteRoute extends PageRouteInfo<MapRouteRouteArgs> {
+  MapRouteRoute({
+    required (double, double) addressCord,
+    Key? key,
+    List<PageRouteInfo>? children,
+  }) : super(
+         MapRouteRoute.name,
+         args: MapRouteRouteArgs(addressCord: addressCord, key: key),
+         initialChildren: children,
+       );
+
+  static const String name = 'MapRouteRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<MapRouteRouteArgs>();
+      return WrappedRoute(
+        child: MapRouteScreen(addressCord: args.addressCord, key: args.key),
+      );
+    },
+  );
+}
+
+class MapRouteRouteArgs {
+  const MapRouteRouteArgs({required this.addressCord, this.key});
+
+  final (double, double) addressCord;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'MapRouteRouteArgs{addressCord: $addressCord, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! MapRouteRouteArgs) return false;
+    return addressCord == other.addressCord && key == other.key;
+  }
+
+  @override
+  int get hashCode => addressCord.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [MapsScreen]
 class MapsRoute extends PageRouteInfo<void> {
   const MapsRoute({List<PageRouteInfo>? children})

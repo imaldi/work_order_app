@@ -552,6 +552,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.12+2"
+  google_maps_widget:
+    dependency: "direct main"
+    description:
+      name: google_maps_widget
+      sha256: ec581f28990b96d4b2deb08ee300c0c05a3757c558832c459e40270453953009
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.6"
   graphs:
     dependency: transitive
     description:

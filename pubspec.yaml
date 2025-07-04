@@ -53,6 +53,7 @@ dependencies:
 
   google_maps_flutter: ^2.5.3
   google_maps_flutter_android: ^2.6.2
+  google_maps_widget: ^1.0.6
   location: ^5.0.3
   geolocator: ^14.0.1
   place_picker_google: 0.0.18

@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:work_order_app/core/consts_and_enums/enums/work_order_enums.dart';
 import 'package:work_order_app/core/injection/injection.dart';
 import 'package:work_order_app/core/params/params.dart';
+import 'package:work_order_app/core/router/router.dart';
 import 'package:work_order_app/features/technician/domain/use_cases/get_all_technicians.dart';
 import 'package:work_order_app/features/technician/presentation/bloc/technician_bloc.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
@@ -142,6 +143,14 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                     ),
                   ),
                   SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      context.router.push(MapRouteRoute(
+                        addressCord: (widget.workOrder.latitude, widget.workOrder.longitude)
+                      ));
+                    },
+                    child: const Text('Lihat Rute'),
+                  ),
                 ],
               ),
               _section(
