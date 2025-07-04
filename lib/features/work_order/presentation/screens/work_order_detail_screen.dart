@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:work_order_app/core/consts_and_enums/enums/work_order_enums.dart';
 import 'package:work_order_app/core/injection/injection.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
@@ -21,6 +24,92 @@ class WorkOrderDetailScreen extends StatefulWidget {
 }
 
 class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
+  final Completer<GoogleMapController> _controller =
+  Completer<GoogleMapController>();
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+  int _markerIdCounter = 1;
+  MarkerId? selectedMarker;
+  LatLng? markerPosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _addOrMoveMarkerAtCoordinate(widget.workOrder.latitude ?? 0,
+        widget.workOrder.longitude ?? 0);
+    _currentLocation(widget.workOrder.latitude ?? 0,
+        widget.workOrder.longitude ?? 0);
+  }
+
+  _currentLocation(double latitude, double longitude) async {
+    final GoogleMapController controller = await _controller.future;
+    // callbackGetCurrentPosition();
+    // LocationData? currentLocation;
+    // var location = Location();
+    // try {
+    //   currentLocation = await location.getLocation();
+    // } on Exception {
+    //   currentLocation = null;
+    // }
+
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        target: LatLng(latitude, longitude),
+        zoom: 17.0,
+      ),
+    ));
+  }
+  _addOrMoveMarkerAtCoordinate(double latitude, double longitude) async {
+    final int markerCount = markers.length;
+
+    if (markerCount == 1) {
+      _changePosition(selectedMarker!, latitude, longitude);
+      return;
+    }
+
+    final String markerIdVal = 'marker_id_$_markerIdCounter';
+    _markerIdCounter++;
+    final MarkerId markerId = MarkerId(markerIdVal);
+
+    final Marker marker = Marker(
+      markerId: markerId,
+      // draggable: true,
+      position: LatLng(
+          latitude,
+          // + sin(_markerIdCounter * pi / 6.0) / 20.0,
+          longitude
+        // + cos(_markerIdCounter * pi / 6.0) / 20.0,
+      ),
+      infoWindow: InfoWindow(title: markerIdVal, snippet: '*'),
+    );
+
+    setState(() {
+      selectedMarker = markerId;
+      markers[markerId] = marker;
+      markerPosition = LatLng(latitude, longitude);
+    });
+  }
+
+  void _changePosition(MarkerId markerId, double latitude, double longitude) {
+    final Marker marker = markers[markerId]!;
+    final LatLng current = marker.position;
+    // final Offset offset = Offset(
+    //   latitude - current.latitude,
+    //   longitude - current.longitude,
+    // );
+    setState(() {
+      markers[markerId] = marker.copyWith(
+        positionParam: LatLng(
+          latitude,
+          // + offset.dy,
+          longitude,
+          // + offset.dx,
+        ),
+      );
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +122,22 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
             children: [
               _section("Location Map",
               children: [
+                Container(
+                  height: 200,
+                  child: GoogleMap(
+                    mapType: MapType.normal,
+                    markers: markers.values.toSet(),
+                    initialCameraPosition: CameraPosition(
+                      target: LatLng(widget.workOrder.latitude, widget.workOrder.longitude),
+                      zoom: 17,
+                    ),
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
+                ),
+                SizedBox(height: 16,),
+
                 Text(widget.workOrder.address),
                 Text("Lat: ${widget.workOrder.latitude}"),
                 Text("Lng: ${widget.workOrder.longitude}"),

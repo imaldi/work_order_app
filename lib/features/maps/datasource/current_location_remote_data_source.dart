@@ -52,7 +52,6 @@ class CurrentLocationRemoteDataSourceImpl
         // your App should show an explanatory UI now.
         throw const PermissionDeniedException(
             'Location permissions are denied');
-        return Future.error('Location permissions are denied');
       }
     }
 
@@ -144,7 +143,6 @@ class CurrentLocationRemoteDataSourceImpl
     if (data['status'] == 'OK') {
       var distance = data['rows'][0]['elements'][0]['distance']['text'];
       return distance;
-      print("Jarak berdasarkan rute: $distance");
     } else {
       print("Gagal mendapatkan jarak");
       return "";

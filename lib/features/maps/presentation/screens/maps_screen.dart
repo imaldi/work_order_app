@@ -37,13 +37,11 @@ class _MapsScreenState extends State<MapsScreen> {
   int _markerIdCounter = 1;
   MarkerId? selectedMarker;
   LatLng? markerPosition;
-  FocusNode? focusNode;
 
   @override
   initState() {
     super.initState();
 
-    focusNode = FocusNode();
     var stateParam = getIt<LocationCubit>().state.param;
     // if (stateParam.latitude != null && stateParam.longitude != null) {
       _addOrMoveMarkerAtCoordinate(stateParam.latitude ?? 0,
@@ -139,30 +137,6 @@ class _MapsScreenState extends State<MapsScreen> {
     });
   }
 
-  void _onMarkerTapped(MarkerId markerId) {
-    final Marker? tappedMarker = markers[markerId];
-    if (tappedMarker != null) {
-      setState(() {
-        final MarkerId? previousMarkerId = selectedMarker;
-        if (previousMarkerId != null && markers.containsKey(previousMarkerId)) {
-          final Marker resetOld = markers[previousMarkerId]!
-              .copyWith(iconParam: BitmapDescriptor.defaultMarker);
-          markers[previousMarkerId] = resetOld;
-        }
-        selectedMarker = markerId;
-        final Marker newMarker = tappedMarker.copyWith(
-          iconParam: BitmapDescriptor.defaultMarkerWithHue(
-            BitmapDescriptor.hueGreen,
-          ),
-        );
-        markers[markerId] = newMarker;
-
-        markerPosition = null;
-      });
-    }
-  }
-  //
-  // var dio = Dio();
 
 
   @override
