@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:location/location.dart';
 import 'package:location/location.dart';
@@ -324,7 +326,38 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                           success: (res) => res.currentAddress,
                         ) ??
                         "";
-                    return ElevatedButton(
+                    return BlocListener<WorkOrderBloc, WorkOrderState>(
+                    listener: (context, state) {
+                      state.maybeWhen(
+                          loading: (){
+                            EasyLoading.show(status: "Loading Address", dismissOnTap: true);
+
+                          },
+                          error: (failure){
+                            EasyLoading.dismiss();
+                            Fluttertoast.showToast(
+                                msg: "Gagal membuat Work Order: ${failure.message}",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.lightBlue,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          },
+                          loaded: (list){
+                            EasyLoading.dismiss();
+                            Fluttertoast.showToast(
+                                msg: "Berhasil membuat Work Order",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.CENTER,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.lightBlue,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          },
+                          orElse: (){});
+                    },
+                    child: ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate() && _dueDate != null) {
                           final workOrder = WorkOrderEntity(
@@ -372,7 +405,8 @@ class _AddWorkOrderScreenState extends State<AddWorkOrderScreen> {
                         }
                       },
                       child: const Text('Simpan'),
-                    );
+                    ),
+);
                   },
                 ),
               ],

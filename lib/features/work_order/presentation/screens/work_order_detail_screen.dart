@@ -5,6 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:work_order_app/core/consts_and_enums/enums/work_order_enums.dart';
 import 'package:work_order_app/core/injection/injection.dart';
 import 'package:work_order_app/features/work_order/domain/entities/work_order_entity.dart';
@@ -12,6 +13,7 @@ import 'package:work_order_app/features/work_order/presentation/bloc/work_order_
 import 'package:work_order_app/widgets/appbar/custom_app_bar.dart';
 
 import '../../../../core/themes/text_styles.dart';
+import '../../../../core/utils/string_helpers.dart';
 import '../../../../widgets/text/title_text.dart';
 
 @RoutePage()
@@ -159,11 +161,11 @@ class _WorkOrderDetailScreenState extends State<WorkOrderDetailScreen> {
                 _detailRow((
                   title: Text("Created", style: MyTextStyles.textGreyDetail,),
                   // content: Text("Today, 8:15 AM"),
-                  content: Text("Today, 8:15 AM"),
+                  content: Text(formatDateTime(DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.createdAt))),
                 )),
                 _detailRow((
                   title: Text("Scheduled", style: MyTextStyles.textGreyDetail,),
-                  content: Text("Today, 1:30 PM"),
+                  content: Text(formatDateTime(DateFormat('yy-MM-dd HH:mm').parse(widget.workOrder.scheduledStart))),
                 )),
                 _detailRow((
                   title: Text("Location", style: MyTextStyles.textGreyDetail,),

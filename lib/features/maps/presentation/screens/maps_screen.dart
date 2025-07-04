@@ -180,7 +180,7 @@ class _MapsScreenState extends State<MapsScreen> {
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                   timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.green,
+                  backgroundColor: Colors.lightBlue,
                   textColor: Colors.white,
                   fontSize: 16.0);
             });
